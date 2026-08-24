@@ -4,7 +4,7 @@ import { Button, Input, ListBox, Select, Tabs } from "@heroui/react";
 import Link from "next/link";
 import { useState } from "react";
 
-function RouteMap() {
+export function RouteMap() {
     return (
         <div className="relative h-[320px] w-full max-w-[500px] opacity-80 sm:h-[370px]" aria-hidden="true">
             <svg className="absolute inset-0 h-full w-full" viewBox="0 0 500 370" fill="none">
