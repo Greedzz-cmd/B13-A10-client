@@ -1,6 +1,7 @@
 "use client";
 
 import { Button, Input, ListBox, Select, Tabs } from "@heroui/react";
+import Link from "next/link";
 import { useState } from "react";
 
 function RouteMap() {
@@ -64,7 +65,7 @@ export default function HeroSection() {
         <section className="relative mx-auto min-h-[calc(100vh-60px)] max-w-[1280px] px-6 pb-8 pt-16 sm:px-10 sm:pt-20 lg:px-14">
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_75%_42%,rgba(51,67,97,0.16),transparent_32%),linear-gradient(180deg,rgba(8,15,29,0),rgba(8,15,29,0.65))]" />
             <div className="relative grid items-start gap-8 lg:grid-cols-[1fr_1fr]">
-                <div className="max-w-[510px]">
+                <div className="relative z-10 max-w-[510px]">
                     <p className="mb-7 inline-flex items-center gap-2 text-[9px] uppercase tracking-[0.2em] text-[#dd7845]">
                         <span className="h-px w-2 bg-[#dd7845]" /> Bangladesh&apos;s premium travel platform{" "}
                         <span className="h-px w-2 bg-[#dd7845]" />
@@ -81,18 +82,18 @@ export default function HeroSection() {
                         place.
                     </p>
                     <div className="mt-7 flex items-center gap-3">
-                        <a
+                        <Link
                             className="rounded-[5px] bg-[#dd7845] px-5 py-2.5 text-[11px] font-medium text-white transition-colors hover:bg-[#ef8a53]"
-                            href="#routes"
+                            href="#/all-tickets"
                         >
                             Explore routes <span className="ml-2">→</span>
-                        </a>
-                        <a
+                        </Link>
+                        <Link
                             className="text-[10px] text-slate-400 underline decoration-slate-600 underline-offset-4 transition-colors hover:text-white"
-                            href="#account"
+                            href="/get-started"
                         >
                             Create account — it&apos;s free
-                        </a>
+                        </Link>
                     </div>
                     <div className="mt-10 grid max-w-[430px] grid-cols-3 border-t border-white/10 pt-5">
                         <div>
@@ -109,7 +110,7 @@ export default function HeroSection() {
                         </div>
                     </div>
                 </div>
-                <div className="hidden justify-center pt-2 lg:flex">
+                <div className="absolute right-[-7%] top-[220px] z-0 w-[125%] opacity-45 md:right-0 md:flex md:w-full md:justify-end lg:relative lg:right-auto lg:top-auto lg:w-auto lg:justify-center lg:pt-2 lg:opacity-80">
                     <RouteMap />
                 </div>
             </div>

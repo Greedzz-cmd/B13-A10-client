@@ -16,70 +16,65 @@ const maxWidthClasses = {
 };
 
 const defaultItems = [
-    { href: "#tickets", label: "All Tickets", isActive: true },
-    { href: "#trips", label: "My Trips" },
-    { href: "#vendors", label: "Vendors" },
-    { href: "#admin", label: "Admin" },
+    { href: "/tickets", label: "All Tickets", isActive: true },
+    { href: "/trips", label: "My Trips" },
+    { href: "/vendors", label: "Vendors" },
+    { href: "/admin", label: "Admin" },
 ];
 
-function BusIcon() {
+function RouteMark() {
     return (
         <svg aria-hidden="true" className="h-4 w-4" fill="none" viewBox="0 0 24 24">
             <path
-                d="M5 17V6.5C5 4.57 6.57 3 8.5 3h7C17.43 3 19 4.57 19 6.5V17"
+                d="M7 19V5h5.5a4.5 4.5 0 0 1 0 9H7m5.5 0L18 19"
                 stroke="currentColor"
                 strokeLinecap="round"
+                strokeLinejoin="round"
                 strokeWidth="1.8"
             />
-            <path
-                d="M5 10h14M7 17h10M7 20h.01M17 20h.01M7 17v3M17 17v3"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeWidth="1.8"
-            />
-            <path d="M7 7h10" stroke="currentColor" strokeLinecap="round" strokeWidth="1.8" />
         </svg>
     );
 }
 
 function DefaultBrand() {
     return (
-        <Link className="flex items-center gap-2 text-[13px] tracking-[0.01em] text-slate-200" href="/">
-            <span className="flex h-[18px] w-[18px] items-center justify-center rounded-[3px] bg-[#dd7845] text-white">
-                <BusIcon />
+        <Link className="flex items-center gap-2 text-[14px] font-semibold tracking-[-0.02em] text-slate-100" href="/">
+            <span className="flex h-7 w-7 items-center justify-center rounded-[7px] bg-[#dd7845] text-white">
+                <RouteMark />
             </span>
-            <span>ticket bari</span>
+            <span>Routely</span>
         </Link>
+    );
+}
+
+function ThemeToggle() {
+    return (
+        <button className="text-slate-400 transition-colors hover:text-white" type="button" aria-label="Change theme">
+            <svg aria-hidden="true" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="3.5" stroke="currentColor" strokeWidth="1.5" />
+                <path
+                    d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeWidth="1.5"
+                />
+            </svg>
+        </button>
     );
 }
 
 function DefaultRightContent() {
     return (
         <>
-            <button
-                className="text-slate-400 transition-colors hover:text-white"
-                type="button"
-                aria-label="Change theme"
-            >
-                <svg aria-hidden="true" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24">
-                    <circle cx="12" cy="12" r="3.5" stroke="currentColor" strokeWidth="1.5" />
-                    <path
-                        d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeWidth="1.5"
-                    />
-                </svg>
-            </button>
-            <a className="text-[11px] text-slate-300 transition-colors hover:text-white" href="#sign-in">
+            <Link className="text-[11px] text-slate-300 transition-colors hover:text-white" href="/sign-in">
                 Sign in
-            </a>
-            <a
+            </Link>
+            <Link
                 className="rounded-[5px] bg-[#dd7845] px-3 py-1.5 text-[11px] font-medium text-white transition-colors hover:bg-[#ee8954]"
-                href="#get-started"
+                href="/get-started"
             >
                 Get started
-            </a>
+            </Link>
         </>
     );
 }
@@ -109,39 +104,11 @@ export function Navbar({
                     maxWidth !== "full" && maxWidthClasses[maxWidth],
                 )}
             >
-                <div className="flex items-center gap-3">
-                    <button
-                        className="rounded p-1 text-slate-300 transition-colors hover:bg-white/10 md:hidden"
-                        onClick={() => setIsMenuOpen(!isMenuOpen)}
-                        aria-label="Toggle menu"
-                        aria-expanded={isMenuOpen}
-                        type="button"
-                    >
-                        <span className="sr-only">Menu</span>
-                        <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            {isMenuOpen ? (
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M6 18L18 6M6 6l12 12"
-                                />
-                            ) : (
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M4 6h16M4 12h16M4 18h16"
-                                />
-                            )}
-                        </svg>
-                    </button>
-                    {brand}
-                </div>
+                <div className="flex items-center gap-3">{brand}</div>
                 <ul className="hidden items-center gap-4 md:flex">
                     {items.map(item => (
                         <li key={item.href}>
-                            <a
+                            <Link
                                 href={item.href}
                                 className={cn(
                                     "text-sm text-slate-400 transition-colors hover:text-white",
@@ -150,18 +117,52 @@ export function Navbar({
                                 aria-current={item.isActive ? "page" : undefined}
                             >
                                 {item.label}
-                            </a>
+                            </Link>
                         </li>
                     ))}
                 </ul>
-                {rightContent && <div className="hidden items-center gap-4 md:flex">{rightContent}</div>}
+                <div className="flex items-center gap-4">
+                    <div className="hidden items-center gap-4 md:flex">
+                        <ThemeToggle />
+                        {rightContent}
+                    </div>
+                    <div className="flex items-center gap-4 md:hidden">
+                        <ThemeToggle />
+                        <button
+                            className="rounded p-1 text-slate-300 transition-colors hover:bg-white/10"
+                            onClick={() => setIsMenuOpen(!isMenuOpen)}
+                            aria-label="Toggle menu"
+                            aria-expanded={isMenuOpen}
+                            type="button"
+                        >
+                            <span className="sr-only">Menu</span>
+                            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                {isMenuOpen ? (
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M6 18L18 6M6 6l12 12"
+                                    />
+                                ) : (
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M4 6h16M4 12h16M4 18h16"
+                                    />
+                                )}
+                            </svg>
+                        </button>
+                    </div>
+                </div>
             </header>
             {isMenuOpen && (
                 <div className="border-t border-white/10 bg-[#0a1121] md:hidden">
                     <ul className="flex flex-col gap-2 p-4">
                         {items.map(item => (
                             <li key={item.href}>
-                                <a
+                                <Link
                                     href={item.href}
                                     className={cn(
                                         "block py-2 text-sm text-slate-400 transition-colors hover:text-white",
@@ -169,7 +170,7 @@ export function Navbar({
                                     )}
                                 >
                                     {item.label}
-                                </a>
+                                </Link>
                             </li>
                         ))}
                         {rightContent && (
