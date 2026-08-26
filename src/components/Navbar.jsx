@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 function cn(...classes) {
+    // Combine optional Tailwind class groups for configurable navbar regions.
     return classes.filter(Boolean).join(" ");
 }
 
@@ -23,6 +24,7 @@ const defaultItems = [
 ];
 
 function RouteMark() {
+    // Brand route mark.
     return (
         <svg aria-hidden="true" className="h-4 w-4" fill="none" viewBox="0 0 24 24">
             <path
@@ -37,6 +39,7 @@ function RouteMark() {
 }
 
 function DefaultBrand() {
+    // Default navbar brand link.
     return (
         <Link className="flex items-center gap-2 text-[14px] font-semibold tracking-[-0.02em] text-slate-100" href="/">
             <span className="flex h-7 w-7 items-center justify-center rounded-[7px] bg-[#dd7845] text-white">
@@ -48,6 +51,7 @@ function DefaultBrand() {
 }
 
 function ThemeToggle() {
+    // Theme action placeholder.
     return (
         <button className="text-slate-400 transition-colors hover:text-white" type="button" aria-label="Change theme">
             <svg aria-hidden="true" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24">
@@ -64,6 +68,7 @@ function ThemeToggle() {
 }
 
 function DefaultRightContent() {
+    // Default authentication actions.
     return (
         <>
             <Link className="text-[11px] text-slate-300 transition-colors hover:text-white" href="/sign-in">
@@ -87,6 +92,7 @@ export function Navbar({
     maxWidth = "full",
     position = "sticky",
 }) {
+    // Shared responsive navigation bar.
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     return (
@@ -98,6 +104,7 @@ export function Navbar({
                 className,
             )}
         >
+            {/* Desktop navigation header and responsive actions. */}
             <header
                 className={cn(
                     "mx-auto flex h-[60px] w-full items-center justify-between px-5 sm:px-7",
@@ -157,6 +164,7 @@ export function Navbar({
                     </div>
                 </div>
             </header>
+            {/* Mobile navigation menu. */}
             {isMenuOpen && (
                 <div className="border-t border-white/10 bg-[#0a1121] md:hidden">
                     <ul className="flex flex-col gap-2 p-4">

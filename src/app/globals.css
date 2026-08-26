@@ -1,11 +1,14 @@
 @import "tailwindcss";
 @import "@heroui/styles";
+
+/* Shared color tokens consumed by Tailwind theme utilities. */
 :root {
     --background: #080f1d;
     --foreground: #f1f5f9;
 }
 
 @theme inline {
+    /* Map app tokens and loaded fonts into Tailwind utilities. */
     --color-background: var(--background);
     --color-foreground: var(--foreground);
     --font-sans: var(--font-geist-sans);
@@ -13,6 +16,7 @@
 }
 
 body {
+    /* Base document colors and font for pages without local overrides. */
     background: var(--background);
     color: var(--foreground);
     font-family: var(--font-geist-sans), sans-serif;

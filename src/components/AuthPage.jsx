@@ -5,7 +5,9 @@ import { Description, FieldError, Form, Input, Label, TextField } from "@heroui/
 import Link from "next/link";
 
 export default function AuthPage({ mode }) {
+    // Shared sign-in and account-creation page.
     const isSignup = mode === "signup";
+    // Collect and preview the submitted form values until backend auth is connected.
     const onSubmit = event => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
@@ -20,6 +22,7 @@ export default function AuthPage({ mode }) {
 
     return (
         <main className="grid min-h-svh bg-[#080f1d] text-[#edf1f7] lg:grid-cols-[minmax(0,1.35fr)_minmax(360px,0.9fr)]">
+            {/* Brand story panel shown on larger screens. */}
             <section
                 className="relative hidden place-items-center overflow-hidden bg-[radial-gradient(circle_at_50%_48%,#101c31_0,#0a1221_46%,#080f1d_80%)] lg:grid"
                 aria-label="Routely travel platform"
@@ -43,6 +46,7 @@ export default function AuthPage({ mode }) {
                 </div>
             </section>
 
+            {/* Authentication form panel. */}
             <section className="grid min-h-svh place-items-center bg-[#09111f] px-6 py-9 sm:px-12 lg:px-16">
                 <div className="w-full max-w-[300px]">
                     <Link
@@ -65,6 +69,7 @@ export default function AuthPage({ mode }) {
                         </p>
                     </div>
 
+                    {/* Form fields and mode-specific account controls. */}
                     <Form className="grid gap-3.5" render={props => <form {...props} />} onSubmit={onSubmit}>
                         {isSignup && (
                             <TextField name="name" type="text">
