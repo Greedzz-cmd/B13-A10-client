@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 function cn(...classes) {
     // Combine optional Tailwind class groups for configurable navbar regions.
@@ -92,7 +93,12 @@ export function Navbar({
     position = "sticky",
 }) {
     // Shared responsive navigation bar.
+    const pathname = usePathname();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    if (pathname === "/sign-in" || pathname === "/get-started") {
+        return null;
+    }
 
     return (
         <nav
