@@ -1,8 +1,8 @@
 "use client";
 
-import { RouteMap } from "@/components/HeroSection";
 import { Description, FieldError, Form, Input, Label, TextField } from "@heroui/react";
 import Link from "next/link";
+import { RouteMap } from "./HeroSection";
 
 export default function AuthPage({ mode }) {
     // Shared sign-in and account-creation page.

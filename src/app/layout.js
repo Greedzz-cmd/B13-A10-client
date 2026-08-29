@@ -1,4 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
+import Footer from "../components/Footer";
+import { Navbar } from "../components/Navbar";
 import "./globals.css";
 
 // Load the application sans and monospace font variables.
@@ -22,7 +24,11 @@ export default function RootLayout({ children }) {
     // Root document shell for every route.
     return (
         <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
-            <body className="antialiased">{children}</body>
+            <body className="antialiased">
+                <Navbar />
+                {children}
+                <Footer />
+            </body>
         </html>
     );
 }

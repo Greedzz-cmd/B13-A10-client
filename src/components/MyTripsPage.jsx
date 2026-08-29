@@ -95,8 +95,8 @@ export default function MyTripsPage() {
     const [activeTab, setActiveTab] = useState("Bookings");
 
     return (
-        <main className="min-h-[calc(100vh-60px)] bg-[#080f1d] px-5 py-7 text-slate-100 sm:px-8 sm:py-9">
-            <div className="mx-auto max-w-[960px]">
+        <main className="min-h-[calc(100vh-60px)] bg-[#080f1d] text-slate-100">
+            <div className="mx-auto max-w-[960px] px-5 py-7 sm:px-8 sm:py-9">
                 <header className="flex items-start justify-between gap-5">
                     <div className="flex items-center gap-3">
                         <span className="flex h-9 w-9 items-center justify-center rounded-full border border-[#dd7845]/20 bg-[#2a2630] text-[#dd7845]">

@@ -17,10 +17,9 @@ const maxWidthClasses = {
 };
 
 const defaultItems = [
-    { href: "/tickets", label: "All Tickets", isActive: true },
-    { href: "/trips", label: "My Trips" },
-    { href: "/vendors", label: "Vendors" },
-    { href: "/admin", label: "Admin" },
+    { href: "/", label: "Home", isActive: true },
+    { href: "/tickets", label: "All Tickets" },
+    { href: "/dashboard", label: "Dashboard" },
 ];
 
 function RouteMark() {
@@ -104,89 +103,93 @@ export function Navbar({
                 className,
             )}
         >
-            {/* Desktop navigation header and responsive actions. */}
-            <header
-                className={cn(
-                    "mx-auto flex h-[60px] w-full items-center justify-between px-5 sm:px-7",
-                    maxWidth !== "full" && maxWidthClasses[maxWidth],
-                )}
-            >
-                <div className="flex items-center gap-3">{brand}</div>
-                <ul className="hidden items-center gap-4 md:flex">
-                    {items.map(item => (
-                        <li key={item.href}>
-                            <Link
-                                href={item.href}
-                                className={cn(
-                                    "text-sm text-slate-400 transition-colors hover:text-white",
-                                    item.isActive && "text-slate-100",
-                                )}
-                                aria-current={item.isActive ? "page" : undefined}
-                            >
-                                {item.label}
-                            </Link>
-                        </li>
-                    ))}
-                </ul>
-                <div className="flex items-center gap-4">
-                    <div className="hidden items-center gap-4 md:flex">
-                        <ThemeToggle />
-                        {rightContent}
-                    </div>
-                    <div className="flex items-center gap-4 md:hidden">
-                        <ThemeToggle />
-                        <button
-                            className="rounded p-1 text-slate-300 transition-colors hover:bg-white/10"
-                            onClick={() => setIsMenuOpen(!isMenuOpen)}
-                            aria-label="Toggle menu"
-                            aria-expanded={isMenuOpen}
-                            type="button"
-                        >
-                            <span className="sr-only">Menu</span>
-                            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                {isMenuOpen ? (
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M6 18L18 6M6 6l12 12"
-                                    />
-                                ) : (
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth={2}
-                                        d="M4 6h16M4 12h16M4 18h16"
-                                    />
-                                )}
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            </header>
-            {/* Mobile navigation menu. */}
-            {isMenuOpen && (
-                <div className="border-t border-white/10 bg-[#0a1121] md:hidden">
-                    <ul className="flex flex-col gap-2 p-4">
+            <section className="container mx-auto">
+                {/* Desktop navigation header and responsive actions. */}
+                <header
+                    className={cn(
+                        "mx-auto flex h-[60px] w-full items-center justify-between px-5 sm:px-7",
+                        maxWidth !== "full" && maxWidthClasses[maxWidth],
+                    )}
+                >
+                    <div className="flex items-center gap-3">{brand}</div>
+                    <ul className="hidden items-center gap-4 md:flex">
                         {items.map(item => (
                             <li key={item.href}>
                                 <Link
                                     href={item.href}
                                     className={cn(
-                                        "block py-2 text-sm text-slate-400 transition-colors hover:text-white",
-                                        item.isActive && "font-medium text-slate-100",
+                                        "text-sm text-slate-400 transition-colors hover:text-white",
+                                        item.isActive && "text-slate-100",
                                     )}
+                                    aria-current={item.isActive ? "page" : undefined}
                                 >
                                     {item.label}
                                 </Link>
                             </li>
                         ))}
-                        {rightContent && (
-                            <li className="mt-4 flex flex-col gap-2 border-t border-white/10 pt-4">{rightContent}</li>
-                        )}
                     </ul>
-                </div>
-            )}
+                    <div className="flex items-center gap-4">
+                        <div className="hidden items-center gap-4 md:flex">
+                            <ThemeToggle />
+                            {rightContent}
+                        </div>
+                        <div className="flex items-center gap-4 md:hidden">
+                            <ThemeToggle />
+                            <button
+                                className="rounded p-1 text-slate-300 transition-colors hover:bg-white/10"
+                                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                                aria-label="Toggle menu"
+                                aria-expanded={isMenuOpen}
+                                type="button"
+                            >
+                                <span className="sr-only">Menu</span>
+                                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    {isMenuOpen ? (
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M6 18L18 6M6 6l12 12"
+                                        />
+                                    ) : (
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M4 6h16M4 12h16M4 18h16"
+                                        />
+                                    )}
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </header>
+                {/* Mobile navigation menu. */}
+                {isMenuOpen && (
+                    <div className="border-t border-white/10 bg-[#0a1121] md:hidden">
+                        <ul className="flex flex-col gap-2 p-4">
+                            {items.map(item => (
+                                <li key={item.href}>
+                                    <Link
+                                        href={item.href}
+                                        className={cn(
+                                            "block py-2 text-sm text-slate-400 transition-colors hover:text-white",
+                                            item.isActive && "font-medium text-slate-100",
+                                        )}
+                                    >
+                                        {item.label}
+                                    </Link>
+                                </li>
+                            ))}
+                            {rightContent && (
+                                <li className="mt-4 flex flex-col gap-2 border-t border-white/10 pt-4">
+                                    {rightContent}
+                                </li>
+                            )}
+                        </ul>
+                    </div>
+                )}
+            </section>
         </nav>
     );
 }

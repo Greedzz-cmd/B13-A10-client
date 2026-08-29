@@ -4,7 +4,6 @@ import Link from "next/link";
 const quickLinks = [
     ["Home", "/"],
     ["All Tickets", "/tickets"],
-    ["My Trips", "/trips"],
     ["Vendor Portal", "/vendors"],
     ["Admin", "/admin"],
 ];
@@ -114,10 +113,14 @@ export default function Footer() {
                     <div>
                         <h2 className="text-[8px] uppercase tracking-[0.22em] text-slate-500">My account</h2>
                         <div className="mt-3 flex flex-wrap gap-1">
-                            {["Sign in", "Reservation", "Trips", "Help"].map(label => (
+                            {[
+                                { label: "Sign in", href: "/sign-in" },
+                                { label: "Reservation", href: "/tickets" },
+                                { label: "Help", href: "/" },
+                            ].map(({ label, href }) => (
                                 <Link
                                     key={label}
-                                    href={label === "Sign in" ? "/sign-in" : "/trips"}
+                                    href={href}
                                     className="rounded-[2px] border border-white/[0.08] px-2 py-1 text-[8px] text-slate-400 transition-colors hover:border-[#dd7845]/50 hover:text-[#dd7845]"
                                 >
                                     {label}
