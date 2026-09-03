@@ -1,8 +1,18 @@
 "use client";
 
-import { Eye, EyeOff, Luggage, Store, Check } from "lucide-react";
+import {
+    Eye,
+    EyeOff,
+    Luggage,
+    Store,
+    Check,
+    AlertCircle,
+    Camera,
+    X,
+    User,
+} from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { RouteMap } from "./HeroSection";
 import { authClient } from "../lib/auth-client";
@@ -13,28 +23,103 @@ export default function AuthPage({ mode }) {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [userType, setUserType] = useState("traveller");
+    const [passwordError, setPasswordError] = useState("");
+    const [formError, setFormError] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [profilePicture, setProfilePicture] = useState(null);
+    const [profilePicturePreview, setProfilePicturePreview] =
+        useState(null);
+    const fileInputRef = useRef(null);
+
+    const MAX_AVATAR_SIZE_MB = 5;
+
+    const handleProfilePictureChange = (event) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        if (!file.type.startsWith("image/")) {
+            setFormError("Profile picture must be an image file.");
+            event.target.value = "";
+            return;
+        }
+
+        if (file.size > MAX_AVATAR_SIZE_MB * 1024 * 1024) {
+            setFormError(
+                `Profile picture must be smaller than ${MAX_AVATAR_SIZE_MB}MB.`
+            );
+            event.target.value = "";
+            return;
+        }
+
+        setFormError("");
+        setProfilePicture(file);
+        setProfilePicturePreview(URL.createObjectURL(file));
+    };
+
+    const handleRemoveProfilePicture = () => {
+        setProfilePicture(null);
+        setProfilePicturePreview(null);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
+    };
 
     const onSubmit = async (event) => {
         event.preventDefault();
 
         const formData = new FormData(event.currentTarget);
 
-        const result = isSignup
-            ? await authClient.signUp.email({
-                  name: formData.get("name"),
-                  email: formData.get("email"),
-                  password: formData.get("password"),
-                  userType: formData.get("userType"),
-              })
-            : await authClient.signIn.email({
-                  email: formData.get("email"),
-                  password: formData.get("password"),
-              });
+        // Reset previous errors
+        setPasswordError("");
+        setFormError("");
 
-        console.log("Auth data:", result.data);
+        if (isSignup) {
+            const password = formData.get("password");
+            const confirmPassword = formData.get("confirmPassword");
 
-        if (result.error) {
-            console.error("Auth error:", result.error);
+            if (password !== confirmPassword) {
+                setPasswordError("Passwords do not match");
+                return;
+            }
+
+            if (password.length < 8) {
+                setPasswordError(
+                    "Password must be at least 8 characters"
+                );
+                return;
+            }
+        }
+
+        setIsSubmitting(true);
+
+        try {
+            const result = isSignup
+                ? await authClient.signUp.email({
+                      name: formData.get("name"),
+                      email: formData.get("email"),
+                      password: formData.get("password"),
+                      userType: formData.get("userType"),
+                      image: profilePicture || undefined,
+                  })
+                : await authClient.signIn.email({
+                      email: formData.get("email"),
+                      password: formData.get("password"),
+                  });
+
+            console.log("Auth data:", result.data);
+
+            if (result.error) {
+                console.error("Auth error:", result.error);
+                setFormError(
+                    result.error.message ||
+                        "Something went wrong. Please try again."
+                );
+            }
+        } catch (error) {
+            console.error("Auth error:", error);
+            setFormError("Something went wrong. Please try again.");
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -186,8 +271,84 @@ export default function AuthPage({ mode }) {
                             <span className="h-px flex-1 bg-white/[0.07]" />
                         </div>
 
+                        {/* Form-level error */}
+                        {formError && (
+                            <div className="mb-4 flex items-start gap-2 rounded-xl border border-red-500/20 bg-red-500/10 px-3.5 py-3 text-[11px] text-red-300">
+                                <AlertCircle className="mt-0.5 h-3.5 w-3.5 flex-shrink-0" />
+                                <span>{formError}</span>
+                            </div>
+                        )}
+
                         {/* Form */}
                         <form className="space-y-4" onSubmit={onSubmit}>
+                            {/* Profile Picture */}
+                            {isSignup && (
+                                <div className="flex items-center gap-4 pb-1">
+                                    <div className="relative">
+                                        <div className="grid h-[72px] w-[72px] place-items-center overflow-hidden rounded-full border border-[#2b3a50] bg-[#172d41]/90">
+                                            {profilePicturePreview ? (
+                                                // eslint-disable-next-line @next/next/no-img-element
+                                                <img
+                                                    src={
+                                                        profilePicturePreview
+                                                    }
+                                                    alt="Profile preview"
+                                                    className="h-full w-full object-cover"
+                                                />
+                                            ) : (
+                                                <User className="h-7 w-7 text-slate-600" />
+                                            )}
+                                        </div>
+
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                fileInputRef.current?.click()
+                                            }
+                                            aria-label="Upload profile picture"
+                                            className="absolute -bottom-1 -right-1 grid h-7 w-7 place-items-center rounded-full border-2 border-[#10283b] bg-[#dd8747] text-white shadow-[0_4px_12px_rgba(0,0,0,0.3)] transition-colors hover:bg-[#ee9b61]"
+                                        >
+                                            <Camera className="h-3.5 w-3.5" />
+                                        </button>
+
+                                        <input
+                                            ref={fileInputRef}
+                                            type="file"
+                                            name="profilePicture"
+                                            accept="image/*"
+                                            onChange={
+                                                handleProfilePictureChange
+                                            }
+                                            className="hidden"
+                                        />
+                                    </div>
+
+                                    <div className="flex flex-col gap-1">
+                                        <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-400">
+                                            Profile picture
+                                        </span>
+
+                                        <span className="text-[9px] text-slate-600">
+                                            Optional · JPG or PNG, up to{" "}
+                                            {MAX_AVATAR_SIZE_MB}MB
+                                        </span>
+
+                                        {profilePicturePreview && (
+                                            <button
+                                                type="button"
+                                                onClick={
+                                                    handleRemoveProfilePicture
+                                                }
+                                                className="mt-1 inline-flex w-fit items-center gap-1 text-[9px] font-medium text-red-400 transition-colors hover:text-red-300"
+                                            >
+                                                <X className="h-3 w-3" />
+                                                Remove photo
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+
                             {/* Full Name */}
                             {isSignup && (
                                 <div>
@@ -355,7 +516,11 @@ export default function AuthPage({ mode }) {
 
                                 <div className="relative">
                                     <input
-                                        className="h-[47px] w-full rounded-xl border border-[#2b3a50] bg-[#172d41]/90 px-3.5 pr-11 text-[12px] text-white placeholder:text-slate-600 outline-none transition-all duration-200 focus:border-[#dd8747]/70 focus:bg-[#1a3145] focus:ring-2 focus:ring-[#dd8747]/10"
+                                        className={`h-[47px] w-full rounded-xl border bg-[#172d41]/90 px-3.5 pr-11 text-[12px] text-white placeholder:text-slate-600 outline-none transition-all duration-200 focus:bg-[#1a3145] focus:ring-2 ${
+                                            passwordError
+                                                ? "border-red-500/60 focus:border-red-500/70 focus:ring-red-500/10"
+                                                : "border-[#2b3a50] focus:border-[#dd8747]/70 focus:ring-[#dd8747]/10"
+                                        }`}
                                         type={
                                             showPassword
                                                 ? "text"
@@ -367,6 +532,10 @@ export default function AuthPage({ mode }) {
                                             isSignup
                                                 ? "new-password"
                                                 : "current-password"
+                                        }
+                                        onChange={() =>
+                                            passwordError &&
+                                            setPasswordError("")
                                         }
                                         required
                                     />
@@ -403,7 +572,11 @@ export default function AuthPage({ mode }) {
 
                                     <div className="relative">
                                         <input
-                                            className="h-[47px] w-full rounded-xl border border-[#2b3a50] bg-[#172d41]/90 px-3.5 pr-11 text-[12px] text-white placeholder:text-slate-600 outline-none transition-all duration-200 focus:border-[#dd8747]/70 focus:bg-[#1a3145] focus:ring-2 focus:ring-[#dd8747]/10"
+                                            className={`h-[47px] w-full rounded-xl border bg-[#172d41]/90 px-3.5 pr-11 text-[12px] text-white placeholder:text-slate-600 outline-none transition-all duration-200 focus:bg-[#1a3145] focus:ring-2 ${
+                                                passwordError
+                                                    ? "border-red-500/60 focus:border-red-500/70 focus:ring-red-500/10"
+                                                    : "border-[#2b3a50] focus:border-[#dd8747]/70 focus:ring-[#dd8747]/10"
+                                            }`}
                                             type={
                                                 showConfirmPassword
                                                     ? "text"
@@ -412,6 +585,10 @@ export default function AuthPage({ mode }) {
                                             name="confirmPassword"
                                             placeholder="Enter your password again"
                                             autoComplete="new-password"
+                                            onChange={() =>
+                                                passwordError &&
+                                                setPasswordError("")
+                                            }
                                             required
                                         />
 
@@ -436,15 +613,27 @@ export default function AuthPage({ mode }) {
                                             )}
                                         </button>
                                     </div>
+
+                                    {passwordError && (
+                                        <p className="mt-2 flex items-center gap-1.5 text-[10px] text-red-400">
+                                            <AlertCircle className="h-3 w-3 flex-shrink-0" />
+                                            {passwordError}
+                                        </p>
+                                    )}
                                 </div>
                             )}
 
                             {/* Submit */}
                             <button
                                 type="submit"
-                                className="mt-2 h-[49px] w-full rounded-xl bg-[#dd8747] px-4 text-[12px] font-semibold text-white shadow-[0_8px_25px_rgba(221,135,71,0.18)] transition-all duration-200 hover:bg-[#ee9b61] hover:shadow-[0_10px_30px_rgba(221,135,71,0.25)] active:scale-[0.99]"
+                                disabled={isSubmitting}
+                                className="mt-2 h-[49px] w-full rounded-xl bg-[#dd8747] px-4 text-[12px] font-semibold text-white shadow-[0_8px_25px_rgba(221,135,71,0.18)] transition-all duration-200 hover:bg-[#ee9b61] hover:shadow-[0_10px_30px_rgba(221,135,71,0.25)] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
                             >
-                                {isSignup ? "Create account" : "Sign in"}
+                                {isSubmitting
+                                    ? "Please wait..."
+                                    : isSignup
+                                    ? "Create account"
+                                    : "Sign in"}
                             </button>
                         </form>
 
