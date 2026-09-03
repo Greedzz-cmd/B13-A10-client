@@ -1,9 +1,16 @@
 import { Plane } from "lucide-react";
+import Link from "next/link";
+import TicketCard from "./TicketCard";
 
-export default function FeaturedTicketsSection() {
+
+export default async function FeaturedTicketsSection() {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tickets?isAdvertised=true`);
+    const featuredTickets = await res.json();
+
+
     return (
         <section className="border-b border-white/5 bg-[#071322] px-5 py-8 sm:px-8 sm:py-12">
-            <div className="mx-auto max-w-[1200px]">
+            <div className="mx-auto max-w-[1260px]">
                 <div className="flex items-center justify-between gap-6">
                     <div className="flex flex-col gap-5">
                         <span className="inline-flex w-fit items-center gap-2 rounded-full border border-[#dd7845]/60 bg-[#121d2c] px-3 py-1.5 text-[9px] uppercase tracking-[0.18em] text-[#dd7845] shadow-[0_0_0_1px_rgba(221,120,69,0.18)]">
@@ -20,13 +27,18 @@ export default function FeaturedTicketsSection() {
                             </p>
                         </div>
                     </div>
-
-                    <button
-                        type="button"
+                    <Link
+                        href="/tickets"
                         className="hidden items-center gap-2 text-[15px] text-slate-300 transition-colors hover:text-white sm:inline-flex"
                     >
                         View all <span aria-hidden="true">→</span>
-                    </button>
+                    </Link>
+                </div>
+
+                <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    {featuredTickets.map(ticket => (
+                        <TicketCard key={ticket._id} ticket={ticket} />
+                    ))}
                 </div>
             </div>
         </section>
