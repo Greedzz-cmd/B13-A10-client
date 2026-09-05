@@ -1,9 +1,9 @@
-import FeaturedTicketsSection from "../../components/FeaturedTicketsSection";
-import HeroSection from "../../components/HeroSection";
-import JourneyCtaSection from "../../components/JourneyCtaSection";
-import PopularRoutesSection from "../../components/PopularRoutesSection";
-import TransportCategories from "../../components/TransportCategories";
-import WhyChooseSection from "../../components/WhyChooseSection";
+import FeaturedTicketsSection from "@/components/FeaturedTicketsSection";
+import HeroSection from "@/components/HeroSection";
+import JourneyCtaSection from "@/components/JourneyCtaSection";
+import PopularRoutesSection from "@/components/PopularRoutesSection";
+import TransportCategories from "@/components/TransportCategories";
+import WhyChooseSection from "@/components/WhyChooseSection";
 
 export default function Home() {
     return (

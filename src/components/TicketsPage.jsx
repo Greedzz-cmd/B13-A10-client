@@ -18,17 +18,17 @@ const resolveInitialTransport = (paramTransport) => {
     return matched || "All";
 };
 
-export default function TicketsPage({ tickets, initialTransport = "" }) {
+export default function TicketsPage({ tickets = [], initialTransport = "", initialQuery = "" }) {
     // Ticket browsing page with independent mode, fare filters, search, and sorting.
     const [transport, setTransport] = useState(() => resolveInitialTransport(initialTransport));
     const [fare, setFare] = useState("All");
-    const [searchQuery, setSearchQuery] = useState("");
+    const [searchQuery, setSearchQuery] = useState(initialQuery);
     const [sortBy, setSortBy] = useState("price");
     const [viewMode, setViewMode] = useState("grid");
 
     // Filter and sort the ticket cards according to user selections.
     const filteredTickets = useMemo(() => {
-        return tickets.filter(ticket => {
+        return (tickets || []).filter(ticket => {
             // Mode filter
             if (transport !== "All" && ticket.transportType !== transport) {
                 return false;
@@ -64,7 +64,7 @@ export default function TicketsPage({ tickets, initialTransport = "" }) {
             }
             return 0;
         });
-    }, [transport, fare, searchQuery, sortBy]);
+    }, [tickets, transport, fare, searchQuery, sortBy]);
 
     return (
         <main className="min-h-svh bg-[#080f1d] text-slate-100">
