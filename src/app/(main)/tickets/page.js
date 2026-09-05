@@ -1,4 +1,4 @@
-import TicketsPage from "../../components/TicketsPage";
+import TicketsPage from "../../../components/TicketsPage";
 
 
 export const metadata = {

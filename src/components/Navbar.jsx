@@ -93,12 +93,8 @@ export function Navbar({
     position = "sticky",
 }) {
     // Shared responsive navigation bar.
-    const pathname = usePathname();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-    if (pathname === "/sign-in" || pathname === "/get-started") {
-        return null;
-    }
 
     return (
         <nav

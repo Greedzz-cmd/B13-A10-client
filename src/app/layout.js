@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 
 export const metadata = {
     // Default metadata shared by application routes.
-    title: "ticket bari | Your route. Your journey.",
+    title: "Routely | Your route. Your journey.",
     description: "Book buses, trains, launches and flights across Bangladesh.",
 };
 
@@ -25,9 +25,7 @@ export default function RootLayout({ children }) {
     return (
         <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
             <body className="antialiased">
-                <Navbar />
                 {children}
-                <Footer />
             </body>
         </html>
     );
