@@ -1,4 +1,4 @@
-import TicketsPage from "../../../components/TicketsPage";
+import TicketsPage from "@/components/TicketsPage";
 
 
 export const metadata = {
@@ -6,7 +6,7 @@ export const metadata = {
 };
 
 // Server-side ticket data loader with fallback to static dataset
-async function getTickets() {
+export async function getTickets() {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     if (apiUrl) {
         try {

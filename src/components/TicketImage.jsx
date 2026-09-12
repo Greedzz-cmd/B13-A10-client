@@ -7,6 +7,8 @@ const DEFAULT_IMAGE =
 const FALLBACK_IMAGE =
     "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=900&auto=format&fit=crop";
 
+import Image from "next/image";
+
 export default function TicketImage({
     src,
     alt,
@@ -15,12 +17,13 @@ export default function TicketImage({
     const [imgSrc, setImgSrc] = useState(src || DEFAULT_IMAGE);
 
     return (
-        <img
+        <Image
             alt={alt}
             className={className}
-            loading="lazy"
             onError={() => setImgSrc(FALLBACK_IMAGE)}
             src={imgSrc}
+            fill
+            unoptimized
         />
     );
 }

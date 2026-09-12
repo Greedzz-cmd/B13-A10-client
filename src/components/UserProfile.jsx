@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import {
     Ticket,
@@ -9,9 +9,28 @@ import {
     CreditCard,
 } from "lucide-react";
 
+
 /**
  * Default profile configurations, fields, and metrics by role
  */
+
+const fetchTickets = async () => {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tickets`, {
+            cache: "no-store",
+        });
+        if (response.ok) {
+            const data = await response.json();
+            if (Array.isArray(data) && data.length > 0) {
+                return data;
+            }
+        }
+    } catch (err) {
+        console.error("Failed to fetch tickets:", err);
+    }
+    return [];
+};
+
 export const DEFAULT_PROFILES = {
     user: {
         title: "User Profile",
@@ -99,7 +118,7 @@ export const DEFAULT_PROFILES = {
             name: "Nusrat Jahan",
             email: "Nusrat@Example.Com",
             role: "Administrator",
-            platform: "TicketBari",
+            platform: "Routely",
             approvedTickets: "11",
             pendingTickets: "1",
             avatar: null,
@@ -114,8 +133,10 @@ export const DEFAULT_PROFILES = {
         ],
         stats: [
             {
+                // Static fallback — the live count is merged in at render time
+                // inside UserProfile, once `tickets` has loaded from the API.
                 label: "TOTAL TICKETS",
-                value: "12",
+                value: "0",
                 valueColor: "text-[#dd7845]",
             },
             {
@@ -176,6 +197,24 @@ export function UserProfile({
     extraActions,
     className = "",
 }) {
+    const [tickets, setTickets] = useState([]);
+
+    useEffect(() => {
+        let cancelled = false;
+        fetchTickets().then((data) => {
+            if (!cancelled) {
+                setTickets(data);
+            }
+        });
+        return () => {
+            cancelled = true;
+        };
+    }, []);
+
+    const advertised = tickets.filter(t => t.isAdvertised == true);
+    const pending = tickets.filter(t => t.verificationStatus == "pending");
+    const approved = tickets.filter(t => t.verificationStatus == "approved");
+
     const config = DEFAULT_PROFILES[role] || DEFAULT_PROFILES.user;
 
     const resolvedTitle = title !== undefined ? title : config.title;
@@ -191,7 +230,23 @@ export function UserProfile({
     };
 
     const resolvedFields = customFields || config.fields;
-    const resolvedStats = customStats || config.stats;
+
+    // Merge the live ticket count into the static stats config, only for
+    // roles/stats that actually track "TOTAL TICKETS".
+    const baseStats = customStats || config.stats;
+    const resolvedStats = baseStats.map((stat) => {
+        if (stat.label === "TOTAL TICKETS") {
+            return { ...stat, value: tickets.length }
+        }
+        if (stat.label === "ADVERTISED") {
+            return { ...stat, value: advertised.length }
+        }
+        if (stat.label === "PENDING REVIEW") {
+            return { ...stat, value: pending.length }
+        }
+        return stat
+    });
+
 
     const statsGrid = resolvedStats && resolvedStats.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

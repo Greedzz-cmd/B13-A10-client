@@ -7,7 +7,6 @@ export default async function FeaturedTicketsSection() {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tickets?isAdvertised=true`);
     const featuredTickets = await res.json();
 
-
     return (
         <section className="border-b border-white/5 bg-[#071322] px-5 py-8 sm:px-8 sm:py-12">
             <div className="mx-auto max-w-[1260px]">
