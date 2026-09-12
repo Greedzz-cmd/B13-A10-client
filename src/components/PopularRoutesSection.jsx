@@ -12,7 +12,7 @@ const popularRoutes = [
         fromPrice: 480,
         dailyCount: "120+",
         transport: ["Flight", "Train", "Bus", "Launch"],
-        href: "/tickets?transport=flight",
+        href: "/tickets?from=Dhaka&to=Chittagong",
     },
     {
         fromCode: "DAC",
@@ -23,7 +23,7 @@ const popularRoutes = [
         fromPrice: 620,
         dailyCount: "60+",
         transport: ["Flight", "Train", "Bus"],
-        href: "/tickets?transport=flight",
+        href: "/tickets?from=Dhaka&to=Sylhet",
     },
     {
         fromCode: "DAC",
@@ -34,7 +34,7 @@ const popularRoutes = [
         fromPrice: 1100,
         dailyCount: "40+",
         transport: ["Flight", "Bus"],
-        href: "/tickets?transport=flight",
+        href: "/tickets?from=Dhaka&to=Cox's Bazar",
     },
     {
         fromCode: "DAC",
@@ -45,7 +45,7 @@ const popularRoutes = [
         fromPrice: 950,
         dailyCount: "30+",
         transport: ["Bus", "Launch"],
-        href: "/tickets?transport=bus",
+        href: "/tickets?from=Dhaka&to=Khulna",
     },
     {
         fromCode: "DAC",
@@ -56,7 +56,7 @@ const popularRoutes = [
         fromPrice: 480,
         dailyCount: "50+",
         transport: ["Train", "Bus"],
-        href: "/tickets?transport=train",
+        href: "/tickets?from=Dhaka&to=Rajshahi",
     },
     {
         fromCode: "DAC",
@@ -67,7 +67,7 @@ const popularRoutes = [
         fromPrice: 350,
         dailyCount: "20+",
         transport: ["Launch", "Bus"],
-        href: "/tickets?transport=launch",
+        href: "/tickets?from=Dhaka&to=Barishal",
     },
 ];
 

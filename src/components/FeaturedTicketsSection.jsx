@@ -4,8 +4,24 @@ import TicketCard from "./TicketCard";
 
 
 export default async function FeaturedTicketsSection() {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tickets?isAdvertised=true`);
-    const featuredTickets = await res.json();
+    let featuredTickets = [];
+
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    if (apiUrl) {
+        try {
+            const res = await fetch(`${apiUrl}/tickets?isAdvertised=true`, { cache: "no-store" });
+            if (res.ok) {
+                const data = await res.json();
+                if (Array.isArray(data)) {
+                    featuredTickets = data;
+                }
+            }
+        } catch {
+            // Silently fall back to empty array; section will render empty state
+        }
+    }
+
+    if (featuredTickets.length === 0) return null;
 
     return (
         <section className="border-b border-white/5 bg-[#071322] px-5 py-8 sm:px-8 sm:py-12">

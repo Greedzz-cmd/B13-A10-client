@@ -5,7 +5,7 @@ export const metadata = {
     title: "All tickets | Routely",
 };
 
-// Server-side ticket data loader with fallback to static dataset
+// Server-side ticket data loader with fallback to empty array
 export async function getTickets() {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     if (apiUrl) {
@@ -18,21 +18,28 @@ export async function getTickets() {
                 }
             }
         } catch (error) {
-            console.error("Failed to fetch tickets from API, using fallback data:", error);
+            console.error("Failed to fetch tickets from API:", error);
         }
     }
+    return [];
 }
 
 export default async function TicketsRoute({ searchParams }) {
     const params = await searchParams;
-    const initialTransport = params?.transport;
+    const initialTransport = params?.transport || "";
+    const initialFrom = params?.from || "";
+    const initialTo = params?.to || "";
+    const initialQuery = params?.q || "";
     const tickets = await getTickets();
 
     return (
         <TicketsPage
             tickets={tickets}
             initialTransport={initialTransport}
-            key={initialTransport || "all"}
+            initialFrom={initialFrom}
+            initialTo={initialTo}
+            initialQuery={initialQuery}
+            key={`${initialTransport}-${initialFrom}-${initialTo}-${initialQuery}`}
         />
     );
 }
