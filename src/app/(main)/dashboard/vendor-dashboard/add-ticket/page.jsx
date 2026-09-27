@@ -220,6 +220,7 @@ export default function AddTicketPage() {
                         </fieldset>
 
                         <div className="mt-6 grid grid-cols-1 gap-4 border-t border-default-200 pt-5 md:grid-cols-2 text-default-500">
+                        <div className="mt-6 grid grid-cols-1 gap-4 border-t border-default-200 pt-5 md:grid-cols-2 text-default-500">
                             <Field label="Vendor name (readonly)" name="title" value={data?.data?.user?.name} onChange={() => {}} readOnly />
                             <Field label="Vendor email (readonly)" name="title" value={data?.data?.user?.email} onChange={() => {}} type="email" readOnly />
                         </div>
