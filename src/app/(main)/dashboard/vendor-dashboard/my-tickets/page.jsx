@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Plus } from "lucide-react";
 import { Sidebar } from "@/components/Sidebar";
-import VendorTicketCard from "@/components/VendorTicketCard";
+import VendorTicketGrid from "@/components/VendorTicketGrid";
 
 export const metadata = {
     title: "My Added Tickets | Routely",
@@ -99,16 +99,14 @@ export default async function MyTicketsPage() {
                         <div>
                             <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-blue-400">Vendor workspace</p>
                             <h1 className="mt-2 font-serif text-3xl font-medium tracking-[-0.04em] text-slate-100">My Added Tickets</h1>
-                            <p className="mt-1 text-xs text-slate-400">{tickets.length} tickets · updates go live after admin approval</p>
+                            <p className="mt-1 text-xs text-slate-400">Updates go live after admin approval</p>
                         </div>
                         <Link href="/dashboard/vendor-dashboard/add-ticket" className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg bg-blue-600 px-3 text-xs font-semibold text-white transition hover:bg-blue-500">
                             <Plus className="h-3.5 w-3.5" /> Add ticket
                         </Link>
                     </header>
 
-                    <section aria-label="Added tickets" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                        {tickets.map(ticket => <VendorTicketCard key={ticket._id || ticket.id} ticket={ticket} />)}
-                    </section>
+                    <VendorTicketGrid initialTickets={tickets} />
                 </div>
             </main>
             <button type="button" className="fixed bottom-5 right-5 z-30 flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-[#131b2e] text-xs font-semibold text-slate-300 shadow-lg transition hover:bg-white/15 hover:text-white" aria-label="Help and Support" title="Help & Support">

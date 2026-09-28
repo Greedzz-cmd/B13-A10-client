@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Checkbox, Input, ListBox, ListBoxItem, Select } from "@heroui/react";
+import { Button, Input } from "@heroui/react";
 import { Sidebar } from "@/components/Sidebar";
 import { useSession } from "@/lib/auth-client";
 
@@ -164,40 +164,18 @@ export default function AddTicketPage() {
                         </div>
 
                         <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
-                            <Select
-                                aria-label="Transport type"
-                                label="Transport type"
-                                selectedKey={form.transportType}
-                                onSelectionChange={key => updateSelect("transportType", key?.toString() ?? null)}
-                                variant="bordered"
-                                radius="lg"
-                                className="w-full text-black"
-                                classNames={{ trigger: "border-default-200 bg-content1", label: "text-default-500" }}
-                            >
-                                <Select.Trigger><Select.Value /></Select.Trigger>
-                                <Select.Popover>
-                                    <ListBox>
-                                        {transportOptions.map(option => <ListBoxItem key={option} id={option}>{option}</ListBoxItem>)}
-                                    </ListBox>
-                                </Select.Popover>
-                            </Select>
-                            <Select
-                                aria-label="Class"
-                                label="Class"
-                                selectedKey={form.fareClass}
-                                onSelectionChange={key => updateSelect("fareClass", key?.toString() ?? null)}
-                                variant="bordered"
-                                radius="lg"
-                                className="w-full text-black"
-                                classNames={{ trigger: "border-default-200 bg-content1", label: "text-default-500" }}
-                            >
-                                <Select.Trigger><Select.Value /></Select.Trigger>
-                                <Select.Popover>
-                                    <ListBox>
-                                        {classOptions.map(option => <ListBoxItem key={option} id={option}>{option}</ListBoxItem>)}
-                                    </ListBox>
-                                </Select.Popover>
-                            </Select>
+                            <label className="grid gap-2 font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-default-500">
+                                Transport type
+                                <select name="transportType" value={form.transportType} onChange={event => updateSelect("transportType", event.target.value)} className="h-11 w-full rounded-lg border border-default-200 bg-content1 px-3 text-sm font-sans normal-case tracking-normal text-foreground">
+                                    {transportOptions.map(option => <option key={option} value={option}>{option}</option>)}
+                                </select>
+                            </label>
+                            <label className="grid gap-2 font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-default-500">
+                                Class
+                                <select name="fareClass" value={form.fareClass} onChange={event => updateSelect("fareClass", event.target.value)} className="h-11 w-full rounded-lg border border-default-200 bg-content1 px-3 text-sm font-sans normal-case tracking-normal text-foreground">
+                                    {classOptions.map(option => <option key={option} value={option}>{option}</option>)}
+                                </select>
+                            </label>
                         </div>
 
                         <fieldset className="mt-6">
@@ -206,27 +184,25 @@ export default function AddTicketPage() {
                             </legend>
                             <div className="flex flex-wrap gap-2">
                                 {perkOptions.map(perk => (
-                                    <Checkbox
+                                    <label
                                         key={perk}
-                                        isSelected={form.perks.includes(perk)}
-                                        onChange={() => togglePerk(perk)}
-                                        className="rounded-full bg-content1 px-3 py-1.5 text-xs text-default-500 transition data-[selected=true]:bg-primary/15 data-[selected=true]:text-primary"
+                                        className={`inline-flex cursor-pointer items-center gap-2 rounded-full border px-3 py-1.5 font-sans text-xs normal-case tracking-normal transition ${form.perks.includes(perk) ? "border-primary bg-primary/15 text-primary" : "border-default-200 bg-content1 text-default-500"}`}
                                     >
-                                        <Checkbox.Control><Checkbox.Indicator /></Checkbox.Control>
-                                        <Checkbox.Content>{perk}</Checkbox.Content>
-                                    </Checkbox>
+                                        <input type="checkbox" checked={form.perks.includes(perk)} onChange={() => togglePerk(perk)} className="h-3.5 w-3.5 accent-[#dd7845]" />
+                                        {perk}
+                                    </label>
                                 ))}
                             </div>
                         </fieldset>
 
                         <div className="mt-6 grid grid-cols-1 gap-4 border-t border-default-200 pt-5 md:grid-cols-2 text-default-500">
-                            <Field label="Vendor name (readonly)" name="title" value={data?.data?.user?.name} onChange={() => {}} readOnly />
-                            <Field label="Vendor email (readonly)" name="title" value={data?.data?.user?.email} onChange={() => {}} type="email" readOnly />
+                            <Field label="Vendor name (readonly)" name="vendorName" value={data?.data?.user?.name} onChange={() => {}} readOnly />
+                            <Field label="Vendor email (readonly)" name="vendorEmail" value={data?.data?.user?.email} onChange={() => {}} type="email" readOnly />
                         </div>
 
                         {status.message && <output className={`mt-5 block rounded-lg border px-3 py-2.5 text-sm ${status.type === "success" ? "border-success/20 bg-success/10 text-success" : "border-danger/20 bg-danger/10 text-danger"}`}>{status.message}</output>}
 
-                        <Button type="submit" isDisabled={isSubmitting} color="primary" variant="shadow" radius="lg" size="lg" fullWidth className="mt-6 font-bold">
+                        <Button type="submit" isDisabled={isSubmitting} fullWidth className="mt-6 bg-[#dd7845] font-bold text-white shadow-lg shadow-[#dd7845]/25 hover:bg-[#ee8954]">
                             {isSubmitting ? "Submitting..." : "Add Ticket"}
                         </Button>
                     </form>
