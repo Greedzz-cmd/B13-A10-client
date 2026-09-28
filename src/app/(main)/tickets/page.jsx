@@ -10,7 +10,7 @@ export async function getTickets() {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     if (apiUrl) {
         try {
-            const response = await fetch(`${apiUrl}/tickets`, { cache: "no-store" });
+            const response = await fetch(`${apiUrl}/ticekts/approved`, { cache: "no-store" });
             if (response.ok) {
                 const data = await response.json();
                 if (Array.isArray(data) && data.length > 0) {

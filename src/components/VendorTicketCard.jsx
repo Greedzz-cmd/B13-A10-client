@@ -1,4 +1,5 @@
-import Link from "next/link";
+"use client";
+
 import { BusFront, CalendarDays, Plane, Ship, TrainFront, Users, X, Pencil } from "lucide-react";
 import TicketImage from "./TicketImage";
 
@@ -33,7 +34,7 @@ function formatTime(dateTime) {
     return date.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false });
 }
 
-export default function VendorTicketCard({ ticket }) {
+export default function VendorTicketCard({ ticket, onDelete, onEdit, isDeleting = false, deleteError = "" }) {
     const TransportIcon = transportIcons[ticket.transportType] || BusFront;
     const status = (ticket.verificationStatus || "pending").toLowerCase();
     const totalSeats = Number(ticket.totalSeats || ticket.quantity || 0);
@@ -86,13 +87,28 @@ export default function VendorTicketCard({ ticket }) {
                 </div>
 
                 <div className="mt-2 flex gap-1.5 border-t border-white/5 pt-2">
-                    <Link href="/dashboard/vendor-dashboard/add-ticket" className="inline-flex h-6 flex-1 items-center justify-center gap-1 rounded-md border border-[#26354c] text-[9px] text-slate-300 transition hover:border-blue-500/50 hover:text-blue-300">
+                    <button
+                        type="button"
+                        onClick={event => {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            onEdit?.(ticket);
+                        }}
+                        className="inline-flex h-6 flex-1 items-center justify-center gap-1 rounded-md border border-[#26354c] text-[9px] text-slate-300 transition hover:border-blue-500/50 hover:text-blue-300"
+                    >
                         <Pencil className="h-2.5 w-2.5" /> Update
-                    </Link>
-                    <button type="button" className="inline-flex h-6 flex-1 items-center justify-center gap-1 rounded-md border border-red-500/20 text-[9px] text-red-400 transition hover:bg-red-500/10">
-                        <X className="h-2.5 w-2.5" /> Delete
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => onDelete(ticket._id || ticket.id)}
+                        disabled={isDeleting}
+                        aria-label={`Delete ticket from ${ticket.from} to ${ticket.to}`}
+                        className="inline-flex h-6 flex-1 items-center justify-center gap-1 rounded-md border border-red-500/20 text-[9px] text-red-400 transition hover:bg-red-500/10 disabled:cursor-wait disabled:opacity-50"
+                    >
+                        <X className="h-2.5 w-2.5" /> {isDeleting ? "Deleting..." : "Delete"}
                     </button>
                 </div>
+                {deleteError && <p role="alert" className="mt-2 text-[10px] text-red-400">{deleteError}</p>}
             </div>
         </article>
     );
