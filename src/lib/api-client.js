@@ -18,12 +18,3 @@ export async function authenticatedFetch(path, options = {}) {
         headers,
     });
 }
-
-/** Update a ticket through the REST API. */
-export function patchTicket(id, updates) {
-    return authenticatedFetch(`/tickets/${encodeURIComponent(id)}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updates),
-    });
-}
