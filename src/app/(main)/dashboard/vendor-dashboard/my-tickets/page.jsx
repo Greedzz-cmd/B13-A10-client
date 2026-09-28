@@ -101,7 +101,7 @@ export default async function MyTicketsPage() {
                             <h1 className="mt-2 font-serif text-3xl font-medium tracking-[-0.04em] text-slate-100">My Added Tickets</h1>
                             <p className="mt-1 text-xs text-slate-400">Updates go live after admin approval</p>
                         </div>
-                        <Link href="/dashboard/vendor-dashboard/add-ticket" className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg bg-blue-600 px-3 text-xs font-semibold text-white transition hover:bg-blue-500">
+                        <Link href="/dashboard/vendor-dashboard/add-ticket" className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg bg-[#dd7845] px-3 text-xs font-semibold text-white transition hover:bg-[#ee8954]">
                             <Plus className="h-3.5 w-3.5" /> Add ticket
                         </Link>
                     </header>
