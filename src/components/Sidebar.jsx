@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
+import { useSession } from "@/lib/auth-client";
 import {
     User,
     Ticket,
@@ -264,6 +265,8 @@ export function Sidebar({
 }) {
     const pathname = usePathname();
     const router = useRouter();
+    const session = useSession();
+    const sessionUser = session?.data?.user;
     const [internalCollapsed, setInternalCollapsed] = useState(defaultCollapsed);
     const [internalMobileOpen, setInternalMobileOpen] = useState(false);
 
@@ -319,12 +322,12 @@ export function Sidebar({
     const resolvedVariant = variant || roleConfig.variant || "orange";
     const variantTheme = VARIANT_STYLES[resolvedVariant] || VARIANT_STYLES.orange;
 
-    // Default user info
+    // Resolve explicit user props first, then the authenticated session, then role fallbacks.
     const resolvedUser = {
-        name: user?.name || "Nusrat Jahan",
-        email: user?.email || "nusrat@example.com",
-        role: user?.role || roleConfig.roleLabel,
-        avatar: user?.avatar || user?.image,
+        name: user?.name || sessionUser?.name || "User",
+        email: user?.email || sessionUser?.email || "",
+        role: user?.role || sessionUser?.role || roleConfig.roleLabel,
+        avatar: user?.avatar || user?.image || sessionUser?.image || sessionUser?.avatar,
     };
 
     // Navigation items

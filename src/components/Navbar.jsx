@@ -1,6 +1,7 @@
 "use client";
 
 import { authClient, useSession } from "@/lib/auth-client";
+import { getDashboardPath } from "@/lib/dashboard";
 import { Button } from "@heroui/react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -108,6 +109,13 @@ export function Navbar({
     // Check session
     const session = useSession();
     const user = session?.data?.user;
+    const navigationItems = items === defaultItems
+        ? items.map((item) =>
+              item.href === "/dashboard"
+                  ? { ...item, href: user ? getDashboardPath(user.role) : item.href }
+                  : item,
+          )
+        : items;
 
     const logoutUser = async () => {
         await authClient.signOut();
@@ -140,7 +148,7 @@ export function Navbar({
                 >
                     <div className="flex items-center gap-3">{brand}</div>
                     <ul className="hidden items-center gap-4 md:flex">
-                        {items.map(item => {
+                        {navigationItems.map(item => {
                             const isActive = pathname === item.href;
                             return (
                                 <li key={item.href}>
@@ -199,7 +207,7 @@ export function Navbar({
                 {isMenuOpen && (
                     <div className="border-t border-white/10 bg-[#0a1121] md:hidden">
                         <ul className="flex flex-col gap-2 p-4">
-                            {items.map(item => {
+                            {navigationItems.map(item => {
                                 const isActive = pathname === item.href;
                                 return (
                                     <li key={item.href}>

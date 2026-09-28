@@ -8,6 +8,7 @@ import {
     AlertCircle,
     CreditCard,
 } from "lucide-react";
+import { useSession } from "@/lib/auth-client";
 
 
 /**
@@ -197,6 +198,8 @@ export function UserProfile({
     extraActions,
     className = "",
 }) {
+    const session = useSession();
+    const sessionUser = session?.data?.user;
     const [tickets, setTickets] = useState([]);
 
     useEffect(() => {
@@ -215,7 +218,23 @@ export function UserProfile({
     const pending = tickets.filter(t => t.verificationStatus == "pending");
     const approved = tickets.filter(t => t.verificationStatus == "approved");
 
-    const config = DEFAULT_PROFILES[role] || DEFAULT_PROFILES.user;
+    const defaultConfig = DEFAULT_PROFILES[role] || DEFAULT_PROFILES.user;
+    const sessionProfile = sessionUser
+        ? {
+              name: sessionUser.name,
+              email: sessionUser.email,
+              role: sessionUser.role || defaultConfig.user.role,
+              avatar: sessionUser.image || sessionUser.avatar || defaultConfig.user.avatar,
+          }
+        : {};
+    const config = {
+        ...defaultConfig,
+        user: {
+            ...defaultConfig.user,
+            ...sessionProfile,
+            ...(customUser || {}),
+        },
+    };
 
     const resolvedTitle = title !== undefined ? title : config.title;
     const resolvedSubtitle = subtitle !== undefined ? subtitle : config.subtitle;
@@ -224,10 +243,7 @@ export function UserProfile({
     const resolvedAvatarStyle =
         customAvatarStyle !== undefined ? customAvatarStyle : config.avatarStyle;
 
-    const resolvedUser = {
-        ...config.user,
-        ...(customUser || {}),
-    };
+    const resolvedUser = config.user;
 
     const resolvedFields = customFields || config.fields;
 

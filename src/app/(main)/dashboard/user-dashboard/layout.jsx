@@ -1,12 +1,15 @@
 import React from "react";
 import { Sidebar } from "@/components/Sidebar";
+import { requireDashboardRole } from "@/lib/dashboard-server";
 
 export const metadata = {
     title: "User Dashboard | Routely",
     description: "Manage your profile, booked tickets, and transaction history.",
 };
 
-export default function UserDashboardLayout({ children }) {
+export default async function UserDashboardLayout({ children }) {
+    await requireDashboardRole("user");
+
     return (
         <div className="relative flex flex-col md:flex-row min-h-[calc(100vh-60px)] bg-[#080f1d]">
             {/* Sidebar navigation */}

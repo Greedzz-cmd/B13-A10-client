@@ -310,7 +310,7 @@ export default function TicketsPage({
                                         type="button"
                                         onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                                         disabled={currentPage === totalPages}
-                                        className="inline-flex h-8 items-center gap-1 rounded-lg border border-white/10 bg-[#131d31] px-2.5 text-slate-300 transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-40"
+                                        className="inline-flex h-8 items-center gap-1 rounded-lg border zborder-white/10 bg-[#131d31] px-2.5 text-slate-300 transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-40"
                                     >
                                         Next <ChevronRight className="h-3.5 w-3.5" />
                                     </button>

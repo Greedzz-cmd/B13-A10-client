@@ -56,6 +56,13 @@ export default function AuthPage({ mode }) {
         setProfilePicturePreview(URL.createObjectURL(file));
     };
 
+    const handleGoogleSignIn = async() => {
+        await authClient.signIn.social({
+            provider: "google",
+            callbackURL: "/onboarding/role"
+        });
+    };
+
     const handleRemoveProfilePicture = () => {
         setProfilePicture(null);
         setProfilePicturePreview(null);
@@ -254,7 +261,7 @@ export default function AuthPage({ mode }) {
 
                         {/* Google */}
                         <button
-                            type="button"
+                            type="button" onClick={handleGoogleSignIn}
                             className="group flex h-[50px] w-full items-center justify-center gap-3 rounded-xl border border-white/[0.08] bg-[#eef3f7] px-4 text-[12px] font-medium text-slate-900 transition-all duration-200 hover:bg-white hover:shadow-[0_8px_30px_rgba(255,255,255,0.08)]"
                         >
                             <span className="grid h-6 w-6 place-items-center rounded-full bg-white text-[10px] font-bold shadow-sm">
