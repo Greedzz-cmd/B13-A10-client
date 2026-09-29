@@ -1,8 +1,10 @@
 "use client";
 
 import { authClient, useSession } from "@/lib/auth-client";
+import { getAvatarSrc, getInitials } from "@/lib/user";
 import { getDashboardPath } from "@/lib/dashboard";
 import { Button } from "@heroui/react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
@@ -55,15 +57,55 @@ function DefaultBrand() {
     );
 }
 
+/**
+ * Circular profile picture shown beside the sign out button.
+ *
+ * Falls back to initials when the account has no picture, which is the common
+ * case: only Google sign-in populates an image, so email/password accounts
+ * would otherwise render an empty circle.
+ */
+function ProfileAvatar({ user, size = 32 }) {
+    const avatar = getAvatarSrc(user);
+    const name = user?.name || "";
+
+    if (avatar) {
+        return (
+            <Image
+                src={avatar}
+                alt={name ? `${name}'s profile picture` : "Profile picture"}
+                width={size}
+                height={size}
+                unoptimized
+                className="shrink-0 rounded-full border border-hairline/10 object-cover"
+                style={{ width: size, height: size }}
+            />
+        );
+    }
+
+    return (
+        <span
+            aria-hidden="true"
+            title={name || "Signed in"}
+            className="flex shrink-0 items-center justify-center rounded-full border border-hairline/10 bg-[var(--surface-inset)] font-semibold text-slate-200"
+            style={{ width: size, height: size, fontSize: Math.round(size * 0.38) }}
+        >
+            {getInitials(name)}
+        </span>
+    );
+}
+
 function DefaultRightContent({ user, onLogout }) {
     // Default authentication actions.
     return user ? (
-        <Button
-            onClick={onLogout}
-            className="ml-2 rounded-[5px] bg-brand px-3 py-1.5 text-[11px] font-medium text-white transition-colors hover:bg-brand-hover"
-        >
-            Log Out
-        </Button>
+        <div className="flex items-center gap-2.5 md:ml-2">
+            <ProfileAvatar user={user} />
+            <Button
+                onClick={onLogout}
+                className="rounded-[5px] bg-brand px-3 py-1.5 text-[11px] font-medium text-white transition-colors hover:bg-brand-hover"
+            >
+                Log Out
+            </Button>
+        </div>
     ) : (
         <>
             <Link className="text-[11px] text-slate-300 transition-colors hover:text-white" href="/sign-in">

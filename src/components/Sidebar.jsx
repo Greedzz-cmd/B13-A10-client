@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useSession } from "@/lib/auth-client";
+import { getAvatarSrc, getInitials } from "@/lib/user";
 import {
     User,
     Ticket,
@@ -202,18 +203,6 @@ const VARIANT_STYLES = {
 };
 
 /**
- * Utility to extract user initials from a full name
- */
-function getInitials(name = "") {
-    if (!name) return "U";
-    const parts = name.trim().split(/\s+/);
-    if (parts.length >= 2) {
-        return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
-    }
-    return parts[0].slice(0, 2).toUpperCase();
-}
-
-/**
  * Sidebar Component
  *
  * Highly configurable, reusable sidebar navigation for Admin, Vendor, User dashboards,
@@ -327,7 +316,7 @@ export function Sidebar({
         name: user?.name || sessionUser?.name || "User",
         email: user?.email || sessionUser?.email || "",
         role: user?.role || sessionUser?.role || roleConfig.roleLabel,
-        avatar: user?.avatar || user?.image || sessionUser?.image || sessionUser?.avatar,
+        avatar: getAvatarSrc(user) || getAvatarSrc(sessionUser),
     };
 
     // Navigation items
