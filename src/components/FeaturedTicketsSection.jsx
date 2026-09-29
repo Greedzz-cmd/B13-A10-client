@@ -9,7 +9,9 @@ export default async function FeaturedTicketsSection() {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     if (apiUrl) {
         try {
-            const res = await fetch(`${apiUrl}/tickets?isAdvertised=true`, { cache: "no-store" });
+            // /tickets no longer accepts isAdvertised; the dedicated route
+            // returns exactly the six approved tickets admins may feature.
+            const res = await fetch(`${apiUrl}/tickets/advertised`, { cache: "no-store" });
             if (res.ok) {
                 const data = await res.json();
                 if (Array.isArray(data)) {

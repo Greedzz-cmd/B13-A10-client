@@ -1,75 +1,58 @@
 import { BusFront, PlaneTakeoff, Ship, TramFront } from "lucide-react";
 import Link from "next/link";
 
-// Popular routes across Bangladesh with static metadata.
-const popularRoutes = [
-    {
-        fromCode: "DAC",
-        toCode: "CGP",
-        from: "Dhaka",
-        to: "Chittagong",
-        duration: "1h–4.5h",
-        fromPrice: 480,
-        dailyCount: "120+",
-        transport: ["Flight", "Train", "Bus", "Launch"],
-        href: "/tickets?from=Dhaka&to=Chittagong",
-    },
-    {
-        fromCode: "DAC",
-        toCode: "ZYL",
-        from: "Dhaka",
-        to: "Sylhet",
-        duration: "1h–6h",
-        fromPrice: 620,
-        dailyCount: "60+",
-        transport: ["Flight", "Train", "Bus"],
-        href: "/tickets?from=Dhaka&to=Sylhet",
-    },
-    {
-        fromCode: "DAC",
-        toCode: "CXB",
-        from: "Dhaka",
-        to: "Cox's Bazar",
-        duration: "45m–9h",
-        fromPrice: 1100,
-        dailyCount: "40+",
-        transport: ["Flight", "Bus"],
-        href: "/tickets?from=Dhaka&to=Cox's Bazar",
-    },
-    {
-        fromCode: "DAC",
-        toCode: "KHL",
-        from: "Dhaka",
-        to: "Khulna",
-        duration: "8h–12h",
-        fromPrice: 950,
-        dailyCount: "30+",
-        transport: ["Bus", "Launch"],
-        href: "/tickets?from=Dhaka&to=Khulna",
-    },
-    {
-        fromCode: "DAC",
-        toCode: "RSH",
-        from: "Dhaka",
-        to: "Rajshahi",
-        duration: "5h–6h",
-        fromPrice: 480,
-        dailyCount: "50+",
-        transport: ["Train", "Bus"],
-        href: "/tickets?from=Dhaka&to=Rajshahi",
-    },
-    {
-        fromCode: "DAC",
-        toCode: "BZL",
-        from: "Dhaka",
-        to: "Barishal",
-        duration: "3h–8h",
-        fromPrice: 350,
-        dailyCount: "20+",
-        transport: ["Launch", "Bus"],
-        href: "/tickets?from=Dhaka&to=Barishal",
-    },
+/**
+ * Shown only when the catalogue request fails, so the homepage still renders
+ * something useful offline. Names here must match the seeded locations.
+ */
+const fallbackRoutes = [
+    { from: "Dhaka", to: "Chattogram", duration: "1h–4.5h", fromPrice: 480, dailyCount: "120+", transport: ["Flight", "Train", "Bus", "Launch"] },
+    { from: "Dhaka", to: "Sylhet", duration: "1h–6h", fromPrice: 620, dailyCount: "60+", transport: ["Flight", "Train", "Bus"] },
+    { from: "Dhaka", to: "Cox's Bazar", duration: "45m–9h", fromPrice: 1100, dailyCount: "40+", transport: ["Flight", "Bus"] },
+    { from: "Dhaka", to: "Khulna", duration: "8h–12h", fromPrice: 950, dailyCount: "30+", transport: ["Bus", "Launch"] },
+    { from: "Dhaka", to: "Rajshahi", duration: "5h–6h", fromPrice: 480, dailyCount: "50+", transport: ["Train", "Bus"] },
+    { from: "Dhaka", to: "Barishal", duration: "3h–8h", fromPrice: 350, dailyCount: "20+", transport: ["Launch", "Bus"] },
 ];
+
+/** IATA-like codes for the route badges, matched by destination. */
+const routeCodes = {
+    Chattogram: ["DAC", "CGP"],
+    Sylhet: ["DAC", "ZYL"],
+    "Cox's Bazar": ["DAC", "CXB"],
+    Khulna: ["DAC", "KHL"],
+    Rajshahi: ["DAC", "RSH"],
+    Barishal: ["DAC", "BZL"],
+    Rangpur: ["DAC", "RGP"],
+    Mymensingh: ["DAC", "MYS"],
+};
+
+/** Builds a catalogue link with the query values encoded. */
+const buildHref = (from, to) => `/tickets?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`;
+
+const toPopularRoute = (route) => {
+    const [fromCode, toCode] = routeCodes[route.to] || ["", ""];
+    const isLive = route.ticketCount !== undefined;
+
+    return {
+        fromCode,
+        toCode,
+        from: route.from,
+        to: route.to,
+        // Live routes show the next departure, the fallback keeps its estimate.
+        duration: isLive && route.nextDeparture
+            ? new Date(route.nextDeparture).toLocaleDateString("en-GB", {
+                day: "numeric",
+                month: "short",
+            })
+            : route.duration,
+        fromPrice: route.fromPrice,
+        ticketLabel: isLive
+            ? `${route.ticketCount} ${route.ticketCount === 1 ? "ticket" : "tickets"}`
+            : `${route.dailyCount} daily`,
+        transport: route.transport || route.transportTypes || [],
+        href: buildHref(route.from, route.to),
+    };
+};
 
 const transportIcons = {
     Flight: PlaneTakeoff,
@@ -124,13 +107,17 @@ function RouteCard({ route }) {
                     <span className="text-slate-500">from </span>
                     <span className="font-semibold text-[var(--accent-ink)]">৳{route.fromPrice.toLocaleString("en-IN")}</span>
                 </span>
-                <span className="text-slate-500">{route.dailyCount} daily</span>
+                <span className="text-slate-500">{route.ticketLabel}</span>
             </div>
         </Link>
     );
 }
 
-export default function PopularRoutesSection() {
+export default function PopularRoutesSection({ routes = [] }) {
+    // Prefer the live catalogue; fall back only when the API had nothing.
+    const source = routes.length > 0 ? routes : fallbackRoutes;
+    const popularRoutes = source.map(toPopularRoute);
+
     return (
         <section className="border-t border-hairline/[0.03] bg-[var(--surface-canvas)] px-6 py-14 sm:px-10 sm:py-20 lg:px-14">
             <div className="mx-auto max-w-[1260px]">
