@@ -136,25 +136,25 @@ export default function ManageUsersPage() {
     const fraudVendors = users.filter((u) => u.isFraud).length;
 
     return (
-        <div className="relative flex min-h-[calc(100vh-60px)] flex-col bg-[#080f1d] md:flex-row">
+        <div className="relative flex min-h-[calc(100vh-60px)] flex-col bg-[var(--surface-canvas)] md:flex-row">
             <Sidebar role="admin" activeId="manage-users" />
             <main className="min-w-0 flex-1 p-5 pb-24 text-slate-100 sm:p-8 lg:p-10 md:pb-10">
                 <div className="mx-auto max-w-6xl">
                     {/* Metrics Row */}
                     <div className="grid gap-3 sm:grid-cols-3">
-                        <div className="rounded-xl border border-white/8 bg-[#131d31] p-4">
+                        <div className="rounded-xl border border-hairline/8 bg-[var(--surface)] p-4">
                             <span className="font-mono text-[9px] uppercase tracking-widest text-slate-500">
                                 Total Platform Users
                             </span>
                             <p className="mt-1 font-serif text-2xl text-teal-400">{users.length}</p>
                         </div>
-                        <div className="rounded-xl border border-white/8 bg-[#131d31] p-4">
+                        <div className="rounded-xl border border-hairline/8 bg-[var(--surface)] p-4">
                             <span className="font-mono text-[9px] uppercase tracking-widest text-slate-500">
                                 Active Vendors
                             </span>
                             <p className="mt-1 font-serif text-2xl text-blue-400">{totalVendors}</p>
                         </div>
-                        <div className="rounded-xl border border-white/8 bg-[#131d31] p-4">
+                        <div className="rounded-xl border border-hairline/8 bg-[var(--surface)] p-4">
                             <span className="font-mono text-[9px] uppercase tracking-widest text-slate-500">
                                 Flagged Fraud Vendors
                             </span>
@@ -179,23 +179,23 @@ export default function ManageUsersPage() {
                     </header>
 
                     {/* Users Table */}
-                    <div className="overflow-x-auto rounded-xl border border-white/8 bg-[#131d31]">
+                    <div className="overflow-x-auto rounded-xl border border-hairline/8 bg-[var(--surface)]">
                         <table className="w-full min-w-[760px] border-collapse text-left">
                             <thead>
-                                <tr className="border-b border-white/8 font-mono text-[9.5px] uppercase tracking-[0.16em] text-slate-500">
+                                <tr className="border-b border-hairline/8 font-mono text-[9.5px] uppercase tracking-[0.16em] text-slate-500">
                                     <th className="px-4 py-3.5">User</th>
                                     <th className="px-4 py-3.5">Role</th>
                                     <th className="px-4 py-3.5">Fraud Status</th>
                                     <th className="px-4 py-3.5 text-right">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-white/5 text-xs">
+                            <tbody className="divide-y divide-hairline/5 text-xs">
                                 {users.map((u) => {
                                     const isVendor = u.role === "vendor";
                                     return (
                                         <tr
                                             key={u._id}
-                                            className={`transition-colors hover:bg-white/[0.02] ${
+                                            className={`transition-colors hover:bg-hairline/[0.02] ${
                                                 u.isFraud ? "bg-rose-950/10" : ""
                                             }`}
                                         >

@@ -46,7 +46,7 @@ export default function RevenueOverviewPage() {
     ];
 
     return (
-        <div className="relative flex min-h-[calc(100vh-60px)] flex-col bg-[#080f1d] md:flex-row">
+        <div className="relative flex min-h-[calc(100vh-60px)] flex-col bg-[var(--surface-canvas)] md:flex-row">
             <Sidebar role="vendor" activeId="revenue" />
             <main className="min-w-0 flex-1 p-5 pb-24 text-slate-100 sm:p-8 lg:p-10 md:pb-10">
                 <div className="mx-auto max-w-6xl">
@@ -64,7 +64,7 @@ export default function RevenueOverviewPage() {
 
                     {/* Top KPI Cards */}
                     <div className="grid gap-4 sm:grid-cols-3">
-                        <div className="rounded-2xl border border-white/8 bg-[#111a2b] p-5 shadow-lg">
+                        <div className="rounded-2xl border border-hairline/8 bg-[var(--surface-inset)] p-5 shadow-lg">
                             <div className="flex items-center justify-between">
                                 <span className="font-mono text-[10px] uppercase tracking-widest text-slate-400">
                                     Total Tickets Added
@@ -81,7 +81,7 @@ export default function RevenueOverviewPage() {
                             </span>
                         </div>
 
-                        <div className="rounded-2xl border border-white/8 bg-[#111a2b] p-5 shadow-lg">
+                        <div className="rounded-2xl border border-hairline/8 bg-[var(--surface-inset)] p-5 shadow-lg">
                             <div className="flex items-center justify-between">
                                 <span className="font-mono text-[10px] uppercase tracking-widest text-slate-400">
                                     Seats Booked & Sold
@@ -98,16 +98,16 @@ export default function RevenueOverviewPage() {
                             </span>
                         </div>
 
-                        <div className="rounded-2xl border border-white/8 bg-[#111a2b] p-5 shadow-lg">
+                        <div className="rounded-2xl border border-hairline/8 bg-[var(--surface-inset)] p-5 shadow-lg">
                             <div className="flex items-center justify-between">
                                 <span className="font-mono text-[10px] uppercase tracking-widest text-slate-400">
                                     Total Revenue Earned
                                 </span>
-                                <div className="grid h-8 w-8 place-items-center rounded-lg bg-[#dd7845]/15 text-[#dd7845]">
+                                <div className="grid h-8 w-8 place-items-center rounded-lg bg-[#dd7845]/15 text-[var(--accent-ink)]">
                                     <DollarSign className="h-4 w-4" />
                                 </div>
                             </div>
-                            <p className="mt-3 font-serif text-3xl font-semibold text-[#dd7845]">
+                            <p className="mt-3 font-serif text-3xl font-semibold text-[var(--accent-ink)]">
                                 ৳{stats.totalRevenue.toLocaleString()}
                             </p>
                             <span className="mt-2 inline-flex items-center gap-1 font-mono text-[11px] text-emerald-400">
@@ -119,7 +119,7 @@ export default function RevenueOverviewPage() {
                     {/* Visual Charts Grid */}
                     <div className="mt-8 grid gap-6 lg:grid-cols-3">
                         {/* Bar Chart: Revenue Growth */}
-                        <div className="rounded-2xl border border-white/8 bg-[#111a2b] p-6 shadow-lg lg:col-span-2">
+                        <div className="rounded-2xl border border-hairline/8 bg-[var(--surface-inset)] p-6 shadow-lg lg:col-span-2">
                             <div className="flex items-center justify-between">
                                 <div>
                                     <h2 className="font-serif text-lg font-medium text-white">
@@ -131,7 +131,7 @@ export default function RevenueOverviewPage() {
                             </div>
 
                             {/* CSS Bar Chart */}
-                            <div className="mt-8 flex h-52 items-end justify-between gap-4 border-b border-white/10 pb-4">
+                            <div className="mt-8 flex h-52 items-end justify-between gap-4 border-b border-hairline/10 pb-4">
                                 {monthlyRevenue.map((item) => (
                                     <div key={item.month} className="group relative flex flex-1 flex-col items-center gap-2">
                                         <div className="w-full max-w-[50px] rounded-t-lg bg-gradient-to-t from-blue-600 to-[#dd7845] transition-all duration-300 group-hover:brightness-125"
@@ -147,7 +147,7 @@ export default function RevenueOverviewPage() {
                         </div>
 
                         {/* Breakdown by Transport Mode */}
-                        <div className="rounded-2xl border border-white/8 bg-[#111a2b] p-6 shadow-lg">
+                        <div className="rounded-2xl border border-hairline/8 bg-[var(--surface-inset)] p-6 shadow-lg">
                             <h2 className="font-serif text-lg font-medium text-white">
                                 Mode Distribution
                             </h2>
@@ -170,7 +170,7 @@ export default function RevenueOverviewPage() {
                                 ))}
                             </div>
 
-                            <div className="mt-8 rounded-xl border border-white/5 bg-black/20 p-3.5 text-center">
+                            <div className="mt-8 rounded-xl border border-hairline/5 bg-shade/20 p-3.5 text-center">
                                 <span className="block font-mono text-[10px] text-slate-500 uppercase">
                                     Highest Performing
                                 </span>

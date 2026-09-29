@@ -130,7 +130,7 @@ export default function AdvertiseTicketsPage() {
     };
 
     return (
-        <div className="relative flex min-h-[calc(100vh-60px)] flex-col bg-[#080f1d] md:flex-row">
+        <div className="relative flex min-h-[calc(100vh-60px)] flex-col bg-[var(--surface-canvas)] md:flex-row">
             <Sidebar role="admin" activeId="advertise-tickets" />
             <main className="min-w-0 flex-1 p-5 pb-24 text-slate-100 sm:p-8 lg:p-10 md:pb-10">
                 <div className="mx-auto max-w-6xl">
@@ -146,8 +146,8 @@ export default function AdvertiseTicketsPage() {
                         </div>
 
                         {/* Slot counter badge */}
-                        <div className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-[#131d31] px-4 py-2 text-xs">
-                            <Sparkles className="h-4 w-4 text-[#dd7845]" />
+                        <div className="inline-flex items-center gap-2 rounded-xl border border-hairline/10 bg-[var(--surface)] px-4 py-2 text-xs">
+                            <Sparkles className="h-4 w-4 text-[var(--accent-ink)]" />
                             <span className="text-slate-400">Slots Used:</span>
                             <span className={`font-mono font-bold ${advertisedCount >= 6 ? "text-amber-400" : "text-emerald-400"}`}>
                                 {advertisedCount} / 6
@@ -163,10 +163,10 @@ export default function AdvertiseTicketsPage() {
                     )}
 
                     {/* Table */}
-                    <div className="mt-7 overflow-x-auto rounded-xl border border-white/8 bg-[#131d31]">
+                    <div className="mt-7 overflow-x-auto rounded-xl border border-hairline/8 bg-[var(--surface)]">
                         <table className="w-full min-w-[760px] border-collapse text-left">
                             <thead>
-                                <tr className="border-b border-white/8 font-mono text-[9.5px] uppercase tracking-[0.16em] text-slate-500">
+                                <tr className="border-b border-hairline/8 font-mono text-[9.5px] uppercase tracking-[0.16em] text-slate-500">
                                     <th className="px-4 py-3.5">Ticket</th>
                                     <th className="px-4 py-3.5">Operator</th>
                                     <th className="px-4 py-3.5">Transport</th>
@@ -175,12 +175,12 @@ export default function AdvertiseTicketsPage() {
                                     <th className="px-4 py-3.5 text-right">Action</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-white/5 text-xs">
+                            <tbody className="divide-y divide-hairline/5 text-xs">
                                 {tickets.map((t) => {
                                     const id = t._id || t.id;
                                     const isAdv = Boolean(t.isAdvertised);
                                     return (
-                                        <tr key={id} className="transition-colors hover:bg-white/[0.02]">
+                                        <tr key={id} className="transition-colors hover:bg-hairline/[0.02]">
                                             <td className="px-4 py-3.5 font-medium text-slate-200">
                                                 {t.from} → {t.to}
                                                 <span className="block text-[11px] font-normal text-slate-400">{t.title}</span>
@@ -191,7 +191,7 @@ export default function AdvertiseTicketsPage() {
                                             <td className="px-4 py-3.5 font-mono text-slate-400">
                                                 {t.transportType || "Bus"}
                                             </td>
-                                            <td className="px-4 py-3.5 font-mono font-medium text-[#dd7845]">
+                                            <td className="px-4 py-3.5 font-mono font-medium text-[var(--accent-ink)]">
                                                 ৳{t.price}
                                             </td>
                                             <td className="px-4 py-3.5">
@@ -200,7 +200,7 @@ export default function AdvertiseTicketsPage() {
                                                         <Check className="h-3 w-3" /> Advertised
                                                     </span>
                                                 ) : (
-                                                    <span className="inline-flex rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-[10px] font-medium text-slate-400">
+                                                    <span className="inline-flex rounded-full border border-hairline/10 bg-hairline/5 px-2.5 py-0.5 text-[10px] font-medium text-slate-400">
                                                         Standard
                                                     </span>
                                                 )}
@@ -212,7 +212,7 @@ export default function AdvertiseTicketsPage() {
                                                     className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
                                                         isAdv
                                                             ? "border border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20"
-                                                            : "border border-[#dd7845]/40 bg-[#dd7845]/15 text-[#dd7845] hover:bg-[#dd7845]/25"
+                                                            : "border border-[#dd7845]/40 bg-[#dd7845]/15 text-[var(--accent-ink)] hover:bg-[#dd7845]/25"
                                                     }`}
                                                 >
                                                     <Megaphone className="h-3.5 w-3.5" />

@@ -53,7 +53,7 @@ export default function HeroSection() {
                 <div className="relative grid items-start gap-8 lg:grid-cols-[1fr_1fr]">
                     {/* Introductory product messaging and primary calls to action. */}
                     <div className="relative z-10 max-w-[510px]">
-                        <p className="mb-7 inline-flex items-center gap-2 text-[9px] uppercase tracking-[0.2em] text-[#dd7845]">
+                        <p className="mb-7 inline-flex items-center gap-2 text-[9px] uppercase tracking-[0.2em] text-[var(--accent-ink)]">
                             <span className="h-px w-2 bg-[#dd7845]" /> Bangladesh&apos;s premium travel platform{" "}
                             <span className="h-px w-2 bg-[#dd7845]" />
                         </p>
@@ -62,7 +62,7 @@ export default function HeroSection() {
                             <br />
                             Your time.
                             <br />
-                            <span className="text-[#e27b45]">Your journey.</span>
+                            <span className="text-[var(--accent-ink)]">Your journey.</span>
                         </h1>
                         <p className="mt-5 max-w-[390px] text-[13px] leading-5 text-slate-400">
                             Book buses, trains, launches and flights across Bangladesh. Seamlessly. Elegantly. All in
@@ -82,7 +82,7 @@ export default function HeroSection() {
                                 Create account — it&apos;s free
                             </Link>
                         </div>
-                        <div className="mt-10 grid max-w-[430px] grid-cols-3 border-t border-white/10 pt-5">
+                        <div className="mt-10 grid max-w-[430px] grid-cols-3 border-t border-hairline/10 pt-5">
                             <div>
                                 <p className="font-serif text-[16px] text-slate-200">9,200+</p>
                                 <p className="mt-1 text-[8px] tracking-[0.08em] text-slate-500">TRAVELERS MONTHLY</p>

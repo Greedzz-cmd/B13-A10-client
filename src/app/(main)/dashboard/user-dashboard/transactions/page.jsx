@@ -34,22 +34,22 @@ export default function TransactionHistoryPage() {
             </div>
 
             {/* Transactions Card Table */}
-            <div className="overflow-hidden rounded-2xl border border-white/5 bg-[#0e172a] shadow-lg">
+            <div className="overflow-hidden rounded-2xl border border-hairline/5 bg-[var(--surface-inset)] shadow-lg">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="border-b border-white/5 bg-black/20 text-[10.5px] font-semibold uppercase tracking-wider text-slate-400">
+                            <tr className="border-b border-hairline/5 bg-shade/20 text-[10.5px] font-semibold uppercase tracking-wider text-slate-400">
                                 <th scope="col" className="px-6 py-4">TRANSACTION ID</th>
                                 <th scope="col" className="px-6 py-4">TICKET TITLE</th>
                                 <th scope="col" className="px-6 py-4">AMOUNT</th>
                                 <th scope="col" className="px-6 py-4">PAYMENT DATE</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-white/5 text-xs">
+                        <tbody className="divide-y divide-hairline/5 text-xs">
                             {TRANSACTIONS.map((txn) => (
                                 <tr
                                     key={txn.id}
-                                    className="transition-colors hover:bg-white/[0.02]"
+                                    className="transition-colors hover:bg-hairline/[0.02]"
                                 >
                                     {/* Transaction ID */}
                                     <td className="px-6 py-4.5 font-mono text-slate-400">
@@ -62,7 +62,7 @@ export default function TransactionHistoryPage() {
                                     </td>
 
                                     {/* Amount */}
-                                    <td className="px-6 py-4.5 font-semibold text-[#f48a52]">
+                                    <td className="px-6 py-4.5 font-semibold text-[var(--accent-ink)]">
                                         {txn.amount}
                                     </td>
 
@@ -77,7 +77,7 @@ export default function TransactionHistoryPage() {
                 </div>
 
                 {/* Table Footer */}
-                <div className="flex items-center justify-between border-t border-white/5 bg-black/30 px-6 py-4 text-xs">
+                <div className="flex items-center justify-between border-t border-hairline/5 bg-shade/30 px-6 py-4 text-xs">
                     <span className="text-slate-400">
                         {TRANSACTIONS.length} transaction{TRANSACTIONS.length > 1 ? "s" : ""}
                     </span>

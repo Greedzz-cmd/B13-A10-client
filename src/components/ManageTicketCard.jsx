@@ -19,11 +19,11 @@ export function ManageTicketCard({ ticket, onApprove, onReject }) {
     const status = (ticket.verificationStatus || "pending").toLowerCase();
 
     return (
-        <article className="group overflow-hidden rounded-2xl border border-white/8 bg-[#131d31] shadow-[0_12px_32px_rgba(0,0,0,0.16)] transition hover:border-[#dd7845]/30">
-            <div className="border-b border-white/6 bg-linear-to-br from-white/4.5 to-transparent px-4 pb-4 pt-4">
+        <article className="group overflow-hidden rounded-2xl border border-hairline/8 bg-[var(--surface)] shadow-[0_12px_32px_rgba(0,0,0,0.16)] transition hover:border-[#dd7845]/30">
+            <div className="border-b border-hairline/6 bg-linear-to-br from-hairline/4.5 to-transparent px-4 pb-4 pt-4">
                 <div className="flex items-center justify-between gap-3">
                     <span className="inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.16em] text-slate-500">
-                        <CalendarDays className="h-3 w-3 text-[#dd7845]" />
+                        <CalendarDays className="h-3 w-3 text-[var(--accent-ink)]" />
                         {ticket.departureDateTime ? new Date(ticket.departureDateTime).toISOString().slice(0, 10) : "Date unavailable"}
                     </span>
                     <span className={`shrink-0 rounded-full border px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.12em] ${statusStyles[status]}`}>
@@ -35,7 +35,7 @@ export function ManageTicketCard({ ticket, onApprove, onReject }) {
                         <p className="truncate text-base font-semibold tracking-[-0.02em] text-slate-100">{ticket.from}</p>
                         <p className="mt-0.5 font-mono text-[9px] uppercase tracking-[0.12em] text-slate-500">Origin</p>
                     </div>
-                    <ArrowRight className="h-4 w-4 shrink-0 text-[#dd7845] transition-transform group-hover:translate-x-0.5" />
+                    <ArrowRight className="h-4 w-4 shrink-0 text-[var(--accent-ink)] transition-transform group-hover:translate-x-0.5" />
                     <div className="min-w-0 flex-1 text-right">
                         <p className="truncate text-base font-semibold tracking-[-0.02em] text-slate-100">{ticket.to}</p>
                         <p className="mt-0.5 font-mono text-[9px] uppercase tracking-[0.12em] text-slate-500">Destination</p>
@@ -49,14 +49,14 @@ export function ManageTicketCard({ ticket, onApprove, onReject }) {
                 </div>
                 <div>
                     <dt className="font-mono text-[9px] uppercase tracking-[0.14em] text-slate-500">Mode</dt>
-                    <dd className="mt-1 inline-flex items-center gap-1.5 text-xs font-medium text-slate-300"><ModeIcon className="h-3 w-3 text-[#dd7845]" />{mode}</dd>
+                    <dd className="mt-1 inline-flex items-center gap-1.5 text-xs font-medium text-slate-300"><ModeIcon className="h-3 w-3 text-[var(--accent-ink)]" />{mode}</dd>
                 </div>
                 <div>
                     <dt className="font-mono text-[9px] uppercase tracking-[0.14em] text-slate-500">Price</dt>
-                    <dd className="mt-1 font-mono text-sm font-semibold text-[#dd7845]">{ticket.price}</dd>
+                    <dd className="mt-1 font-mono text-sm font-semibold text-[var(--accent-ink)]">{ticket.price}</dd>
                 </div>
             </dl>
-            <div className="relative z-10 grid grid-cols-2 gap-2 border-t border-white/6 px-4 py-3">
+            <div className="relative z-10 grid grid-cols-2 gap-2 border-t border-hairline/6 px-4 py-3">
                 <button
                     type="button"
                     onClick={onApprove}

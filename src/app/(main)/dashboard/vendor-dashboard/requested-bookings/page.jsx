@@ -94,7 +94,7 @@ export default function RequestedBookingsPage() {
     const pendingCount = bookings.filter((b) => b.status === "pending").length;
 
     return (
-        <div className="relative flex min-h-[calc(100vh-60px)] flex-col bg-[#080f1d] md:flex-row">
+        <div className="relative flex min-h-[calc(100vh-60px)] flex-col bg-[var(--surface-canvas)] md:flex-row">
             <Sidebar role="vendor" activeId="requested-bookings" />
             <main className="min-w-0 flex-1 p-5 pb-24 text-slate-100 sm:p-8 lg:p-10 md:pb-10">
                 <div className="mx-auto max-w-6xl">
@@ -118,10 +118,10 @@ export default function RequestedBookingsPage() {
                     </header>
 
                     {/* Table */}
-                    <div className="overflow-x-auto rounded-xl border border-white/8 bg-[#131d31]">
+                    <div className="overflow-x-auto rounded-xl border border-hairline/8 bg-[var(--surface)]">
                         <table className="w-full min-w-[820px] border-collapse text-left">
                             <thead>
-                                <tr className="border-b border-white/8 font-mono text-[9.5px] uppercase tracking-[0.16em] text-slate-500">
+                                <tr className="border-b border-hairline/8 font-mono text-[9.5px] uppercase tracking-[0.16em] text-slate-500">
                                     <th className="px-4 py-3.5">Customer</th>
                                     <th className="px-4 py-3.5">Ticket Title</th>
                                     <th className="px-4 py-3.5">Seats</th>
@@ -130,11 +130,11 @@ export default function RequestedBookingsPage() {
                                     <th className="px-4 py-3.5 text-right">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-white/5 text-xs">
+                            <tbody className="divide-y divide-hairline/5 text-xs">
                                 {bookings.map((b) => {
                                     const isPending = b.status === "pending";
                                     return (
-                                        <tr key={b._id} className="transition-colors hover:bg-white/[0.02]">
+                                        <tr key={b._id} className="transition-colors hover:bg-hairline/[0.02]">
                                             <td className="px-4 py-3.5">
                                                 <p className="font-medium text-slate-200">{b.userName}</p>
                                                 <p className="font-mono text-[11px] text-slate-400">{b.userEmail}</p>
@@ -145,7 +145,7 @@ export default function RequestedBookingsPage() {
                                             <td className="px-4 py-3.5 font-mono text-slate-200">
                                                 {b.quantity} seat(s)
                                             </td>
-                                            <td className="px-4 py-3.5 font-mono font-medium text-[#dd7845]">
+                                            <td className="px-4 py-3.5 font-mono font-medium text-[var(--accent-ink)]">
                                                 ৳{Number(b.totalPrice).toLocaleString()}
                                             </td>
                                             <td className="px-4 py-3.5">

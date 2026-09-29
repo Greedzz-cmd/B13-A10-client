@@ -176,8 +176,8 @@ export const DEFAULT_SIDEBAR_CONFIG = {
  */
 const VARIANT_STYLES = {
     orange: {
-        active: "bg-[#dd7845]/15 text-[#f48a52] border-[#dd7845]/30 shadow-[0_0_15px_rgba(221,120,69,0.08)]",
-        activeIcon: "text-[#f48a52]",
+        active: "bg-[#dd7845]/15 text-[var(--accent-ink)] border-[#dd7845]/30 shadow-[0_0_15px_rgba(221,120,69,0.08)]",
+        activeIcon: "text-[var(--accent-ink)]",
         indicator: "bg-[#dd7845]",
         avatarGlow: "group-hover:border-[#dd7845]/40",
     },
@@ -387,10 +387,10 @@ export function Sidebar({
                                         width={40}
                                         height={40}
                                         unoptimized
-                                        className="h-10 w-10 rounded-xl border border-white/10 object-cover"
+                                        className="h-10 w-10 rounded-xl border border-hairline/10 object-cover"
                                     />
                                 ) : (
-                                    <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-[#111928] text-sm font-semibold tracking-wide text-slate-200 shadow-inner">
+                                    <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-hairline/10 bg-[var(--surface-inset)] text-sm font-semibold tracking-wide text-slate-200 shadow-inner">
                                         {getInitials(resolvedUser.name)}
                                     </div>
                                 )}
@@ -419,7 +419,7 @@ export function Sidebar({
                             type="button"
                             onClick={handleToggleCollapse}
                             aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-                            className="flex h-6 w-6 items-center justify-center rounded-md border border-white/10 bg-white/5 text-slate-400 transition-colors hover:bg-white/10 hover:text-white"
+                            className="flex h-6 w-6 items-center justify-center rounded-md border border-hairline/10 bg-hairline/5 text-slate-400 transition-colors hover:bg-hairline/10 hover:text-white"
                         >
                             {collapsed ? (
                                 <ChevronRight className="h-3.5 w-3.5" />
@@ -456,8 +456,8 @@ export function Sidebar({
                                     <span
                                         className={`ml-auto rounded-full px-2 py-0.5 text-[11px] font-medium ${
                                             active
-                                                ? "bg-white/20 text-white"
-                                                : "bg-white/5 text-slate-400 group-hover:bg-white/10 group-hover:text-slate-200"
+                                                ? "bg-hairline/20 text-white"
+                                                : "bg-hairline/5 text-slate-400 group-hover:bg-hairline/10 group-hover:text-slate-200"
                                         }`}
                                     >
                                         {item.badge}
@@ -471,7 +471,7 @@ export function Sidebar({
                         } ${
                             active
                                 ? `border ${variantTheme.active}`
-                                : "border border-transparent text-slate-400 hover:bg-white/[0.04] hover:text-slate-200"
+                                : "border border-transparent text-slate-400 hover:bg-hairline/[0.04] hover:text-slate-200"
                         }`;
 
                         if (item.onClick || !item.href) {
@@ -518,7 +518,7 @@ export function Sidebar({
 
                 {footer || (
                     showSignOut && (
-                        <div className="border-t border-white/5 pt-3">
+                        <div className="border-t border-hairline/5 pt-3">
                             <button
                                 type="button"
                                 onClick={(e) => {
@@ -549,9 +549,9 @@ export function Sidebar({
         <>
             {/* Mobile Header / Quick Trigger Bar */}
             {showMobileTrigger && (
-                <div className="flex w-full items-center justify-between border-b border-white/5 bg-[#080f1d] px-4 py-3 md:hidden">
+                <div className="flex w-full items-center justify-between border-b border-hairline/5 bg-[var(--surface-canvas)] px-4 py-3 md:hidden">
                     <div className="flex items-center gap-2.5 min-w-0">
-                        <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl border border-white/10 bg-[#111928] text-xs font-semibold text-slate-200">
+                        <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl border border-hairline/10 bg-[var(--surface-inset)] text-xs font-semibold text-slate-200">
                             {getInitials(resolvedUser.name)}
                         </div>
                         <div className="flex flex-col min-w-0">
@@ -566,10 +566,10 @@ export function Sidebar({
                     <button
                         type="button"
                         onClick={handleOpenMobile}
-                        className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs font-medium text-slate-300 transition-colors hover:bg-white/10 hover:text-white active:scale-95"
+                        className="flex items-center gap-1.5 rounded-lg border border-hairline/10 bg-hairline/5 px-2.5 py-1.5 text-xs font-medium text-slate-300 transition-colors hover:bg-hairline/10 hover:text-white active:scale-95"
                         aria-label="Open dashboard navigation menu"
                     >
-                        <PanelLeft className="h-4 w-4 text-[#dd7845]" />
+                        <PanelLeft className="h-4 w-4 text-[var(--accent-ink)]" />
                         <span>Menu</span>
                     </button>
                 </div>
@@ -577,7 +577,7 @@ export function Sidebar({
 
             {/* Desktop / Default Sidebar */}
             <aside
-                className={`hidden md:flex md:flex-col flex-shrink-0 min-h-[calc(100vh-60px)] border-r border-white/5 bg-[#080f1d] text-slate-100 transition-all duration-300 ${
+                className={`hidden md:flex md:flex-col flex-shrink-0 min-h-[calc(100vh-60px)] border-r border-hairline/5 bg-[var(--surface-canvas)] text-slate-100 transition-all duration-300 ${
                     isCollapsed ? "w-20" : "w-64"
                 } ${className}`}
             >
@@ -589,22 +589,22 @@ export function Sidebar({
                 <div className="fixed inset-0 z-50 flex md:hidden" role="dialog" aria-modal="true">
                     {/* Backdrop */}
                     <div
-                        className="fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity duration-300"
+                        className="fixed inset-0 bg-shade/70 backdrop-blur-sm transition-opacity duration-300"
                         onClick={handleCloseMobile}
                         aria-hidden="true"
                     />
 
                     {/* Drawer Content */}
-                    <div className="relative z-10 flex h-full w-[280px] max-w-[85vw] flex-col bg-[#080f1d] shadow-2xl border-r border-white/10">
+                    <div className="relative z-10 flex h-full w-[280px] max-w-[85vw] flex-col bg-[var(--surface-canvas)] shadow-2xl border-r border-hairline/10">
                         {/* Mobile Drawer Header */}
-                        <div className="flex items-center justify-between border-b border-white/5 px-4 py-3">
+                        <div className="flex items-center justify-between border-b border-hairline/5 px-4 py-3">
                             <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
                                 {resolvedUser.role || roleConfig.roleLabel} Navigation
                             </span>
                             <button
                                 type="button"
                                 onClick={handleCloseMobile}
-                                className="rounded-lg p-1.5 text-slate-400 hover:bg-white/10 hover:text-white transition-colors"
+                                className="rounded-lg p-1.5 text-slate-400 hover:bg-hairline/10 hover:text-white transition-colors"
                                 aria-label="Close sidebar menu"
                             >
                                 <X className="h-4 w-4" />

@@ -8,7 +8,7 @@ const categories = [
         name: "Flights",
         description: "Fastest city hops",
         available: "4 tickets available",
-        className: "border-[#2d4f87] bg-[#192945]",
+        className: "border-[#2d4f87] bg-[var(--surface-raised)]",
         icon: PlaneTakeoff,
     },
     {
@@ -16,7 +16,7 @@ const categories = [
         name: "Trains",
         description: "Scenic overland routes",
         available: "3 tickets available",
-        className: "border-[#20565b] bg-[#143039]",
+        className: "border-[var(--line)] bg-[var(--surface)]",
         icon: TramFront,
     },
     {
@@ -24,7 +24,7 @@ const categories = [
         name: "Launches",
         description: "River & coastal journeys",
         available: "3 tickets available",
-        className: "border-[#514675] bg-[#242440]",
+        className: "border-[#514675] bg-[var(--surface-raised)]",
         icon: Ship,
     },
     {
@@ -44,9 +44,9 @@ function TransportIcon({ icon: Icon }) {
 export default function TransportCategories() {
     // Transport category links below the landing page hero.
     return (
-        <section className="border-t border-white/[0.02] bg-[#080f1d] px-6 py-14 sm:px-10 sm:py-16 lg:px-14">
+        <section className="border-t border-hairline/[0.02] bg-[var(--surface-canvas)] px-6 py-14 sm:px-10 sm:py-16 lg:px-14">
             <div className="mx-auto max-w-[1232px]">
-                <p className="text-[9px] uppercase tracking-[0.2em] text-[#dd7845]">How you travel</p>
+                <p className="text-[9px] uppercase tracking-[0.2em] text-[var(--accent-ink)]">How you travel</p>
                 <h2 className="mt-3 font-serif text-[30px] leading-none text-slate-100 sm:text-[32px]">
                     Transport categories
                 </h2>
@@ -58,14 +58,14 @@ export default function TransportCategories() {
                             href={category.href}
                             className={`group flex min-h-[176px] flex-col rounded-[11px] border p-6 transition-transform duration-200 hover:-translate-y-1 ${category.className}`}
                         >
-                            <span className="text-[#ed7b3b]">
+                            <span className="text-[var(--accent-ink)]">
                                 <TransportIcon icon={category.icon} />
                             </span>
                             <span className="mt-5 font-serif text-[22px] leading-none text-slate-100">
                                 {category.name}
                             </span>
                             <span className="mt-2 text-[12px] text-slate-400">{category.description}</span>
-                            <span className="mt-auto pt-4 font-mono text-[11px] tracking-[0.04em] text-[#ed7b3b]">
+                            <span className="mt-auto pt-4 font-mono text-[11px] tracking-[0.04em] text-[var(--accent-ink)]">
                                 {category.available}
                             </span>
                         </Link>

@@ -35,15 +35,15 @@ export default function RoleOnboardingClient() {
     };
 
     return (
-        <main className="min-h-[60vh] bg-[#071c2f] px-5 py-16 text-slate-100">
+        <main className="min-h-[60vh] bg-[var(--surface-inset)] px-5 py-16 text-slate-100">
             <section className="mx-auto max-w-2xl text-center">
-                <p className="text-sm font-medium text-[#dd7845]">Welcome to Routely</p>
+                <p className="text-sm font-medium text-[var(--accent-ink)]">Welcome to Routely</p>
                 <h1 className="mt-2 font-serif text-3xl">How will you use Routely?</h1>
                 <p className="mt-3 text-sm text-slate-400">Choose the dashboard that fits you. You can contact support if this needs to change later.</p>
                 <div className="mt-8 grid gap-4 sm:grid-cols-2">
                     {roles.map(({ id, title, description, Icon }) => (
-                        <button key={id} type="button" disabled={isSaving} onClick={() => chooseRole(id)} className="rounded-xl border border-white/10 bg-white/[0.03] p-6 text-left transition hover:border-[#dd7845]/60 hover:bg-white/[0.06] disabled:cursor-not-allowed disabled:opacity-60">
-                            <Icon className="h-7 w-7 text-[#dd7845]" />
+                        <button key={id} type="button" disabled={isSaving} onClick={() => chooseRole(id)} className="rounded-xl border border-hairline/10 bg-hairline/[0.03] p-6 text-left transition hover:border-[#dd7845]/60 hover:bg-hairline/[0.06] disabled:cursor-not-allowed disabled:opacity-60">
+                            <Icon className="h-7 w-7 text-[var(--accent-ink)]" />
                             <h2 className="mt-5 text-lg font-semibold">{title}</h2>
                             <p className="mt-1 text-sm leading-6 text-slate-400">{description}</p>
                         </button>

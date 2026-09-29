@@ -110,7 +110,7 @@ export default function VendorTicketGrid({ initialTickets }) {
                 {tickets.length} {tickets.length === 1 ? "ticket" : "tickets"} · updates go live after admin approval
             </p>
             {tickets.length === 0 ? (
-                <p className="rounded-xl border border-white/10 bg-[#111b2d] p-6 text-sm text-slate-400">
+                <p className="rounded-xl border border-hairline/10 bg-[var(--surface)] p-6 text-sm text-slate-400">
                     You haven’t added any tickets yet.
                 </p>
             ) : (
@@ -132,14 +132,14 @@ export default function VendorTicketGrid({ initialTickets }) {
             )}
 
             {editingTicket && editForm && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-                    <section role="dialog" aria-modal="true" aria-labelledby="edit-ticket-title" className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-white/10 bg-[#111b2d] p-5 text-slate-100 shadow-2xl sm:p-7">
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-shade/70 p-4">
+                    <section role="dialog" aria-modal="true" aria-labelledby="edit-ticket-title" className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-hairline/10 bg-[var(--surface)] p-5 text-slate-100 shadow-2xl sm:p-7">
                         <div className="mb-5 flex items-start justify-between gap-4">
                             <div>
                                 <h2 id="edit-ticket-title" className="font-serif text-2xl">Update ticket</h2>
                                 <p className="mt-1 text-xs text-slate-400">Save changes to this ticket.</p>
                             </div>
-                            <button type="button" onClick={closeEdit} disabled={isSavingEdit} aria-label="Close edit form" className="rounded-md px-2 py-1 text-slate-400 hover:bg-white/10 hover:text-white disabled:opacity-50">×</button>
+                            <button type="button" onClick={closeEdit} disabled={isSavingEdit} aria-label="Close edit form" className="rounded-md px-2 py-1 text-slate-400 hover:bg-hairline/10 hover:text-white disabled:opacity-50">×</button>
                         </div>
                         <form onSubmit={updateTicket} className="grid gap-4 sm:grid-cols-2">
                             {[
@@ -162,25 +162,25 @@ export default function VendorTicketGrid({ initialTickets }) {
                                         required={name !== "duration"}
                                         min={type === "number" ? "0" : undefined}
                                         step={name === "price" ? "0.01" : undefined}
-                                        className="h-10 rounded-lg border border-white/10 bg-[#080f1d] px-3 text-sm text-slate-100 outline-none focus:border-[#dd7845]"
+                                        className="h-10 rounded-lg border border-hairline/10 bg-[var(--surface-canvas)] px-3 text-sm text-slate-100 outline-none focus:border-[#dd7845]"
                                     />
                                 </label>
                             ))}
                             <label className="grid gap-1.5 text-xs text-slate-400">
                                 Transport type
-                                <select value={editForm.transportType} onChange={event => setEditForm(current => ({ ...current, transportType: event.target.value }))} className="h-10 rounded-lg border border-white/10 bg-[#080f1d] px-3 text-sm text-slate-100">
+                                <select value={editForm.transportType} onChange={event => setEditForm(current => ({ ...current, transportType: event.target.value }))} className="h-10 rounded-lg border border-hairline/10 bg-[var(--surface-canvas)] px-3 text-sm text-slate-100">
                                     {["Bus", "Train", "Flight", "Launch"].map(value => <option key={value}>{value}</option>)}
                                 </select>
                             </label>
                             <label className="grid gap-1.5 text-xs text-slate-400">
                                 Class
-                                <select value={editForm.fareClass} onChange={event => setEditForm(current => ({ ...current, fareClass: event.target.value }))} className="h-10 rounded-lg border border-white/10 bg-[#080f1d] px-3 text-sm text-slate-100">
+                                <select value={editForm.fareClass} onChange={event => setEditForm(current => ({ ...current, fareClass: event.target.value }))} className="h-10 rounded-lg border border-hairline/10 bg-[var(--surface-canvas)] px-3 text-sm text-slate-100">
                                     {["Economy", "Business", "First"].map(value => <option key={value}>{value}</option>)}
                                 </select>
                             </label>
                             {editError && <p role="alert" className="text-sm text-red-400 sm:col-span-2">{editError}</p>}
                             <div className="flex justify-end gap-2 sm:col-span-2">
-                                <button type="button" onClick={closeEdit} disabled={isSavingEdit} className="rounded-lg border border-white/10 px-4 py-2 text-sm text-slate-300 hover:bg-white/5 disabled:opacity-50">Cancel</button>
+                                <button type="button" onClick={closeEdit} disabled={isSavingEdit} className="rounded-lg border border-hairline/10 px-4 py-2 text-sm text-slate-300 hover:bg-hairline/5 disabled:opacity-50">Cancel</button>
                                 <button type="submit" disabled={isSavingEdit} className="rounded-lg bg-[#dd7845] px-4 py-2 text-sm font-semibold text-white hover:bg-[#ee8954] disabled:cursor-wait disabled:opacity-50">
                                     {isSavingEdit ? "Saving..." : "Save changes"}
                                 </button>

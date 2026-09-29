@@ -60,18 +60,18 @@ export default function TicketCard({ ticket, viewMode = "grid" }) {
     // List view adaptation for desktop screens
     if (viewMode === "list") {
         return (
-            <article className="group relative overflow-hidden rounded-2xl border border-[#1e2a3c] bg-[#111a28] shadow-[0_12px_32px_rgba(0,0,0,0.35)] transition-all duration-300 hover:border-[#dd7845]/50 hover:bg-[#131d2e] md:grid md:grid-cols-[260px_1fr]">
+            <article className="group relative overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--surface-inset)] shadow-[0_12px_32px_rgba(0,0,0,0.35)] transition-all duration-300 hover:border-[#dd7845]/50 hover:bg-[var(--surface)] md:grid md:grid-cols-[260px_1fr]">
                 {/* Image section */}
                 <div className="relative h-[200px] w-full overflow-hidden bg-slate-900 md:h-full">
                     <TicketImage
                         alt={`${ticket.from} to ${ticket.to}`}
                         src={ticket.image}
                     />
-                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#111a28] via-transparent to-black/40" />
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[var(--surface-inset)] via-transparent to-shade/40" />
 
                     {/* Top-left badges */}
                     <div className="absolute left-3.5 top-3.5 flex flex-wrap items-center gap-1.5">
-                        <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-[#0d1624]/80 px-2.5 py-1 text-[11px] font-medium text-slate-200 backdrop-blur-md">
+                        <span className="inline-flex items-center gap-1.5 rounded-full border border-hairline/10 bg-[var(--surface-inset)]/80 px-2.5 py-1 text-[11px] font-medium text-slate-200 backdrop-blur-md">
                             {getTransportIcon(ticket.transportType, "h-3 w-3")}
                             <span>{ticket.transportType}</span>
                         </span>
@@ -84,7 +84,7 @@ export default function TicketCard({ ticket, viewMode = "grid" }) {
 
                     {/* Top-right badge */}
                     <div className="absolute right-3.5 top-3.5">
-                        <span className="inline-flex items-center rounded-full border border-white/5 bg-[#0d1624]/60 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#dd7845] backdrop-blur-md">
+                        <span className="inline-flex items-center rounded-full border border-hairline/5 bg-[var(--surface-inset)]/60 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--accent-ink)] backdrop-blur-md">
                             {fareClass}
                         </span>
                     </div>
@@ -118,7 +118,7 @@ export default function TicketCard({ ticket, viewMode = "grid" }) {
                                 <span className="block font-mono text-[10px] font-medium uppercase tracking-wider text-slate-500">
                                     PRICE / SEAT
                                 </span>
-                                <span className="mt-1 block text-[15px] font-bold text-[#dd7845]">
+                                <span className="mt-1 block text-[15px] font-bold text-[var(--accent-ink)]">
                                     {formatPrice(ticket.price)}
                                 </span>
                             </div>
@@ -155,9 +155,9 @@ export default function TicketCard({ ticket, viewMode = "grid" }) {
                                 <span className="text-slate-400">
                                     <b className="font-bold text-slate-100">{seatsLeft}</b> seats left of {totalSeats}
                                 </span>
-                                <span className="font-medium text-[#dd7845]">{bookedPercent}% booked</span>
+                                <span className="font-medium text-[var(--accent-ink)]">{bookedPercent}% booked</span>
                             </div>
-                            <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-[#1b2536]">
+                            <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-[var(--surface)]">
                                 <div
                                     className="h-full rounded-full bg-[#dd7845] transition-all duration-500"
                                     style={{ width: `${bookedPercent}%` }}
@@ -167,14 +167,14 @@ export default function TicketCard({ ticket, viewMode = "grid" }) {
                     </div>
 
                     {/* Perks and Footer row */}
-                    <div className="mt-5 flex flex-wrap items-center justify-between gap-4 border-t border-white/[0.06] pt-4">
+                    <div className="mt-5 flex flex-wrap items-center justify-between gap-4 border-t border-hairline/[0.06] pt-4">
                         <div className="flex flex-wrap items-center gap-1.5">
                             {displayedPerks.map(perk => (
                                 <span
                                     key={perk}
-                                    className="inline-flex items-center gap-1 rounded-full border border-[#213045] bg-[#162132] px-2.5 py-1 text-[11px] text-slate-300"
+                                    className="inline-flex items-center gap-1 rounded-full border border-[var(--line)] bg-[var(--surface)] px-2.5 py-1 text-[11px] text-slate-300"
                                 >
-                                    <Check aria-hidden="true" className="h-3 w-3 text-[#dd7845]" />
+                                    <Check aria-hidden="true" className="h-3 w-3 text-[var(--accent-ink)]" />
                                     <span>{perk}</span>
                                 </span>
                             ))}
@@ -193,7 +193,7 @@ export default function TicketCard({ ticket, viewMode = "grid" }) {
                             </div>
 
                             <Link
-                                className="group/link inline-flex items-center gap-1 text-[13px] font-medium text-[#dd7845] transition-colors hover:text-[#ef8a53]"
+                                className="group/link inline-flex items-center gap-1 text-[13px] font-medium text-[var(--accent-ink)] transition-colors hover:text-[var(--accent-ink)]"
                                 href={`/tickets/${ticket._id}`}
                             >
                                 <span>See details</span>
@@ -208,7 +208,7 @@ export default function TicketCard({ ticket, viewMode = "grid" }) {
 
     // Default Grid view matching user's design reference exactly
     return (
-        <article className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-[#1e2a3c] bg-[#111a28] shadow-[0_12px_32px_rgba(0,0,0,0.35)] transition-all duration-300 hover:border-[#dd7845]/50 hover:bg-[#131d2e]">
+        <article className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--surface-inset)] shadow-[0_12px_32px_rgba(0,0,0,0.35)] transition-all duration-300 hover:border-[#dd7845]/50 hover:bg-[var(--surface)]">
             {/* Top Image Section with Badges and Price Overlay */}
             <div className="relative h-[190px] w-full overflow-hidden bg-slate-900">
                 <TicketImage
@@ -216,11 +216,11 @@ export default function TicketCard({ ticket, viewMode = "grid" }) {
                     src={ticket.image}
                 />
                 {/* Vignette and bottom gradient for clean contrast */}
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#111a28] via-transparent to-black/40" />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[var(--surface-inset)] via-transparent to-shade/40" />
 
                 {/* Top-left badges: Transport mode + Featured */}
                 <div className="absolute left-3.5 top-3.5 flex items-center gap-1.5">
-                    <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-[#0d1624]/80 px-2.5 py-1 text-[11px] font-medium text-slate-200 backdrop-blur-md">
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-hairline/10 bg-[var(--surface-inset)]/80 px-2.5 py-1 text-[11px] font-medium text-slate-200 backdrop-blur-md">
                         {getTransportIcon(ticket.transportType, "h-3 w-3")}
                         <span>{ticket.transportType}</span>
                     </span>
@@ -233,7 +233,7 @@ export default function TicketCard({ ticket, viewMode = "grid" }) {
 
                 {/* Top-right badge: Fare class */}
                 <div className="absolute right-3.5 top-3.5">
-                    <span className="inline-flex items-center rounded-full border border-white/5 bg-[#0d1624]/60 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#dd7845] backdrop-blur-md">
+                    <span className="inline-flex items-center rounded-full border border-hairline/5 bg-[var(--surface-inset)]/60 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--accent-ink)] backdrop-blur-md">
                         {fareClass}
                     </span>
                 </div>
@@ -267,7 +267,7 @@ export default function TicketCard({ ticket, viewMode = "grid" }) {
                             <span className="block font-mono text-[10px] font-medium uppercase tracking-wider text-slate-500">
                                 PRICE / SEAT
                             </span>
-                            <span className="mt-1 block text-[15px] font-bold text-[#dd7845]">
+                            <span className="mt-1 block text-[15px] font-bold text-[var(--accent-ink)]">
                                 {formatPrice(ticket.price)}
                             </span>
                         </div>
@@ -310,9 +310,9 @@ export default function TicketCard({ ticket, viewMode = "grid" }) {
                             <span className="text-slate-400">
                                 <b className="font-bold text-slate-100">{seatsLeft}</b> seats left of {totalSeats}
                             </span>
-                            <span className="font-medium text-[#dd7845]">{bookedPercent}% booked</span>
+                            <span className="font-medium text-[var(--accent-ink)]">{bookedPercent}% booked</span>
                         </div>
-                        <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-[#1b2536]">
+                        <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-[var(--surface)]">
                             <div
                                 className="h-full rounded-full bg-[#dd7845] transition-all duration-500"
                                 style={{ width: `${bookedPercent}%` }}
@@ -325,9 +325,9 @@ export default function TicketCard({ ticket, viewMode = "grid" }) {
                         {displayedPerks.map(perk => (
                             <span
                                 key={perk}
-                                className="inline-flex items-center gap-1 rounded-full border border-[#213045] bg-[#162132] px-2.5 py-1 text-[11px] text-slate-300"
+                                className="inline-flex items-center gap-1 rounded-full border border-[var(--line)] bg-[var(--surface)] px-2.5 py-1 text-[11px] text-slate-300"
                             >
-                                <Check aria-hidden="true" className="h-3 w-3 text-[#dd7845]" />
+                                <Check aria-hidden="true" className="h-3 w-3 text-[var(--accent-ink)]" />
                                 <span>{perk}</span>
                             </span>
                         ))}
@@ -340,7 +340,7 @@ export default function TicketCard({ ticket, viewMode = "grid" }) {
                 </div>
 
                 {/* Footer Row: Rating & See Details */}
-                <div className="mt-5 flex items-center justify-between border-t border-white/[0.06] pt-4">
+                <div className="mt-5 flex items-center justify-between border-t border-hairline/[0.06] pt-4">
                     <div className="flex items-center gap-1 text-[13px]">
                         <span className="text-sm text-amber-400">★</span>
                         <span className="font-bold text-slate-200">{ticket.rating || "4.3"}</span>
@@ -348,7 +348,7 @@ export default function TicketCard({ ticket, viewMode = "grid" }) {
                     </div>
 
                     <Link
-                        className="group/link inline-flex items-center gap-1 text-[13px] font-medium text-[#dd7845] transition-colors hover:text-[#ef8a53]"
+                        className="group/link inline-flex items-center gap-1 text-[13px] font-medium text-[var(--accent-ink)] transition-colors hover:text-[var(--accent-ink)]"
                         href={`/tickets/${ticket._id}`}
                     >
                         <span>See details</span>

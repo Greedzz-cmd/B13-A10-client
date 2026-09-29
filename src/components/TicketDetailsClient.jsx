@@ -152,12 +152,12 @@ export default function TicketDetailsClient({ ticket }) {
     };
 
     return (
-        <main className="min-h-screen bg-[#080f1d] pb-24 pt-10 text-slate-100">
+        <main className="min-h-screen bg-[var(--surface-canvas)] pb-24 pt-10 text-slate-100">
             <div className="mx-auto max-w-6xl px-5 sm:px-8">
                 {/* Back navigation link */}
                 <Link
                     href="/tickets"
-                    className="inline-flex items-center gap-2 font-mono text-xs text-slate-400 transition hover:text-[#dd7845]"
+                    className="inline-flex items-center gap-2 font-mono text-xs text-slate-400 transition hover:text-[var(--accent-ink)]"
                 >
                     <ArrowLeft className="h-4 w-4" /> Back to all tickets
                 </Link>
@@ -166,7 +166,7 @@ export default function TicketDetailsClient({ ticket }) {
                     {/* Left 2 Columns: Main Details */}
                     <div className="space-y-6 lg:col-span-2">
                         {/* Hero Image Section */}
-                        <div className="relative h-[320px] w-full overflow-hidden rounded-2xl border border-white/10 bg-slate-900 shadow-xl sm:h-[400px]">
+                        <div className="relative h-[320px] w-full overflow-hidden rounded-2xl border border-hairline/10 bg-slate-900 shadow-xl sm:h-[400px]">
                             {ticket.image ? (
                                 <Image
                                     src={ticket.image}
@@ -176,26 +176,26 @@ export default function TicketDetailsClient({ ticket }) {
                                     className="object-cover"
                                 />
                             ) : (
-                                <div className="grid h-full place-items-center bg-[#0e172a] text-slate-600">
+                                <div className="grid h-full place-items-center bg-[var(--surface-inset)] text-slate-600">
                                     No Image Available
                                 </div>
                             )}
-                            <div className="absolute inset-0 bg-gradient-to-t from-[#080f1d] via-black/30 to-transparent" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-[var(--surface-canvas)] via-black/30 to-transparent" />
 
                             {/* Top Badges */}
                             <div className="absolute left-4 top-4 flex items-center gap-2">
-                                <span className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-black/60 px-3 py-1 text-xs font-medium backdrop-blur-md">
-                                    <TransportIcon className="h-3.5 w-3.5 text-[#dd7845]" />
+                                <span className="inline-flex items-center gap-1.5 rounded-full border border-hairline/15 bg-shade/60 px-3 py-1 text-xs font-medium backdrop-blur-md">
+                                    <TransportIcon className="h-3.5 w-3.5 text-[var(--accent-ink)]" />
                                     {ticket.transportType || "Bus"}
                                 </span>
-                                <span className="rounded-full border border-[#dd7845]/40 bg-[#dd7845]/20 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-[#dd7845] backdrop-blur-md">
+                                <span className="rounded-full border border-[#dd7845]/40 bg-[#dd7845]/20 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-[var(--accent-ink)] backdrop-blur-md">
                                     {ticket.fareClass || "Economy"}
                                 </span>
                             </div>
 
                             {/* Bottom Title on Image */}
                             <div className="absolute bottom-5 left-5 right-5">
-                                <p className="font-mono text-xs uppercase tracking-widest text-[#dd7845]">
+                                <p className="font-mono text-xs uppercase tracking-widest text-[var(--accent-ink)]">
                                     {ticket.vendorName || "Verified Operator"}
                                 </p>
                                 <h1 className="mt-1 font-serif text-3xl font-medium text-white sm:text-4xl">
@@ -208,7 +208,7 @@ export default function TicketDetailsClient({ ticket }) {
                         </div>
 
                         {/* Route Schedule & Timeline Card */}
-                        <div className="rounded-2xl border border-white/10 bg-[#0e172a] p-6 shadow-lg">
+                        <div className="rounded-2xl border border-hairline/10 bg-[var(--surface-inset)] p-6 shadow-lg">
                             <h2 className="font-serif text-xl font-medium text-slate-100">Schedule & Route Details</h2>
                             <div className="mt-6 grid gap-6 sm:grid-cols-3">
                                 <div>
@@ -226,11 +226,11 @@ export default function TicketDetailsClient({ ticket }) {
                                     </p>
                                 </div>
 
-                                <div className="text-center sm:border-x sm:border-white/5 sm:px-4">
+                                <div className="text-center sm:border-x sm:border-hairline/5 sm:px-4">
                                     <span className="font-mono text-[10px] uppercase tracking-wider text-slate-500">
                                         Duration
                                     </span>
-                                    <div className="mt-2 flex items-center justify-center gap-2 text-xs font-mono text-[#dd7845]">
+                                    <div className="mt-2 flex items-center justify-center gap-2 text-xs font-mono text-[var(--accent-ink)]">
                                         <Clock className="h-3.5 w-3.5" />
                                         <span>{ticket.duration || "Direct"}</span>
                                     </div>
@@ -257,16 +257,16 @@ export default function TicketDetailsClient({ ticket }) {
                         </div>
 
                         {/* Perks & Amenities */}
-                        <div className="rounded-2xl border border-white/10 bg-[#0e172a] p-6 shadow-lg">
+                        <div className="rounded-2xl border border-hairline/10 bg-[var(--surface-inset)] p-6 shadow-lg">
                             <h2 className="font-serif text-xl font-medium text-slate-100">Included Amenities & Perks</h2>
                             <div className="mt-4 flex flex-wrap gap-2.5">
                                 {ticket.perks && ticket.perks.length > 0 ? (
                                     ticket.perks.map((perk) => (
                                         <span
                                             key={perk}
-                                            className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-slate-200"
+                                            className="inline-flex items-center gap-1.5 rounded-xl border border-hairline/10 bg-hairline/5 px-3 py-1.5 text-xs text-slate-200"
                                         >
-                                            <Check className="h-3.5 w-3.5 text-[#dd7845]" />
+                                            <Check className="h-3.5 w-3.5 text-[var(--accent-ink)]" />
                                             {perk}
                                         </span>
                                     ))
@@ -280,7 +280,7 @@ export default function TicketDetailsClient({ ticket }) {
                     {/* Right Column: Pricing, Countdown & Booking Action */}
                     <div className="space-y-6">
                         {/* Booking Summary Box */}
-                        <div className="rounded-2xl border border-white/10 bg-[#0e172a] p-6 shadow-xl">
+                        <div className="rounded-2xl border border-hairline/10 bg-[var(--surface-inset)] p-6 shadow-xl">
                             <span className="font-mono text-[10px] uppercase tracking-wider text-slate-500">
                                 Fare per seat
                             </span>
@@ -292,7 +292,7 @@ export default function TicketDetailsClient({ ticket }) {
                             </div>
 
                             {/* Departure Countdown */}
-                            <div className="mt-6 rounded-xl border border-white/10 bg-black/30 p-4">
+                            <div className="mt-6 rounded-xl border border-hairline/10 bg-shade/30 p-4">
                                 <span className="block text-center font-mono text-[10px] uppercase tracking-wider text-slate-400">
                                     {countdown.isPassed ? "DEPARTURE STATUS" : "DEPARTURE IN"}
                                 </span>
@@ -302,20 +302,20 @@ export default function TicketDetailsClient({ ticket }) {
                                     </div>
                                 ) : (
                                     <div className="mt-3 grid grid-cols-4 gap-2 text-center font-mono">
-                                        <div className="rounded-lg bg-white/5 p-2">
+                                        <div className="rounded-lg bg-hairline/5 p-2">
                                             <span className="block text-lg font-bold text-slate-100">{countdown.days}</span>
                                             <span className="text-[9px] text-slate-500">DAYS</span>
                                         </div>
-                                        <div className="rounded-lg bg-white/5 p-2">
+                                        <div className="rounded-lg bg-hairline/5 p-2">
                                             <span className="block text-lg font-bold text-slate-100">{countdown.hours}</span>
                                             <span className="text-[9px] text-slate-500">HRS</span>
                                         </div>
-                                        <div className="rounded-lg bg-white/5 p-2">
+                                        <div className="rounded-lg bg-hairline/5 p-2">
                                             <span className="block text-lg font-bold text-slate-100">{countdown.minutes}</span>
                                             <span className="text-[9px] text-slate-500">MIN</span>
                                         </div>
-                                        <div className="rounded-lg bg-white/5 p-2">
-                                            <span className="block text-lg font-bold text-[#dd7845]">{countdown.seconds}</span>
+                                        <div className="rounded-lg bg-hairline/5 p-2">
+                                            <span className="block text-lg font-bold text-[var(--accent-ink)]">{countdown.seconds}</span>
                                             <span className="text-[9px] text-slate-500">SEC</span>
                                         </div>
                                     </div>
@@ -323,7 +323,7 @@ export default function TicketDetailsClient({ ticket }) {
                             </div>
 
                             {/* Seats Inventory Progress */}
-                            <div className="mt-6 border-t border-white/5 pt-4">
+                            <div className="mt-6 border-t border-hairline/5 pt-4">
                                 <div className="flex items-center justify-between text-xs text-slate-400">
                                     <span>Available Seats</span>
                                     <span className="font-semibold text-slate-200">
@@ -356,7 +356,7 @@ export default function TicketDetailsClient({ ticket }) {
                         </div>
 
                         {/* Safety & Guarantee info */}
-                        <div className="rounded-2xl border border-white/5 bg-[#0e172a] p-5 text-xs text-slate-400 space-y-3">
+                        <div className="rounded-2xl border border-hairline/5 bg-[var(--surface-inset)] p-5 text-xs text-slate-400 space-y-3">
                             <div className="flex items-start gap-2.5">
                                 <ShieldCheck className="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" />
                                 <span>Verified transport operator on Routely.</span>
@@ -373,16 +373,16 @@ export default function TicketDetailsClient({ ticket }) {
             {/* Book Now Modal */}
             {isBookingOpen && (
                 <div
-                    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm"
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-shade/75 backdrop-blur-sm"
                     role="dialog"
                     aria-modal="true"
                 >
-                    <div className="relative w-full max-w-md overflow-hidden rounded-2xl border border-white/10 bg-[#0c1424] p-6 shadow-2xl text-slate-100">
+                    <div className="relative w-full max-w-md overflow-hidden rounded-2xl border border-hairline/10 bg-[var(--surface-inset)] p-6 shadow-2xl text-slate-100">
                         {/* Close button */}
                         <button
                             type="button"
                             onClick={() => setIsBookingOpen(false)}
-                            className="absolute top-4 right-4 rounded-lg p-1.5 text-slate-400 hover:bg-white/10 hover:text-white"
+                            className="absolute top-4 right-4 rounded-lg p-1.5 text-slate-400 hover:bg-hairline/10 hover:text-white"
                         >
                             <X className="h-4 w-4" />
                         </button>
@@ -430,7 +430,7 @@ export default function TicketDetailsClient({ ticket }) {
                                             type="text"
                                             readOnly
                                             value={user?.name || "Passenger"}
-                                            className="h-10 w-full rounded-lg border border-white/10 bg-white/5 px-3 text-xs text-slate-300 outline-none"
+                                            className="h-10 w-full rounded-lg border border-hairline/10 bg-hairline/5 px-3 text-xs text-slate-300 outline-none"
                                         />
                                     </div>
 
@@ -445,11 +445,11 @@ export default function TicketDetailsClient({ ticket }) {
                                             value={bookingQty}
                                             onChange={(e) => setBookingQty(Number(e.target.value))}
                                             required
-                                            className="h-10 w-full rounded-lg border border-white/10 bg-[#111c2e] px-3 text-sm text-white outline-none focus:border-[#dd7845]"
+                                            className="h-10 w-full rounded-lg border border-hairline/10 bg-[var(--surface)] px-3 text-sm text-white outline-none focus:border-[#dd7845]"
                                         />
                                     </div>
 
-                                    <div className="rounded-xl border border-white/5 bg-black/30 p-3.5 text-xs space-y-2">
+                                    <div className="rounded-xl border border-hairline/5 bg-shade/30 p-3.5 text-xs space-y-2">
                                         <div className="flex justify-between text-slate-400">
                                             <span>Unit Price:</span>
                                             <span>{formatPrice(ticket.price)}</span>
@@ -458,9 +458,9 @@ export default function TicketDetailsClient({ ticket }) {
                                             <span>Quantity:</span>
                                             <span>{bookingQty}</span>
                                         </div>
-                                        <div className="flex justify-between border-t border-white/5 pt-2 text-sm font-semibold">
+                                        <div className="flex justify-between border-t border-hairline/5 pt-2 text-sm font-semibold">
                                             <span className="text-slate-200">Total Price:</span>
-                                            <span className="text-[#dd7845]">{formatPrice(Number(ticket.price) * Number(bookingQty))}</span>
+                                            <span className="text-[var(--accent-ink)]">{formatPrice(Number(ticket.price) * Number(bookingQty))}</span>
                                         </div>
                                     </div>
 
@@ -476,7 +476,7 @@ export default function TicketDetailsClient({ ticket }) {
                                     <button
                                         type="button"
                                         onClick={() => setIsBookingOpen(false)}
-                                        className="flex-1 rounded-xl border border-white/10 bg-white/5 py-2.5 text-xs font-medium text-slate-300 hover:bg-white/10"
+                                        className="flex-1 rounded-xl border border-hairline/10 bg-hairline/5 py-2.5 text-xs font-medium text-slate-300 hover:bg-hairline/10"
                                     >
                                         Cancel
                                     </button>

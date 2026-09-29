@@ -91,7 +91,7 @@ export default async function MyTicketsPage() {
     const tickets = await getTickets();
 
     return (
-        <div className="relative flex min-h-[calc(100vh-60px)] flex-col bg-[#080f1d] md:flex-row">
+        <div className="relative flex min-h-[calc(100vh-60px)] flex-col bg-[var(--surface-canvas)] md:flex-row">
             <Sidebar role="vendor" />
             <main className="min-w-0 flex-1 p-5 text-slate-100 sm:p-8 lg:p-10">
                 <div className="mx-auto max-w-330">
@@ -109,7 +109,7 @@ export default async function MyTicketsPage() {
                     <VendorTicketGrid initialTickets={tickets} />
                 </div>
             </main>
-            <button type="button" className="fixed bottom-5 right-5 z-30 flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-[#131b2e] text-xs font-semibold text-slate-300 shadow-lg transition hover:bg-white/15 hover:text-white" aria-label="Help and Support" title="Help & Support">
+            <button type="button" className="fixed bottom-5 right-5 z-30 flex h-8 w-8 items-center justify-center rounded-full border border-hairline/10 bg-[var(--surface)] text-xs font-semibold text-slate-300 shadow-lg transition hover:bg-hairline/15 hover:text-white" aria-label="Help and Support" title="Help & Support">
                 ?
             </button>
         </div>

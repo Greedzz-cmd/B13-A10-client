@@ -131,7 +131,7 @@ export default function AuthPage({ mode }) {
     };
 
     return (
-        <main className="relative min-h-screen overflow-hidden bg-[#071c2f] text-slate-100">
+        <main className="relative min-h-screen overflow-hidden bg-[var(--surface-inset)] text-slate-100">
             {/* Background */}
             <div
                 className="absolute inset-0"
@@ -144,7 +144,7 @@ export default function AuthPage({ mode }) {
             {/* Ambient glows */}
             <div className="pointer-events-none absolute -left-40 top-1/4 h-[500px] w-[500px] rounded-full bg-[#dd8747]/[0.045] blur-[130px]" />
 
-            <div className="pointer-events-none absolute right-[-180px] top-1/3 h-[600px] w-[600px] rounded-full bg-[#174566]/30 blur-[140px]" />
+            <div className="pointer-events-none absolute right-[-180px] top-1/3 h-[600px] w-[600px] rounded-full bg-[var(--surface-strong)]/30 blur-[140px]" />
 
             <div className="relative z-10 grid min-h-screen lg:grid-cols-[minmax(0,1.38fr)_minmax(420px,0.82fr)]">
                 {/* LEFT SIDE */}
@@ -160,9 +160,9 @@ export default function AuthPage({ mode }) {
                     </div>
 
                     {/* Map overlays */}
-                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#071c2f]/20 via-transparent to-[#071c2f]/40" />
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[var(--surface-inset)]/20 via-transparent to-[var(--surface-inset)]/40" />
 
-                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-56 bg-gradient-to-t from-[#071c2f] to-transparent" />
+                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-56 bg-gradient-to-t from-[var(--surface-inset)] to-transparent" />
 
                     {/* Logo */}
                     <header className="absolute left-7 top-5 z-10 flex items-center gap-3">
@@ -170,7 +170,7 @@ export default function AuthPage({ mode }) {
                             R
                         </span>
 
-                        <span className="font-serif text-[19px] tracking-[-0.02em] text-white/90">
+                        <span className="font-serif text-[19px] tracking-[-0.02em] text-hairline/90">
                             Routely
                         </span>
                     </header>
@@ -223,12 +223,12 @@ export default function AuthPage({ mode }) {
                     <div className="pointer-events-none absolute right-[10%] top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-[#dd8747]/[0.06] blur-[100px]" />
 
                     {/* Auth Card */}
-                    <div className="relative w-full max-w-[480px] rounded-[22px] border border-white/[0.07] bg-[#10283b]/80 p-5 shadow-[0_24px_80px_rgba(0,0,0,0.45)] backdrop-blur-xl sm:p-7">
+                    <div className="relative w-full max-w-[480px] rounded-[22px] border border-hairline/[0.07] bg-[var(--surface)]/80 p-5 shadow-[0_24px_80px_rgba(0,0,0,0.45)] backdrop-blur-xl sm:p-7">
                         {/* Back to home */}
                         <div className="mb-7 flex justify-end text-[10px] text-slate-400">
                             <Link
                                 href="/"
-                                className="group inline-flex items-center gap-2 transition-colors hover:text-[#ee9b61]"
+                                className="group inline-flex items-center gap-2 transition-colors hover:text-[var(--accent-ink)]"
                             >
                                 <span className="transition-transform duration-200 group-hover:-translate-x-0.5">
                                     ←
@@ -240,7 +240,7 @@ export default function AuthPage({ mode }) {
 
                         {/* Heading */}
                         <div className="mb-7">
-                            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/[0.06] bg-white/[0.025] px-2.5 py-1 text-[8px] font-medium uppercase tracking-[0.18em] text-slate-500">
+                            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-hairline/[0.06] bg-hairline/[0.025] px-2.5 py-1 text-[8px] font-medium uppercase tracking-[0.18em] text-slate-500">
                                 {isSignup
                                     ? "Start your journey"
                                     : "Welcome back"}
@@ -262,7 +262,7 @@ export default function AuthPage({ mode }) {
                         {/* Google */}
                         <button
                             type="button" onClick={handleGoogleSignIn}
-                            className="group flex h-[50px] w-full items-center justify-center gap-3 rounded-xl border border-white/[0.08] bg-[#eef3f7] px-4 text-[12px] font-medium text-slate-900 transition-all duration-200 hover:bg-white hover:shadow-[0_8px_30px_rgba(255,255,255,0.08)]"
+                            className="group flex h-[50px] w-full items-center justify-center gap-3 rounded-xl border border-hairline/[0.08] bg-[#eef3f7] px-4 text-[12px] font-medium text-slate-900 transition-all duration-200 hover:bg-white hover:shadow-[0_8px_30px_rgba(255,255,255,0.08)]"
                         >
                             <span className="grid h-6 w-6 place-items-center rounded-full bg-white text-[10px] font-bold shadow-sm">
                                 G
@@ -273,9 +273,9 @@ export default function AuthPage({ mode }) {
 
                         {/* Divider */}
                         <div className="my-6 flex items-center gap-3 text-[9px] uppercase tracking-[0.22em] text-slate-600">
-                            <span className="h-px flex-1 bg-white/[0.07]" />
+                            <span className="h-px flex-1 bg-hairline/[0.07]" />
                             OR
-                            <span className="h-px flex-1 bg-white/[0.07]" />
+                            <span className="h-px flex-1 bg-hairline/[0.07]" />
                         </div>
 
                         {/* Form-level error */}
@@ -292,7 +292,7 @@ export default function AuthPage({ mode }) {
                             {isSignup && (
                                 <div className="flex items-center gap-4 pb-1">
                                     <div className="relative">
-                                        <div className="grid h-[72px] w-[72px] place-items-center overflow-hidden rounded-full border border-[#2b3a50] bg-[#172d41]/90">
+                                        <div className="grid h-[72px] w-[72px] place-items-center overflow-hidden rounded-full border border-[var(--line)] bg-[var(--surface-raised)]/90">
                                             {profilePicturePreview ? (
                                                 // eslint-disable-next-line @next/next/no-img-element
                                                 <img
@@ -313,7 +313,7 @@ export default function AuthPage({ mode }) {
                                                 fileInputRef.current?.click()
                                             }
                                             aria-label="Upload profile picture"
-                                            className="absolute -bottom-1 -right-1 grid h-7 w-7 place-items-center rounded-full border-2 border-[#10283b] bg-[#dd8747] text-white shadow-[0_4px_12px_rgba(0,0,0,0.3)] transition-colors hover:bg-[#ee9b61]"
+                                            className="absolute -bottom-1 -right-1 grid h-7 w-7 place-items-center rounded-full border-2 border-[var(--line)] bg-[#dd8747] text-white shadow-[0_4px_12px_rgba(0,0,0,0.3)] transition-colors hover:bg-[#ee9b61]"
                                         >
                                             <Camera className="h-3.5 w-3.5" />
                                         </button>
@@ -364,7 +364,7 @@ export default function AuthPage({ mode }) {
                                     </label>
 
                                     <input
-                                        className="h-[47px] w-full rounded-xl border border-[#2b3a50] bg-[#172d41]/90 px-3.5 text-[12px] text-white placeholder:text-slate-600 outline-none transition-all duration-200 focus:border-[#dd8747]/70 focus:bg-[#1a3145] focus:ring-2 focus:ring-[#dd8747]/10"
+                                        className="h-[47px] w-full rounded-xl border border-[var(--line)] bg-[var(--surface-raised)]/90 px-3.5 text-[12px] text-white placeholder:text-slate-600 outline-none transition-all duration-200 focus:border-[#dd8747]/70 focus:bg-[var(--surface-raised)] focus:ring-2 focus:ring-[#dd8747]/10"
                                         type="text"
                                         name="name"
                                         placeholder="Enter your name"
@@ -399,16 +399,16 @@ export default function AuthPage({ mode }) {
                                             }
                                             className={`relative min-h-[104px] overflow-hidden rounded-2xl border p-3.5 text-left transition-all duration-200 ${
                                                 userType === "traveller"
-                                                    ? "border-[#dd8747] bg-[#1d3549] shadow-[0_0_0_1px_rgba(221,135,71,0.1),0_10px_30px_rgba(0,0,0,0.18)]"
-                                                    : "border-[#2b3a50] bg-[#172d41]/90 hover:border-[#4a5d72]"
+                                                    ? "border-[#dd8747] bg-[var(--surface-raised)] shadow-[0_0_0_1px_rgba(221,135,71,0.1),0_10px_30px_rgba(0,0,0,0.18)]"
+                                                    : "border-[var(--line)] bg-[var(--surface-raised)]/90 hover:border-[#4a5d72]"
                                             }`}
                                         >
                                             <div className="flex items-start justify-between">
                                                 <div
                                                     className={`grid h-9 w-9 place-items-center rounded-xl transition-all duration-200 ${
                                                         userType === "traveller"
-                                                            ? "bg-[#dd8747]/15 text-[#ee9b61]"
-                                                            : "bg-[#223c50] text-slate-400"
+                                                            ? "bg-[#dd8747]/15 text-[var(--accent-ink)]"
+                                                            : "bg-[var(--surface-strong)] text-slate-400"
                                                     }`}
                                                 >
                                                     <Luggage className="h-[17px] w-[17px]" />
@@ -450,16 +450,16 @@ export default function AuthPage({ mode }) {
                                             }
                                             className={`relative min-h-[104px] overflow-hidden rounded-2xl border p-3.5 text-left transition-all duration-200 ${
                                                 userType === "vendor"
-                                                    ? "border-[#dd8747] bg-[#1d3549] shadow-[0_0_0_1px_rgba(221,135,71,0.1),0_10px_30px_rgba(0,0,0,0.18)]"
-                                                    : "border-[#2b3a50] bg-[#172d41]/90 hover:border-[#4a5d72]"
+                                                    ? "border-[#dd8747] bg-[var(--surface-raised)] shadow-[0_0_0_1px_rgba(221,135,71,0.1),0_10px_30px_rgba(0,0,0,0.18)]"
+                                                    : "border-[var(--line)] bg-[var(--surface-raised)]/90 hover:border-[#4a5d72]"
                                             }`}
                                         >
                                             <div className="flex items-start justify-between">
                                                 <div
                                                     className={`grid h-9 w-9 place-items-center rounded-xl transition-all duration-200 ${
                                                         userType === "vendor"
-                                                            ? "bg-[#dd8747]/15 text-[#ee9b61]"
-                                                            : "bg-[#223c50] text-slate-400"
+                                                            ? "bg-[#dd8747]/15 text-[var(--accent-ink)]"
+                                                            : "bg-[var(--surface-strong)] text-slate-400"
                                                     }`}
                                                 >
                                                     <Store className="h-[17px] w-[17px]" />
@@ -506,7 +506,7 @@ export default function AuthPage({ mode }) {
                                 </label>
 
                                 <input
-                                    className="h-[47px] w-full rounded-xl border border-[#2b3a50] bg-[#172d41]/90 px-3.5 text-[12px] text-white placeholder:text-slate-600 outline-none transition-all duration-200 focus:border-[#dd8747]/70 focus:bg-[#1a3145] focus:ring-2 focus:ring-[#dd8747]/10"
+                                    className="h-[47px] w-full rounded-xl border border-[var(--line)] bg-[var(--surface-raised)]/90 px-3.5 text-[12px] text-white placeholder:text-slate-600 outline-none transition-all duration-200 focus:border-[#dd8747]/70 focus:bg-[var(--surface-raised)] focus:ring-2 focus:ring-[#dd8747]/10"
                                     type="email"
                                     name="email"
                                     placeholder="Enter an email address"
@@ -523,10 +523,10 @@ export default function AuthPage({ mode }) {
 
                                 <div className="relative">
                                     <input
-                                        className={`h-[47px] w-full rounded-xl border bg-[#172d41]/90 px-3.5 pr-11 text-[12px] text-white placeholder:text-slate-600 outline-none transition-all duration-200 focus:bg-[#1a3145] focus:ring-2 ${
+                                        className={`h-[47px] w-full rounded-xl border bg-[var(--surface-raised)]/90 px-3.5 pr-11 text-[12px] text-white placeholder:text-slate-600 outline-none transition-all duration-200 focus:bg-[var(--surface-raised)] focus:ring-2 ${
                                             passwordError
                                                 ? "border-red-500/60 focus:border-red-500/70 focus:ring-red-500/10"
-                                                : "border-[#2b3a50] focus:border-[#dd8747]/70 focus:ring-[#dd8747]/10"
+                                                : "border-[var(--line)] focus:border-[#dd8747]/70 focus:ring-[#dd8747]/10"
                                         }`}
                                         type={
                                             showPassword
@@ -579,10 +579,10 @@ export default function AuthPage({ mode }) {
 
                                     <div className="relative">
                                         <input
-                                            className={`h-[47px] w-full rounded-xl border bg-[#172d41]/90 px-3.5 pr-11 text-[12px] text-white placeholder:text-slate-600 outline-none transition-all duration-200 focus:bg-[#1a3145] focus:ring-2 ${
+                                            className={`h-[47px] w-full rounded-xl border bg-[var(--surface-raised)]/90 px-3.5 pr-11 text-[12px] text-white placeholder:text-slate-600 outline-none transition-all duration-200 focus:bg-[var(--surface-raised)] focus:ring-2 ${
                                                 passwordError
                                                     ? "border-red-500/60 focus:border-red-500/70 focus:ring-red-500/10"
-                                                    : "border-[#2b3a50] focus:border-[#dd8747]/70 focus:ring-[#dd8747]/10"
+                                                    : "border-[var(--line)] focus:border-[#dd8747]/70 focus:ring-[#dd8747]/10"
                                             }`}
                                             type={
                                                 showConfirmPassword
@@ -651,7 +651,7 @@ export default function AuthPage({ mode }) {
                                 : "Don’t have an account?"}{" "}
                             <Link
                                 href={isSignup ? "/sign-in" : "/get-started"}
-                                className="font-medium text-[#dd8747] transition-colors hover:text-[#f4a571]"
+                                className="font-medium text-[var(--accent-ink)] transition-colors hover:text-[var(--accent-ink)]"
                             >
                                 {isSignup ? "Sign in" : "Register"}
                             </Link>

@@ -42,11 +42,11 @@ export default function VendorTicketCard({ ticket, onDelete, onEdit, isDeleting 
     const isSoldOut = seatsLeft <= 0;
 
     return (
-        <article className="overflow-hidden rounded-xl border border-[#25324a] bg-[#111b2d] shadow-[0_12px_28px_rgba(0,0,0,0.2)] transition-colors hover:border-blue-500/40">
-            <div className="relative h-28 overflow-hidden bg-[#0d1626]">
+        <article className="overflow-hidden rounded-xl border border-[var(--line)] bg-[var(--surface)] shadow-[0_12px_28px_rgba(0,0,0,0.2)] transition-colors hover:border-blue-500/40">
+            <div className="relative h-28 overflow-hidden bg-[var(--surface-inset)]">
                 <TicketImage alt={`${ticket.from} to ${ticket.to}`} src={ticket.image} />
-                <div className="absolute inset-0 bg-linear-to-t from-[#111b2d] via-transparent to-black/30" />
-                <div className="absolute left-2.5 top-2.5 inline-flex items-center gap-1 rounded-full bg-[#0b1422]/80 px-2 py-1 text-[9px] text-slate-200 backdrop-blur-sm">
+                <div className="absolute inset-0 bg-linear-to-t from-[var(--surface)] via-transparent to-shade/30" />
+                <div className="absolute left-2.5 top-2.5 inline-flex items-center gap-1 rounded-full bg-[var(--surface-inset)]/80 px-2 py-1 text-[9px] text-slate-200 backdrop-blur-sm">
                     <TransportIcon aria-hidden="true" className="h-2.5 w-2.5" />
                     {ticket.transportType || "Bus"}
                 </div>
@@ -69,7 +69,7 @@ export default function VendorTicketCard({ ticket, onDelete, onEdit, isDeleting 
                         <p className="text-[8px] uppercase text-slate-500">{ticket.from}</p>
                     </div>
                     <div className="min-w-12">
-                        <div className="h-px bg-[#28364d]" />
+                        <div className="h-px bg-[var(--surface-strong)]" />
                         <p className="mt-1 font-mono text-[8px] text-slate-500">{ticket.duration || "Direct"}</p>
                     </div>
                     <div>
@@ -78,7 +78,7 @@ export default function VendorTicketCard({ ticket, onDelete, onEdit, isDeleting 
                     </div>
                 </div>
 
-                <div className="mt-3 flex items-center justify-between border-t border-white/5 pt-2.5 font-mono text-[8px] text-slate-500">
+                <div className="mt-3 flex items-center justify-between border-t border-hairline/5 pt-2.5 font-mono text-[8px] text-slate-500">
                     <span className="inline-flex items-center gap-1"><CalendarDays className="h-2.5 w-2.5" />{formatDate(ticket.departureDateTime)}</span>
                     <span className={isSoldOut ? "text-red-400" : "inline-flex items-center gap-1 text-slate-400"}>
                         {!isSoldOut && <Users className="h-2.5 w-2.5" />}
@@ -86,7 +86,7 @@ export default function VendorTicketCard({ ticket, onDelete, onEdit, isDeleting 
                     </span>
                 </div>
 
-                <div className="mt-2 flex gap-1.5 border-t border-white/5 pt-2">
+                <div className="mt-2 flex gap-1.5 border-t border-hairline/5 pt-2">
                     <button
                         type="button"
                         onClick={event => {
@@ -94,7 +94,7 @@ export default function VendorTicketCard({ ticket, onDelete, onEdit, isDeleting 
                             event.stopPropagation();
                             onEdit?.(ticket);
                         }}
-                        className="inline-flex h-6 flex-1 items-center justify-center gap-1 rounded-md border border-[#26354c] text-[9px] text-slate-300 transition hover:border-blue-500/50 hover:text-blue-300"
+                        className="inline-flex h-6 flex-1 items-center justify-center gap-1 rounded-md border border-[var(--line)] text-[9px] text-slate-300 transition hover:border-blue-500/50 hover:text-blue-300"
                     >
                         <Pencil className="h-2.5 w-2.5" /> Update
                     </button>

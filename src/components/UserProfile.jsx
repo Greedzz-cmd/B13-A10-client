@@ -37,7 +37,7 @@ export const DEFAULT_PROFILES = {
         title: "User Profile",
         subtitle: "Manage your personal information.",
         statsPosition: "bottom",
-        avatarStyle: "border-white/10 bg-[#111928] text-slate-200",
+        avatarStyle: "border-hairline/10 bg-[var(--surface-inset)] text-slate-200",
         user: {
             name: "Nusrat Jahan",
             email: "Nusrat@Example.Com",
@@ -60,7 +60,7 @@ export const DEFAULT_PROFILES = {
                 label: "TOTAL BOOKINGS",
                 value: "4",
                 icon: Ticket,
-                iconColor: "text-[#dd7845]",
+                iconColor: "text-[var(--accent-ink)]",
                 valueColor: "text-slate-100",
             },
             {
@@ -81,7 +81,7 @@ export const DEFAULT_PROFILES = {
                 label: "TOTAL PAID",
                 value: "৳850",
                 icon: CreditCard,
-                iconColor: "text-[#dd7845]",
+                iconColor: "text-[var(--accent-ink)]",
                 valueColor: "text-slate-100",
             },
         ],
@@ -90,7 +90,7 @@ export const DEFAULT_PROFILES = {
         title: "Vendor Profile",
         subtitle: "",
         statsPosition: "none",
-        avatarStyle: "border border-blue-500/20 bg-[#0f172a] text-blue-400",
+        avatarStyle: "border border-blue-500/20 bg-[var(--surface-inset)] text-blue-400",
         user: {
             name: "Nusrat Jahan",
             email: "nusrat@example.com",
@@ -114,7 +114,7 @@ export const DEFAULT_PROFILES = {
         title: "Admin Profile",
         subtitle: "",
         statsPosition: "top",
-        avatarStyle: "border border-purple-500/25 bg-[#14162a] text-purple-300",
+        avatarStyle: "border border-purple-500/25 bg-[var(--surface)] text-purple-300",
         user: {
             name: "Nusrat Jahan",
             email: "Nusrat@Example.Com",
@@ -138,7 +138,7 @@ export const DEFAULT_PROFILES = {
                 // inside UserProfile, once `tickets` has loaded from the API.
                 label: "TOTAL TICKETS",
                 value: "0",
-                valueColor: "text-[#dd7845]",
+                valueColor: "text-[var(--accent-ink)]",
             },
             {
                 label: "PENDING REVIEW",
@@ -271,7 +271,7 @@ export function UserProfile({
                 return (
                     <div
                         key={stat.label || idx}
-                        className="rounded-xl border border-white/5 bg-[#0e172a] p-4 md:p-5 transition-colors hover:border-white/10"
+                        className="rounded-xl border border-hairline/5 bg-[var(--surface-inset)] p-4 md:p-5 transition-colors hover:border-hairline/10"
                     >
                         <div className="flex items-center justify-between">
                             <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
@@ -279,7 +279,7 @@ export function UserProfile({
                             </span>
                             {IconComponent && (
                                 <IconComponent
-                                    className={`h-4 w-4 ${stat.iconColor || "text-[#dd7845]"}`}
+                                    className={`h-4 w-4 ${stat.iconColor || "text-[var(--accent-ink)]"}`}
                                 />
                             )}
                         </div>
@@ -321,7 +321,7 @@ export function UserProfile({
                 {/* Large Avatar Card */}
                 <div
                     className={`relative flex h-28 w-28 md:h-32 md:w-32 flex-shrink-0 items-center justify-center rounded-2xl text-3xl md:text-4xl font-serif font-medium shadow-inner overflow-hidden ${
-                        resolvedAvatarStyle || "border border-white/10 bg-[#111928] text-slate-200"
+                        resolvedAvatarStyle || "border border-hairline/10 bg-[var(--surface-inset)] text-slate-200"
                     }`}
                 >
                     {resolvedUser.avatar ? (
@@ -348,7 +348,7 @@ export function UserProfile({
                         return (
                             <div
                                 key={field.label || field.key || idx}
-                                className="rounded-xl border border-white/5 bg-[#0e172a] p-4 md:px-5 md:py-4 transition-colors hover:border-white/10"
+                                className="rounded-xl border border-hairline/5 bg-[var(--surface-inset)] p-4 md:px-5 md:py-4 transition-colors hover:border-hairline/10"
                             >
                                 <span className="block text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1">
                                     {field.label}

@@ -24,11 +24,11 @@ export default async function FeaturedTicketsSection() {
     if (featuredTickets.length === 0) return null;
 
     return (
-        <section className="border-b border-white/5 bg-[#071322] px-5 py-8 sm:px-8 sm:py-12">
+        <section className="border-b border-hairline/5 bg-[var(--surface-canvas)] px-5 py-8 sm:px-8 sm:py-12">
             <div className="mx-auto max-w-[1260px]">
                 <div className="flex items-center justify-between gap-6">
                     <div className="flex flex-col gap-5">
-                        <span className="inline-flex w-fit items-center gap-2 rounded-full border border-[#dd7845]/60 bg-[#121d2c] px-3 py-1.5 text-[9px] uppercase tracking-[0.18em] text-[#dd7845] shadow-[0_0_0_1px_rgba(221,120,69,0.18)]">
+                        <span className="inline-flex w-fit items-center gap-2 rounded-full border border-[#dd7845]/60 bg-[var(--surface)] px-3 py-1.5 text-[9px] uppercase tracking-[0.18em] text-[var(--accent-ink)] shadow-[0_0_0_1px_rgba(221,120,69,0.18)]">
                             <Plane aria-hidden="true" className="h-3.5 w-3.5" strokeWidth={1.7} />
                             Admin&apos;s picks
                         </span>

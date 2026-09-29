@@ -7,7 +7,7 @@ import WhyChooseSection from "@/components/WhyChooseSection";
 
 export default function Home() {
     return (
-        <main className="min-h-screen overflow-hidden bg-[#080f1d] text-slate-100">
+        <main className="min-h-screen overflow-hidden bg-[var(--surface-canvas)] text-slate-100">
             <HeroSection />
             <FeaturedTicketsSection />
             <PopularRoutesSection />

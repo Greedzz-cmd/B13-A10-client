@@ -68,10 +68,10 @@ export default function RouteSearchWidget() {
     return (
         <div
             id="routes"
-            className="relative mx-auto mt-20 max-w-[920px] overflow-hidden rounded-2xl border border-white/10 bg-[#0a1324]/95 shadow-2xl shadow-black/50 backdrop-blur-xl sm:mt-24"
+            className="relative mx-auto mt-20 max-w-[920px] overflow-hidden rounded-2xl border border-hairline/10 bg-[var(--surface-inset)]/95 shadow-2xl shadow-shade/50 backdrop-blur-xl sm:mt-24"
         >
             {/* Transport mode selector tabs */}
-            <div className="flex border-b border-white/10 bg-black/25 px-2 sm:px-4" role="tablist">
+            <div className="flex border-b border-hairline/10 bg-shade/25 px-2 sm:px-4" role="tablist">
                 {MODES.map((mode) => {
                     const IconComponent = mode.icon;
                     const isActive = transport === mode.id;
@@ -85,13 +85,13 @@ export default function RouteSearchWidget() {
                             onClick={() => setTransport(mode.id)}
                             className={`group relative flex flex-1 items-center justify-center gap-2 py-3.5 px-3 text-xs sm:text-[13px] font-medium transition-all ${
                                 isActive
-                                    ? "text-[#dd7845] font-semibold bg-white/[0.02]"
-                                    : "text-slate-400 hover:text-slate-200 hover:bg-white/[0.02]"
+                                    ? "text-[var(--accent-ink)] font-semibold bg-hairline/[0.02]"
+                                    : "text-slate-400 hover:text-slate-200 hover:bg-hairline/[0.02]"
                             }`}
                         >
                             <IconComponent
                                 className={`h-4 w-4 transition-transform group-hover:scale-105 ${
-                                    isActive ? "text-[#dd7845]" : "text-slate-400 group-hover:text-slate-200"
+                                    isActive ? "text-[var(--accent-ink)]" : "text-slate-400 group-hover:text-slate-200"
                                 }`}
                                 strokeWidth={1.8}
                             />
@@ -119,10 +119,10 @@ export default function RouteSearchWidget() {
                                 aria-label="Departure city"
                                 value={from}
                                 onChange={(e) => setFrom(e.target.value)}
-                                className="h-11 w-full appearance-none rounded-xl border border-white/10 bg-[#080f1d] px-3.5 pr-8 text-xs sm:text-sm font-medium text-slate-100 transition-all hover:bg-[#0c1628] focus:border-[#dd7845] focus:outline-none focus:ring-1 focus:ring-[#dd7845]/50 cursor-pointer"
+                                className="h-11 w-full appearance-none rounded-xl border border-hairline/10 bg-[var(--surface-canvas)] px-3.5 pr-8 text-xs sm:text-sm font-medium text-slate-100 transition-all hover:bg-[var(--surface-inset)] focus:border-[#dd7845] focus:outline-none focus:ring-1 focus:ring-[#dd7845]/50 cursor-pointer"
                             >
                                 {LOCATIONS.map((loc) => (
-                                    <option key={loc} value={loc} className="bg-[#080f1d] text-slate-100">
+                                    <option key={loc} value={loc} className="bg-[var(--surface-canvas)] text-slate-100">
                                         {loc}
                                     </option>
                                 ))}
@@ -138,7 +138,7 @@ export default function RouteSearchWidget() {
                             onClick={handleSwap}
                             aria-label="Swap departure and destination"
                             title="Swap departure and destination"
-                            className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-[#080f1d] text-slate-400 transition-all hover:border-[#dd7845] hover:bg-[#0c1628] hover:text-[#dd7845] active:scale-90"
+                            className="flex h-11 w-11 items-center justify-center rounded-xl border border-hairline/10 bg-[var(--surface-canvas)] text-slate-400 transition-all hover:border-[#dd7845] hover:bg-[var(--surface-inset)] hover:text-[var(--accent-ink)] active:scale-90"
                         >
                             <ArrowLeftRight className="h-4 w-4" />
                         </button>
@@ -154,10 +154,10 @@ export default function RouteSearchWidget() {
                                 aria-label="Destination city"
                                 value={to}
                                 onChange={(e) => setTo(e.target.value)}
-                                className="h-11 w-full appearance-none rounded-xl border border-white/10 bg-[#080f1d] px-3.5 pr-8 text-xs sm:text-sm font-medium text-slate-100 transition-all hover:bg-[#0c1628] focus:border-[#dd7845] focus:outline-none focus:ring-1 focus:ring-[#dd7845]/50 cursor-pointer"
+                                className="h-11 w-full appearance-none rounded-xl border border-hairline/10 bg-[var(--surface-canvas)] px-3.5 pr-8 text-xs sm:text-sm font-medium text-slate-100 transition-all hover:bg-[var(--surface-inset)] focus:border-[#dd7845] focus:outline-none focus:ring-1 focus:ring-[#dd7845]/50 cursor-pointer"
                             >
                                 {LOCATIONS.map((loc) => (
-                                    <option key={loc} value={loc} className="bg-[#080f1d] text-slate-100">
+                                    <option key={loc} value={loc} className="bg-[var(--surface-canvas)] text-slate-100">
                                         {loc}
                                     </option>
                                 ))}
@@ -177,7 +177,7 @@ export default function RouteSearchWidget() {
                                 type="date"
                                 value={date}
                                 onChange={(e) => setDate(e.target.value)}
-                                className="h-11 w-full rounded-xl border border-white/10 bg-[#080f1d] px-3.5 text-xs sm:text-sm font-medium text-slate-100 transition-all hover:bg-[#0c1628] focus:border-[#dd7845] focus:outline-none focus:ring-1 focus:ring-[#dd7845]/50 [color-scheme:dark] cursor-pointer"
+                                className="h-11 w-full rounded-xl border border-hairline/10 bg-[var(--surface-canvas)] px-3.5 text-xs sm:text-sm font-medium text-slate-100 transition-all hover:bg-[var(--surface-inset)] focus:border-[#dd7845] focus:outline-none focus:ring-1 focus:ring-[#dd7845]/50 [color-scheme:dark] cursor-pointer"
                             />
                         </div>
                     </div>
@@ -192,10 +192,10 @@ export default function RouteSearchWidget() {
                                 aria-label="Number of seats"
                                 value={seats}
                                 onChange={(e) => setSeats(e.target.value)}
-                                className="h-11 w-full appearance-none rounded-xl border border-white/10 bg-[#080f1d] px-3.5 pr-7 text-xs sm:text-sm font-medium text-slate-100 transition-all hover:bg-[#0c1628] focus:border-[#dd7845] focus:outline-none focus:ring-1 focus:ring-[#dd7845]/50 cursor-pointer"
+                                className="h-11 w-full appearance-none rounded-xl border border-hairline/10 bg-[var(--surface-canvas)] px-3.5 pr-7 text-xs sm:text-sm font-medium text-slate-100 transition-all hover:bg-[var(--surface-inset)] focus:border-[#dd7845] focus:outline-none focus:ring-1 focus:ring-[#dd7845]/50 cursor-pointer"
                             >
                                 {[1, 2, 3, 4, 5, 6].map((num) => (
-                                    <option key={num} value={num} className="bg-[#080f1d] text-slate-100">
+                                    <option key={num} value={num} className="bg-[var(--surface-canvas)] text-slate-100">
                                         {num}
                                     </option>
                                 ))}

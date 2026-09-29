@@ -154,12 +154,12 @@ function BookingCard({ ticket, onView }) {
     const canPay = ticket.status === "accepted" && !hasDeparted;
 
     return (
-        <div className="group flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0e172a] shadow-lg transition-all duration-300 hover:border-white/20">
+        <div className="group flex flex-col overflow-hidden rounded-2xl border border-hairline/10 bg-[var(--surface-inset)] shadow-lg transition-all duration-300 hover:border-hairline/20">
             <div className="relative h-44 w-full overflow-hidden bg-slate-900">
                 <Image src={ticket.image} alt={`${ticket.from} to ${ticket.to}`} fill unoptimized className="object-cover transition-transform duration-500 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0e172a] via-black/20 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[var(--surface-inset)] via-black/20 to-transparent" />
                 <div className="absolute top-3 left-3 right-3 flex items-center justify-between">
-                    <span className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-black/50 px-2.5 py-1 text-[11px] font-medium text-slate-200 backdrop-blur-md">
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-hairline/15 bg-shade/50 px-2.5 py-1 text-[11px] font-medium text-slate-200 backdrop-blur-md">
                         <TypeIcon className="h-3 w-3" /><span>{ticket.type}</span>
                     </span>
                     <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-medium capitalize backdrop-blur-md ${statusInfo.badge}`}>
@@ -180,9 +180,9 @@ function BookingCard({ ticket, onView }) {
                     </div>
                     <div className="flex items-center justify-between text-xs text-slate-400">
                         <span>Qty: <strong className="text-slate-200">{ticket.quantity} {ticket.quantity > 1 ? "seats" : "seat"}</strong></span>
-                        <span>Price: <strong className="text-[#dd7845]">৳{ticket.pricePerSeat.toLocaleString()}/seat</strong></span>
+                        <span>Price: <strong className="text-[var(--accent-ink)]">৳{ticket.pricePerSeat.toLocaleString()}/seat</strong></span>
                     </div>
-                    <div className="border-t border-white/5 pt-2.5 space-y-1 text-xs">
+                    <div className="border-t border-hairline/5 pt-2.5 space-y-1 text-xs">
                         <div className="text-slate-400">Departs: <span className="text-slate-300 font-medium">{ticket.departs}</span></div>
                         <div className="text-slate-400 font-mono text-[11px]">PNR: <span className="text-slate-200">{ticket.pnr}</span></div>
                     </div>
@@ -193,7 +193,7 @@ function BookingCard({ ticket, onView }) {
                                 <p className="text-[10.5px] text-rose-300/80 mt-0.5">Payment window closed.</p>
                             </div>
                         ) : countdown ? (
-                            <div className="flex items-center justify-between rounded-xl border border-white/5 bg-black/40 px-3 py-2 text-xs">
+                            <div className="flex items-center justify-between rounded-xl border border-hairline/5 bg-shade/40 px-3 py-2 text-xs">
                                 <span className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider text-slate-400">
                                     <Clock className="h-3 w-3" /> Departs In
                                 </span>
@@ -203,7 +203,7 @@ function BookingCard({ ticket, onView }) {
                     )}
                 </div>
 
-                <div className="mt-5 border-t border-white/5 pt-3 flex flex-col gap-2">
+                <div className="mt-5 border-t border-hairline/5 pt-3 flex flex-col gap-2">
                     {canPay && (
                         <Link href="/dashboard/user-dashboard/transactions"
                             className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 py-2.5 text-xs font-semibold text-white transition-all hover:bg-emerald-500 active:scale-[0.99]">
@@ -211,7 +211,7 @@ function BookingCard({ ticket, onView }) {
                         </Link>
                     )}
                     <button type="button" onClick={() => onView(ticket)}
-                        className="flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 py-2.5 text-xs font-medium text-slate-200 transition-all hover:bg-white/10 hover:border-white/20 active:scale-[0.99]">
+                        className="flex w-full items-center justify-center gap-2 rounded-xl border border-hairline/10 bg-hairline/5 py-2.5 text-xs font-medium text-slate-200 transition-all hover:bg-hairline/10 hover:border-hairline/20 active:scale-[0.99]">
                         <Eye className="h-3.5 w-3.5" /><span>View ticket</span>
                     </button>
                 </div>
@@ -258,7 +258,7 @@ export default function BookedTicketsPage() {
             </div>
 
             {!loading && bookings.length === 0 && (
-                <div className="mt-16 rounded-2xl border border-dashed border-white/10 p-12 text-center">
+                <div className="mt-16 rounded-2xl border border-dashed border-hairline/10 p-12 text-center">
                     <p className="text-base font-medium text-slate-300">No bookings yet</p>
                     <p className="mt-1 text-xs text-slate-500">Browse available tickets and place your first booking request.</p>
                     <Link href="/tickets" className="mt-4 inline-flex rounded-lg bg-[#dd7845] px-4 py-2 text-xs font-medium text-white hover:bg-[#ef8a53]">
@@ -268,16 +268,16 @@ export default function BookedTicketsPage() {
             )}
 
             {selectedTicket && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-shade/70 backdrop-blur-sm"
                     role="dialog" aria-modal="true" onClick={() => setSelectedTicket(null)}>
-                    <div className="relative w-full max-w-lg overflow-hidden rounded-2xl border border-white/10 bg-[#0c1424] p-6 shadow-2xl text-slate-100"
+                    <div className="relative w-full max-w-lg overflow-hidden rounded-2xl border border-hairline/10 bg-[var(--surface-inset)] p-6 shadow-2xl text-slate-100"
                         onClick={(e) => e.stopPropagation()}>
                         <button type="button" onClick={() => setSelectedTicket(null)}
-                            className="absolute top-4 right-4 rounded-lg p-1.5 text-slate-400 hover:bg-white/10 hover:text-white" aria-label="Close dialog">
+                            className="absolute top-4 right-4 rounded-lg p-1.5 text-slate-400 hover:bg-hairline/10 hover:text-white" aria-label="Close dialog">
                             <X className="h-4 w-4" />
                         </button>
                         <div className="flex items-center gap-3 mb-4">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#dd7845]/15 text-[#dd7845]">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#dd7845]/15 text-[var(--accent-ink)]">
                                 <QrCode className="h-5 w-5" />
                             </div>
                             <div>
@@ -285,26 +285,26 @@ export default function BookedTicketsPage() {
                                 <p className="text-xs text-slate-400">{selectedTicket.operator} · {selectedTicket.type}</p>
                             </div>
                         </div>
-                        <div className="rounded-xl border border-white/5 bg-black/30 p-4 space-y-3 text-xs mb-5">
+                        <div className="rounded-xl border border-hairline/5 bg-shade/30 p-4 space-y-3 text-xs mb-5">
                             {[
                                 ["Route", `${selectedTicket.from} → ${selectedTicket.to}`],
                                 ["Departure", selectedTicket.departs],
                                 ["Seats Reserved", `${selectedTicket.quantity} Passenger(s)`],
                                 ["Status", selectedTicket.status],
                             ].map(([label, value]) => (
-                                <div key={label} className="flex justify-between border-b border-white/5 pb-2">
+                                <div key={label} className="flex justify-between border-b border-hairline/5 pb-2">
                                     <span className="text-slate-400">{label}</span>
                                     <span className="font-semibold capitalize text-slate-200">{value}</span>
                                 </div>
                             ))}
                             <div className="flex justify-between pt-1 text-sm font-semibold">
                                 <span className="text-slate-300">Total</span>
-                                <span className="text-[#dd7845]">৳{selectedTicket.totalPrice.toLocaleString()}</span>
+                                <span className="text-[var(--accent-ink)]">৳{selectedTicket.totalPrice.toLocaleString()}</span>
                             </div>
                         </div>
                         <div className="flex gap-3">
                             <button type="button" onClick={() => setSelectedTicket(null)}
-                                className="flex-1 rounded-xl border border-white/10 bg-white/5 py-2.5 text-xs font-medium hover:bg-white/10 transition-colors text-slate-300">
+                                className="flex-1 rounded-xl border border-hairline/10 bg-hairline/5 py-2.5 text-xs font-medium hover:bg-hairline/10 transition-colors text-slate-300">
                                 Close
                             </button>
                             <button type="button" onClick={() => window.print()}
