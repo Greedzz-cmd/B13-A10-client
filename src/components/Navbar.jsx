@@ -30,6 +30,33 @@ const defaultItems = [
     { href: "/dashboard", label: "Dashboard" },
 ];
 
+/** Drops a trailing slash so "/tickets/" and "/tickets" compare equal. */
+const normalizePath = (value) => {
+    if (!value) return "";
+    return value.length > 1 ? value.replace(/\/+$/, "") : value;
+};
+
+/**
+ * Decides whether a nav item should read as the page you are on.
+ *
+ * An exact comparison alone left the current page unmarked almost everywhere:
+ * a ticket detail page is "/tickets/:id", not "/tickets", and every dashboard
+ * screen sits below "/dashboard". So an item also matches its descendants.
+ *
+ * The root is exempt, otherwise "/" would swallow every route and Home would
+ * look selected everywhere.
+ */
+function isNavItemActive(pathname, href) {
+    const current = normalizePath(pathname);
+    const target = normalizePath(href);
+
+    if (!target || target === "/") {
+        return current === "/";
+    }
+
+    return current === target || current.startsWith(`${target}/`);
+}
+
 function RouteMark() {
     // Brand route mark.
     return (
@@ -175,18 +202,24 @@ export function Navbar({
                     <div className="flex items-center gap-3">{brand}</div>
                     <ul className="hidden items-center gap-4 md:flex">
                         {navigationItems.map(item => {
-                            const isActive = pathname === item.href;
+                            const isActive = isNavItemActive(pathname, item.href);
                             return (
                                 <li key={item.href}>
                                     <Link
                                         href={item.href}
                                         className={cn(
-                                            "text-sm text-slate-400 transition-colors hover:text-white",
-                                            isActive && "text-slate-100",
+                                            "relative text-sm transition-colors hover:text-white",
+                                            isActive ? "font-medium text-brand" : "text-slate-400",
                                         )}
                                         aria-current={isActive ? "page" : undefined}
                                     >
                                         {item.label}
+                                        {isActive && (
+                                            <span
+                                                aria-hidden="true"
+                                                className="absolute inset-x-0 -bottom-1.5 h-0.5 rounded-full bg-brand"
+                                            />
+                                        )}
                                     </Link>
                                 </li>
                             );
@@ -234,15 +267,18 @@ export function Navbar({
                     <div className="border-t border-hairline/10 bg-[var(--surface-canvas)] md:hidden">
                         <ul className="flex flex-col gap-2 p-4">
                             {navigationItems.map(item => {
-                                const isActive = pathname === item.href;
+                                const isActive = isNavItemActive(pathname, item.href);
                                 return (
                                     <li key={item.href}>
                                         <Link
                                             href={item.href}
                                             className={cn(
-                                                "block py-2 text-sm text-slate-400 transition-colors hover:text-white",
-                                                isActive && "font-medium text-slate-100",
+                                                "block border-l-2 py-2 pl-3 text-sm transition-colors hover:text-white",
+                                                isActive
+                                                    ? "border-brand font-medium text-brand"
+                                                    : "border-transparent text-slate-400",
                                             )}
+                                            aria-current={isActive ? "page" : undefined}
                                         >
                                             {item.label}
                                         </Link>
