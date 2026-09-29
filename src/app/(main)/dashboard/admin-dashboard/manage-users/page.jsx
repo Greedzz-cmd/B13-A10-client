@@ -1,59 +1,9 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Sidebar } from "@/components/Sidebar";
-import { Shield, UserCheck, AlertTriangle, Check, User, ShieldAlert } from "lucide-react";
-
-const INITIAL_USERS = [
-    {
-        _id: "usr-1",
-        name: "Nusrat Jahan",
-        email: "nusrat@example.com",
-        role: "admin",
-        isFraud: false,
-        createdAt: "2024-01-15",
-    },
-    {
-        _id: "usr-2",
-        name: "Greenline Transport Ltd",
-        email: "contact@greenline.bd",
-        role: "vendor",
-        isFraud: false,
-        createdAt: "2024-03-10",
-    },
-    {
-        _id: "usr-3",
-        name: "Shohag Paribahan",
-        email: "support@shohag.com",
-        role: "vendor",
-        isFraud: false,
-        createdAt: "2024-04-05",
-    },
-    {
-        _id: "usr-4",
-        name: "Rahim Chowdhury",
-        email: "rahim.chowdhury@gmail.com",
-        role: "user",
-        isFraud: false,
-        createdAt: "2024-05-12",
-    },
-    {
-        _id: "usr-5",
-        name: "Sadia Afrin",
-        email: "sadia.afrin@outlook.com",
-        role: "user",
-        isFraud: false,
-        createdAt: "2024-06-20",
-    },
-    {
-        _id: "usr-6",
-        name: "Fake Tickets Express",
-        email: "scam.vendor@fraud.net",
-        role: "vendor",
-        isFraud: true,
-        createdAt: "2024-07-01",
-    },
-];
+import { Shield, UserCheck, AlertTriangle, Check, ShieldAlert, UserCheck2 } from "lucide-react";
+import { authenticatedFetch, readJson, setUserFraud, setUserRole } from "@/lib/api-client";
 
 const roleStyles = {
     admin: "bg-purple-500/15 text-purple-400 border border-purple-500/30",
@@ -62,22 +12,50 @@ const roleStyles = {
 };
 
 export default function ManageUsersPage() {
-    const [users, setUsers] = useState(INITIAL_USERS);
+    const [users, setUsers] = useState([]);
     const [statusMessage, setStatusMessage] = useState("");
+    const [statusTone, setStatusTone] = useState("success");
+    const [isLoading, setIsLoading] = useState(true);
+    const [loadError, setLoadError] = useState(null);
+    const [search, setSearch] = useState("");
+    const [roleFilter, setRoleFilter] = useState("");
+
+    // /users is admin-only, so an unauthenticated request would come back 401
+    // and leave the table looking populated when it is not.
+    const fetchUsers = useCallback(async () => {
+        const query = new URLSearchParams();
+        if (search.trim()) query.set("search", search.trim());
+        if (roleFilter) query.set("role", roleFilter);
+
+        const res = await authenticatedFetch(`/users${query.toString() ? `?${query}` : ""}`);
+
+        return readJson(res);
+    }, [search, roleFilter]);
 
     useEffect(() => {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-        if (!apiUrl) return;
+        let cancelled = false;
 
-        fetch(`${apiUrl}/users`)
-            .then((res) => (res.ok ? res.json() : null))
+        fetchUsers()
             .then((data) => {
-                if (Array.isArray(data) && data.length > 0) {
-                    setUsers(data);
-                }
+                if (!cancelled) setUsers(Array.isArray(data) ? data : []);
             })
-            .catch(() => {});
-    }, []);
+            .catch((err) => {
+                if (!cancelled) setLoadError(err.message);
+            })
+            .finally(() => {
+                if (!cancelled) setIsLoading(false);
+            });
+
+        return () => {
+            cancelled = true;
+        };
+    }, [fetchUsers]);
+
+    const announce = (message, tone = "success") => {
+        setStatusTone(tone);
+        setStatusMessage(message);
+        setTimeout(() => setStatusMessage(""), 4000);
+    };
 
     const handleRoleChange = async (userId, newRole) => {
         const previousUsers = users;
@@ -85,51 +63,37 @@ export default function ManageUsersPage() {
             prev.map((u) => (u._id === userId ? { ...u, role: newRole } : u))
         );
 
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-        if (apiUrl) {
-            try {
-                const res = await fetch(`${apiUrl}/users/${userId}/role`, {
-                    method: "PATCH",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ role: newRole }),
-                });
-                if (!res.ok) throw new Error("Failed to update role");
-            } catch {
-                setUsers(previousUsers);
-                setStatusMessage("Failed to update role on server.");
-                return;
-            }
+        try {
+            await setUserRole(userId, newRole);
+            announce(`User promoted to ${newRole}.`);
+        } catch (err) {
+            setUsers(previousUsers);
+            announce(err.message, "error");
         }
-        setStatusMessage(`User promoted to ${newRole}.`);
-        setTimeout(() => setStatusMessage(""), 3000);
     };
 
-    const handleMarkFraud = async (userId, userEmail) => {
-        if (!confirm(`Are you sure you want to mark ${userEmail} as fraud? All of this vendor's tickets will be hidden immediately.`)) {
+    const handleFraudToggle = async (user) => {
+        const flag = !user.isFraud;
+        const action = flag ? "mark as fraud" : "reinstate";
+
+        if (!window.confirm(`Are you sure you want to ${action} ${user.email}?${
+            flag ? " All of this vendor's tickets will be hidden immediately." : ""
+        }`)) {
             return;
         }
 
         const previousUsers = users;
         setUsers((prev) =>
-            prev.map((u) => (u._id === userId ? { ...u, isFraud: true } : u))
+            prev.map((u) => (u._id === user._id ? { ...u, isFraud: flag } : u))
         );
 
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-        if (apiUrl) {
-            try {
-                const res = await fetch(`${apiUrl}/users/${userId}/fraud`, {
-                    method: "PATCH",
-                    headers: { "Content-Type": "application/json" },
-                });
-                if (!res.ok) throw new Error("Failed to flag user");
-            } catch {
-                setUsers(previousUsers);
-                setStatusMessage("Failed to mark user as fraud.");
-                return;
-            }
+        try {
+            const { message } = await setUserFraud(user._id, flag);
+            announce(message);
+        } catch (err) {
+            setUsers(previousUsers);
+            announce(err.message, "error");
         }
-        setStatusMessage("Vendor marked as fraud. All their tickets have been hidden.");
-        setTimeout(() => setStatusMessage(""), 4000);
     };
 
     const totalVendors = users.filter((u) => u.role === "vendor").length;
@@ -172,14 +136,54 @@ export default function ManageUsersPage() {
                             </p>
                         </div>
                         {statusMessage && (
-                            <span className="rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 text-xs text-emerald-300 animate-fade-in">
+                            <span className={`rounded-lg border px-3 py-1.5 text-xs animate-fade-in ${
+                                    statusTone === "error"
+                                        ? "border-red-500/30 bg-red-500/10 text-red-300"
+                                        : "border-emerald-500/20 bg-emerald-500/10 text-emerald-300"
+                                }`}>
                                 {statusMessage}
                             </span>
                         )}
                     </header>
 
+                    {/* Filters */}
+                    <div className="mt-5 flex flex-wrap items-center gap-2">
+                        <input
+                            type="search"
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            placeholder="Search by name or email"
+                            aria-label="Search users"
+                            className="min-w-0 flex-1 rounded-lg border border-hairline/10 bg-[var(--surface)] px-3 py-2 text-xs text-slate-200 placeholder:text-slate-500 focus:border-[var(--accent-ink)] focus:outline-none"
+                        />
+                        <select
+                            value={roleFilter}
+                            onChange={(e) => setRoleFilter(e.target.value)}
+                            aria-label="Filter by role"
+                            className="rounded-lg border border-hairline/10 bg-[var(--surface)] px-3 py-2 text-xs text-slate-300 focus:border-[var(--accent-ink)] focus:outline-none"
+                        >
+                            <option value="">All roles</option>
+                            <option value="user">Travellers</option>
+                            <option value="vendor">Vendors</option>
+                            <option value="admin">Admins</option>
+                        </select>
+                    </div>
+
                     {/* Users Table */}
-                    <div className="overflow-x-auto rounded-xl border border-hairline/8 bg-[var(--surface)]">
+                    {isLoading ? (
+                        <p className="mt-4 rounded-xl border border-hairline/8 bg-[var(--surface)] px-4 py-10 text-center text-xs text-slate-500">
+                            Loading users…
+                        </p>
+                    ) : loadError ? (
+                        <p role="alert" className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-10 text-center text-xs text-red-300">
+                            {loadError}
+                        </p>
+                    ) : users.length === 0 ? (
+                        <p className="mt-4 rounded-xl border border-hairline/8 bg-[var(--surface)] px-4 py-10 text-center text-xs text-slate-500">
+                            No users match this filter.
+                        </p>
+                    ) : (
+                    <div className="mt-4 overflow-x-auto rounded-xl border border-hairline/8 bg-[var(--surface)]">
                         <table className="w-full min-w-[760px] border-collapse text-left">
                             <thead>
                                 <tr className="border-b border-hairline/8 font-mono text-[9.5px] uppercase tracking-[0.16em] text-slate-500">
@@ -244,11 +248,18 @@ export default function ManageUsersPage() {
                                                     {isVendor && (
                                                         <button
                                                             type="button"
-                                                            onClick={() => handleMarkFraud(u._id, u.email)}
-                                                            disabled={u.isFraud}
-                                                            className="inline-flex items-center gap-1 rounded-md border border-rose-500/30 bg-rose-500/15 px-2.5 py-1 text-[10px] font-medium text-rose-300 transition hover:bg-rose-500/25 disabled:cursor-not-allowed disabled:opacity-40"
+                                                            onClick={() => handleFraudToggle(u)}
+                                                            className={`inline-flex items-center gap-1 rounded-md border px-2.5 py-1 text-[10px] font-medium transition ${
+                                                                u.isFraud
+                                                                    ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20"
+                                                                    : "border-rose-500/30 bg-rose-500/15 text-rose-300 hover:bg-rose-500/25"
+                                                            }`}
                                                         >
-                                                            <AlertTriangle className="h-3 w-3 text-rose-400" /> Mark as Fraud
+                                                            {u.isFraud ? (
+                                                                <><UserCheck2 className="h-3 w-3" /> Reinstate</>
+                                                            ) : (
+                                                                <><AlertTriangle className="h-3 w-3 text-rose-400" /> Mark as Fraud</>
+                                                            )}
                                                         </button>
                                                     )}
                                                 </div>
@@ -259,6 +270,7 @@ export default function ManageUsersPage() {
                             </tbody>
                         </table>
                     </div>
+                    )}
                 </div>
             </main>
         </div>

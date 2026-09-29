@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { BusFront, Check, Plane, Ship, TrainFront, X } from "lucide-react";
 import { Sidebar } from "@/components/Sidebar";
 import { ManageTicketList } from "./ManageTicketList";
+import { authenticatedFetch, moderateTicket, readJson } from "@/lib/api-client";
 
 
 const modeIcons = {
@@ -16,6 +17,7 @@ const modeIcons = {
 const statusStyles = {
     approved: "bg-emerald-500/15 text-emerald-400",
     rejected: "bg-red-500/15 text-red-400",
+    pending: "bg-amber-500/15 text-amber-400",
 };
 
 function MetricCard({ label, value, valueClass }) {
@@ -27,30 +29,108 @@ function MetricCard({ label, value, valueClass }) {
     );
 }
 
-export default function ManageTicketsClient({ initialTickets }) {
-    const [tickets, setTickets] = useState(() => initialTickets.map((ticket, index) => ({
-        ...ticket,
-        id: ticket._id ?? ticket.id ?? `${ticket.from}-${ticket.to}-${index}`,
-    })));
+function Banner({ tone = "error", children }) {
+    if (!children) return null;
+    return (
+        <p
+            role={tone === "error" ? "alert" : "status"}
+            className={`rounded-lg border px-3 py-2 text-xs ${
+                tone === "error"
+                    ? "border-red-500/30 bg-red-500/10 text-red-300"
+                    : "border-emerald-500/30 bg-emerald-500/10 text-emerald-300"
+            }`}
+        >
+            {children}
+        </p>
+    );
+}
+
+export default function ManageTicketsClient() {
+    const [tickets, setTickets] = useState([]);
+    const [userCount, setUserCount] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [loadError, setLoadError] = useState(null);
     const [errorId, setErrorId] = useState(null);
+    const [notice, setNotice] = useState(null);
+
+    // The admin table needs pending and rejected rows too, which the public
+    // /tickets endpoint never returns, so this has to be the authenticated
+    // /tickets/manage listing.
+    const fetchTickets = useCallback(async () => {
+        const [ticketRes, statsRes] = await Promise.all([
+            authenticatedFetch("/tickets/manage?limit=100&sort=newest"),
+            authenticatedFetch("/admin-stats"),
+        ]);
+        const ticketBody = await readJson(ticketRes);
+
+        // A failure to read the stats should not hide the ticket table.
+        const stats = await readJson(statsRes).catch(() => null);
+
+        return {
+            rows: (ticketBody.tickets || []).map((ticket, index) => ({
+                ...ticket,
+                id: ticket._id ?? ticket.id ?? `${ticket.from}-${ticket.to}-${index}`,
+            })),
+            userCount: stats
+                ? Object.values(stats.users || {}).reduce((sum, n) => sum + n, 0)
+                : null,
+        };
+    }, []);
+
+    useEffect(() => {
+        let cancelled = false;
+
+        fetchTickets()
+            .then(({ rows, userCount: total }) => {
+                if (cancelled) return;
+                setTickets(rows);
+                setUserCount(total);
+            })
+            .catch((err) => {
+                if (!cancelled) setLoadError(err.message);
+            })
+            .finally(() => {
+                if (!cancelled) setIsLoading(false);
+            });
+
+        return () => {
+            cancelled = true;
+        };
+    }, [fetchTickets]);
+
+    async function reload() {
+        setIsLoading(true);
+        setLoadError(null);
+
+        try {
+            const { rows, userCount: total } = await fetchTickets();
+            setTickets(rows);
+            setUserCount(total);
+        } catch (err) {
+            setLoadError(err.message);
+        } finally {
+            setIsLoading(false);
+        }
+    }
 
     async function setStatus(id, status) {
         const previous = tickets;
         // Optimistic update so the UI feels instant
         setTickets((prev) => prev.map((t) => (t.id === id ? { ...t, verificationStatus: status } : t)));
         setErrorId(null);
+        setNotice(null);
 
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tickets/${id}`, {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ verificationStatus: status }),
-            });
-            if (!res.ok) throw new Error("Request failed");
+            // Moderation is its own endpoint: PATCH /tickets/:id only accepts
+            // the fields a vendor owns and quietly drops verificationStatus.
+            const { ticket } = await moderateTicket(id, status === "approved" ? "approve" : "reject");
+            setTickets((prev) => prev.map((t) => (t.id === id ? { ...t, ...ticket, id: t.id } : t)));
+            setNotice(`Ticket ${status}.`);
         } catch (err) {
             // Roll back on failure
             setTickets(previous);
             setErrorId(id);
+            setNotice(err.message);
         }
     }
 
@@ -65,7 +145,7 @@ export default function ManageTicketsClient({ initialTickets }) {
                     <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4" aria-label="Ticket metrics">
                         <MetricCard label="Total tickets" value={String(tickets.length)} valueClass="text-[var(--accent-ink)]" />
                         <MetricCard label="Pending review" value={String(pendingCount)} valueClass="text-amber-400" />
-                        <MetricCard label="Total users" value="6" valueClass="text-teal-400" />
+                        <MetricCard label="Total users" value={userCount === null ? "—" : String(userCount)} valueClass="text-teal-400" />
                         <MetricCard label="Advertised" value={`${advertisedCount} / ${tickets.length}`} valueClass="text-purple-300" />
                     </section>
 
@@ -74,6 +154,37 @@ export default function ManageTicketsClient({ initialTickets }) {
                         <p className="mt-1 text-xs text-slate-500">{tickets.length} tickets · {pendingCount} pending review</p>
                     </header>
 
+                    <div className="mb-4 grid gap-2">
+                        {loadError ? (
+                            <div
+                                role="alert"
+                                className="flex flex-wrap items-center gap-3 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs text-red-300"
+                            >
+                                <span>{loadError}</span>
+                                <button
+                                    type="button"
+                                    onClick={reload}
+                                    className="rounded-md border border-red-500/40 px-2 py-1 text-[10px] font-semibold uppercase tracking-wide transition hover:bg-red-500/20"
+                                >
+                                    Retry
+                                </button>
+                            </div>
+                        ) : errorId ? (
+                            <Banner tone="error">That action could not be saved. No change was made.</Banner>
+                        ) : null}
+                        <Banner tone="success">{notice}</Banner>
+                    </div>
+
+                    {isLoading ? (
+                        <p className="rounded-xl border border-hairline/8 bg-[var(--surface)] px-4 py-10 text-center text-xs text-slate-500">
+                            Loading tickets…
+                        </p>
+                    ) : tickets.length === 0 ? (
+                        <p className="rounded-xl border border-hairline/8 bg-[var(--surface)] px-4 py-10 text-center text-xs text-slate-500">
+                            No tickets have been submitted yet.
+                        </p>
+                    ) : (
+                        <>
                     {/* Mobile card list — hidden on md+ where the table takes over */}
                     <ManageTicketList
                         tickets={tickets}
@@ -145,6 +256,8 @@ export default function ManageTicketsClient({ initialTickets }) {
                             </table>
                         </div>
                     </section>
+                        </>
+                    )}
                 </div>
             </main>
             <button type="button" className="fixed bottom-5 right-5 z-30 flex h-8 w-8 items-center justify-center rounded-full border border-hairline/10 bg-[var(--surface)] text-xs font-semibold text-slate-300 shadow-lg transition hover:bg-hairline/15 hover:text-white" aria-label="Help and Support" title="Help & Support">

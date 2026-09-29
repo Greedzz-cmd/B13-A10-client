@@ -1,49 +1,149 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Sidebar } from "@/components/Sidebar";
-import { TrendingUp, Ticket, Users, DollarSign, ArrowUpRight, BarChart2 } from "lucide-react";
-import { useSession } from "@/lib/auth-client";
+import { Ticket, Users, DollarSign, BarChart2 } from "lucide-react";
+import { authenticatedFetch, readJson } from "@/lib/api-client";
+
+const MONTHS = [
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+];
+
+const MODE_COLORS = {
+    Bus: "bg-brand",
+    Train: "bg-blue-500",
+    Flight: "bg-purple-500",
+    Launch: "bg-teal-500",
+};
+
+function KpiCard({ label, value, hint, valueClass, iconClass, children }) {
+    return (
+        <div className="rounded-2xl border border-hairline/8 bg-[var(--surface-inset)] p-5 shadow-lg">
+            <div className="flex items-center justify-between">
+                <span className="font-mono text-[10px] uppercase tracking-widest text-slate-400">
+                    {label}
+                </span>
+                <div className={`grid h-8 w-8 place-items-center rounded-lg ${iconClass}`}>{children}</div>
+            </div>
+            <p className={`mt-3 font-serif text-3xl font-semibold ${valueClass}`}>{value}</p>
+            {hint && <span className="mt-2 inline-flex items-center gap-1 font-mono text-[11px] text-slate-500">{hint}</span>}
+        </div>
+    );
+}
 
 export default function RevenueOverviewPage() {
-    const session = useSession();
-    const vendorEmail = session?.data?.user?.email || "nusrat@example.com";
+    const [stats, setStats] = useState(null);
+    const [ownTickets, setOwnTickets] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [loadError, setLoadError] = useState(null);
 
-    const [stats, setStats] = useState({
-        totalTicketsAdded: 16,
-        totalTicketsSold: 84,
-        totalRevenue: 67200,
-    });
+    // /vendor-stats is role-guarded, so it needs the session's bearer token.
+    const load = useCallback(async () => {
+        const [statsRes, ticketsRes] = await Promise.all([
+            authenticatedFetch("/vendor-stats"),
+            authenticatedFetch("/tickets/me?limit=100"),
+        ]);
+        const statsBody = await readJson(statsRes);
+        // Mode distribution is a nice-to-have; a failure there must not blank
+        // the revenue figures.
+        const ticketsBody = await readJson(ticketsRes).catch(() => null);
+
+        return {
+            stats: statsBody,
+            tickets: ticketsBody?.tickets || [],
+        };
+    }, []);
 
     useEffect(() => {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-        if (!apiUrl) return;
+        let cancelled = false;
 
-        fetch(`${apiUrl}/vendor-stats/${encodeURIComponent(vendorEmail)}`)
-            .then((res) => (res.ok ? res.json() : null))
-            .then((data) => {
-                if (data && typeof data.totalRevenue === "number") {
-                    setStats(data);
-                }
+        load()
+            .then(({ stats: body, tickets }) => {
+                if (cancelled) return;
+                setStats(body);
+                setOwnTickets(tickets);
             })
-            .catch(() => {});
-    }, [vendorEmail]);
+            .catch((err) => {
+                if (!cancelled) setLoadError(err.message);
+            })
+            .finally(() => {
+                if (!cancelled) setIsLoading(false);
+            });
 
-    // Monthly revenue mock visualization points
-    const monthlyRevenue = [
-        { month: "May", amount: 14200, height: "45%" },
-        { month: "Jun", amount: 22500, height: "65%" },
-        { month: "Jul", amount: 31800, height: "80%" },
-        { month: "Aug", amount: 48900, height: "95%" },
-        { month: "Sep", amount: stats.totalRevenue || 67200, height: "100%" },
-    ];
+        return () => {
+            cancelled = true;
+        };
+    }, [load]);
 
-    const transportBreakdown = [
-        { type: "Bus", count: 48, percentage: 57, color: "bg-brand" },
-        { type: "Train", count: 22, percentage: 26, color: "bg-blue-500" },
-        { type: "Flight", count: 10, percentage: 12, color: "bg-purple-500" },
-        { type: "Launch", count: 4, percentage: 5, color: "bg-teal-500" },
-    ];
+    // The server groups by "YYYY-MM"; label the bars with a real month name.
+    const monthlyRevenue = useMemo(() => {
+        const rows = stats?.monthlyRevenue || [];
+        const peak = Math.max(...rows.map((r) => r.revenue), 0);
+
+        return rows.map((row) => {
+            const [year, month] = row.month.split("-");
+            const label = `${MONTHS[Number(month) - 1] ?? month} ${year.slice(2)}`;
+
+            return {
+                key: row.month,
+                label,
+                amount: row.revenue,
+                tickets: row.tickets,
+                // Percentage of the best month, so the tallest bar fills the
+                // chart even when every month is small.
+                height: peak > 0 ? `${Math.max((row.revenue / peak) * 100, 4)}%` : "4%",
+            };
+        });
+    }, [stats]);
+
+    const modeDistribution = useMemo(() => {
+        const totals = new Map();
+
+        for (const ticket of ownTickets) {
+            const mode = ticket.transportType || "Other";
+            totals.set(mode, (totals.get(mode) || 0) + 1);
+        }
+
+        const sum = [...totals.values()].reduce((acc, n) => acc + n, 0);
+
+        return [...totals.entries()]
+            .map(([type, count]) => ({
+                type,
+                count,
+                percentage: sum > 0 ? Math.round((count / sum) * 100) : 0,
+                color: MODE_COLORS[type] || "bg-slate-500",
+            }))
+            .sort((a, b) => b.count - a.count);
+    }, [ownTickets]);
+
+    const topMode = modeDistribution[0];
+
+    if (isLoading) {
+        return (
+            <div className="relative flex min-h-[calc(100vh-60px)] flex-col bg-[var(--surface-canvas)] md:flex-row">
+                <Sidebar role="vendor" activeId="revenue" />
+                <main className="min-w-0 flex-1 p-5 pb-24 sm:p-8 lg:p-10 md:pb-10">
+                    <p className="rounded-xl border border-hairline/8 bg-[var(--surface)] px-4 py-16 text-center text-xs text-slate-500">
+                        Loading revenue…
+                    </p>
+                </main>
+            </div>
+        );
+    }
+
+    if (loadError) {
+        return (
+            <div className="relative flex min-h-[calc(100vh-60px)] flex-col bg-[var(--surface-canvas)] md:flex-row">
+                <Sidebar role="vendor" activeId="revenue" />
+                <main className="min-w-0 flex-1 p-5 pb-24 sm:p-8 lg:p-10 md:pb-10">
+                    <p role="alert" className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-16 text-center text-xs text-red-300">
+                        {loadError}
+                    </p>
+                </main>
+            </div>
+        );
+    }
 
     return (
         <div className="relative flex min-h-[calc(100vh-60px)] flex-col bg-[var(--surface-canvas)] md:flex-row">
@@ -64,56 +164,34 @@ export default function RevenueOverviewPage() {
 
                     {/* Top KPI Cards */}
                     <div className="grid gap-4 sm:grid-cols-3">
-                        <div className="rounded-2xl border border-hairline/8 bg-[var(--surface-inset)] p-5 shadow-lg">
-                            <div className="flex items-center justify-between">
-                                <span className="font-mono text-[10px] uppercase tracking-widest text-slate-400">
-                                    Total Tickets Added
-                                </span>
-                                <div className="grid h-8 w-8 place-items-center rounded-lg bg-blue-500/10 text-blue-400">
-                                    <Ticket className="h-4 w-4" />
-                                </div>
-                            </div>
-                            <p className="mt-3 font-serif text-3xl font-semibold text-white">
-                                {stats.totalTicketsAdded}
-                            </p>
-                            <span className="mt-2 inline-flex items-center gap-1 font-mono text-[11px] text-emerald-400">
-                                <ArrowUpRight className="h-3.5 w-3.5" /> +4 this month
-                            </span>
-                        </div>
+                        <KpiCard
+                            label="Total Tickets Added"
+                            value={(stats.totalTicketsAdded ?? 0).toLocaleString()}
+                            iconClass="bg-blue-500/10 text-blue-400"
+                            valueClass="text-white"
+                        >
+                            <Ticket className="h-4 w-4" />
+                        </KpiCard>
 
-                        <div className="rounded-2xl border border-hairline/8 bg-[var(--surface-inset)] p-5 shadow-lg">
-                            <div className="flex items-center justify-between">
-                                <span className="font-mono text-[10px] uppercase tracking-widest text-slate-400">
-                                    Seats Booked & Sold
-                                </span>
-                                <div className="grid h-8 w-8 place-items-center rounded-lg bg-emerald-500/10 text-emerald-400">
-                                    <Users className="h-4 w-4" />
-                                </div>
-                            </div>
-                            <p className="mt-3 font-serif text-3xl font-semibold text-white">
-                                {stats.totalTicketsSold}
-                            </p>
-                            <span className="mt-2 inline-flex items-center gap-1 font-mono text-[11px] text-emerald-400">
-                                <ArrowUpRight className="h-3.5 w-3.5" /> 88% capacity rate
-                            </span>
-                        </div>
+                        <KpiCard
+                            label="Seats Booked & Sold"
+                            value={(stats.totalTicketsSold ?? 0).toLocaleString()}
+                            hint={`of ${(stats.totalSeats ?? 0).toLocaleString()} listed`}
+                            iconClass="bg-emerald-500/10 text-emerald-400"
+                            valueClass="text-white"
+                        >
+                            <Users className="h-4 w-4" />
+                        </KpiCard>
 
-                        <div className="rounded-2xl border border-hairline/8 bg-[var(--surface-inset)] p-5 shadow-lg">
-                            <div className="flex items-center justify-between">
-                                <span className="font-mono text-[10px] uppercase tracking-widest text-slate-400">
-                                    Total Revenue Earned
-                                </span>
-                                <div className="grid h-8 w-8 place-items-center rounded-lg bg-brand/15 text-[var(--accent-ink)]">
-                                    <DollarSign className="h-4 w-4" />
-                                </div>
-                            </div>
-                            <p className="mt-3 font-serif text-3xl font-semibold text-[var(--accent-ink)]">
-                                ৳{stats.totalRevenue.toLocaleString()}
-                            </p>
-                            <span className="mt-2 inline-flex items-center gap-1 font-mono text-[11px] text-emerald-400">
-                                <TrendingUp className="h-3.5 w-3.5" /> Verified Stripe payouts
-                            </span>
-                        </div>
+                        <KpiCard
+                            label="Total Revenue Earned"
+                            value={`৳${(stats.totalRevenue ?? 0).toLocaleString()}`}
+                            hint={`across ${stats.totalBookings ?? 0} booking${stats.totalBookings === 1 ? "" : "s"}`}
+                            iconClass="bg-brand/15 text-[var(--accent-ink)]"
+                            valueClass="text-[var(--accent-ink)]"
+                        >
+                            <DollarSign className="h-4 w-4" />
+                        </KpiCard>
                     </div>
 
                     {/* Visual Charts Grid */}
@@ -130,20 +208,26 @@ export default function RevenueOverviewPage() {
                                 <BarChart2 className="h-5 w-5 text-slate-500" />
                             </div>
 
-                            {/* CSS Bar Chart */}
-                            <div className="mt-8 flex h-52 items-end justify-between gap-4 border-b border-hairline/10 pb-4">
-                                {monthlyRevenue.map((item) => (
-                                    <div key={item.month} className="group relative flex flex-1 flex-col items-center gap-2">
-                                        <div className="w-full max-w-[50px] rounded-t-lg bg-gradient-to-t from-blue-600 to-brand transition-all duration-300 group-hover:brightness-125"
-                                            style={{ height: item.height }}
-                                        />
-                                        <span className="font-mono text-xs text-slate-400">{item.month}</span>
-                                        <span className="absolute -top-7 hidden font-mono text-[10px] font-bold text-slate-200 group-hover:block">
-                                            ৳{item.amount.toLocaleString()}
-                                        </span>
-                                    </div>
-                                ))}
-                            </div>
+                            {monthlyRevenue.length === 0 ? (
+                                <p className="mt-8 rounded-xl border border-hairline/5 bg-shade/20 px-4 py-14 text-center text-xs text-slate-500">
+                                    No paid sales yet. Revenue appears here once a booking is paid.
+                                </p>
+                            ) : (
+                                /* CSS Bar Chart */
+                                <div className="mt-8 flex h-52 items-end justify-between gap-4 border-b border-hairline/10 pb-4">
+                                    {monthlyRevenue.map((item) => (
+                                        <div key={item.key} className="group relative flex flex-1 flex-col items-center gap-2">
+                                            <div className="w-full max-w-[50px] rounded-t-lg bg-gradient-to-t from-blue-600 to-brand transition-all duration-300 group-hover:brightness-125"
+                                                style={{ height: item.height }}
+                                            />
+                                            <span className="font-mono text-[10px] text-slate-400">{item.label}</span>
+                                            <span className="absolute -top-7 hidden whitespace-nowrap font-mono text-[10px] font-bold text-slate-200 group-hover:block">
+                                                ৳{item.amount.toLocaleString()}
+                                            </span>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
 
                         {/* Breakdown by Transport Mode */}
@@ -151,35 +235,60 @@ export default function RevenueOverviewPage() {
                             <h2 className="font-serif text-lg font-medium text-white">
                                 Mode Distribution
                             </h2>
-                            <p className="text-xs text-slate-400">Sales volume by transport vehicle</p>
+                            <p className="text-xs text-slate-400">Your listings by transport vehicle</p>
 
-                            <div className="mt-6 space-y-4">
-                                {transportBreakdown.map((item) => (
-                                    <div key={item.type}>
-                                        <div className="flex items-center justify-between text-xs">
-                                            <span className="text-slate-300 font-medium">{item.type}</span>
-                                            <span className="font-mono text-slate-400">{item.count} seats ({item.percentage}%)</span>
-                                        </div>
-                                        <div className="mt-1.5 h-2 w-full overflow-hidden rounded-full bg-slate-800">
-                                            <div
-                                                className={`h-full rounded-full ${item.color}`}
-                                                style={{ width: `${item.percentage}%` }}
-                                            />
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-
-                            <div className="mt-8 rounded-xl border border-hairline/5 bg-shade/20 p-3.5 text-center">
-                                <span className="block font-mono text-[10px] text-slate-500 uppercase">
-                                    Highest Performing
-                                </span>
-                                <p className="mt-0.5 text-xs font-semibold text-slate-200">
-                                    Inter-City AC Buses (Dhaka — Cox&apos;s Bazar)
+                            {modeDistribution.length === 0 ? (
+                                <p className="mt-6 rounded-xl border border-hairline/5 bg-shade/20 px-4 py-10 text-center text-xs text-slate-500">
+                                    Add a ticket to see this breakdown.
                                 </p>
-                            </div>
+                            ) : (
+                                <>
+                                    <div className="mt-6 space-y-4">
+                                        {modeDistribution.map((item) => (
+                                            <div key={item.type}>
+                                                <div className="flex items-center justify-between text-xs">
+                                                    <span className="text-slate-300 font-medium">{item.type}</span>
+                                                    <span className="font-mono text-slate-400">{item.count} ticket{item.count === 1 ? "" : "s"} ({item.percentage}%)</span>
+                                                </div>
+                                                <div className="mt-1.5 h-2 w-full overflow-hidden rounded-full bg-slate-800">
+                                                    <div
+                                                        className={`h-full rounded-full ${item.color}`}
+                                                        style={{ width: `${item.percentage}%` }}
+                                                    />
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    <div className="mt-8 rounded-xl border border-hairline/5 bg-shade/20 p-3.5 text-center">
+                                        <span className="block font-mono text-[10px] text-slate-500 uppercase">
+                                            Most Listed Mode
+                                        </span>
+                                        <p className="mt-0.5 text-xs font-semibold text-slate-200">
+                                            {topMode.type} ({topMode.count})
+                                        </p>
+                                    </div>
+                                </>
+                            )}
                         </div>
                     </div>
+
+                    {stats.recentTransactions?.length > 0 && (
+                        <section className="mt-6 rounded-2xl border border-hairline/8 bg-[var(--surface-inset)] p-6 shadow-lg">
+                            <h2 className="font-serif text-lg font-medium text-white">Recent Sales</h2>
+                            <ul className="mt-4 divide-y divide-hairline/5">
+                                {stats.recentTransactions.map((sale) => (
+                                    <li key={sale._id ?? sale.bookingId} className="flex items-center justify-between gap-4 py-3 text-xs">
+                                        <span className="min-w-0 truncate text-slate-300">{sale.ticketTitle || sale.route || "Booking"}</span>
+                                        <span className="font-mono text-slate-500">
+                                            {sale.quantity} seat{sale.quantity === 1 ? "" : "s"}
+                                        </span>
+                                        <span className="font-mono text-[var(--accent-ink)]">৳{sale.amount.toLocaleString()}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </section>
+                    )}
                 </div>
             </main>
         </div>

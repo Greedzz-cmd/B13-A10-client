@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { authenticatedFetch, patchTicket } from "@/lib/api-client";
 import VendorTicketCard from "@/components/VendorTicketCard";
 
@@ -11,14 +11,49 @@ function toDateTimeLocal(value) {
     return new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
 }
 
-export default function VendorTicketGrid({ initialTickets }) {
-    const [tickets, setTickets] = useState(initialTickets);
+export default function VendorTicketGrid() {
+    const [tickets, setTickets] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [loadError, setLoadError] = useState("");
     const [deletingId, setDeletingId] = useState(null);
     const [deleteErrors, setDeleteErrors] = useState({});
     const [editingTicket, setEditingTicket] = useState(null);
     const [editForm, setEditForm] = useState(null);
     const [editError, setEditError] = useState("");
     const [isSavingEdit, setIsSavingEdit] = useState(false);
+
+    // This page is scoped to the signed-in vendor, so it must read /tickets/me.
+    // The public catalogue endpoint returns every approved ticket regardless of
+    // who submitted it, which is not what "My Added Tickets" means.
+    const fetchTickets = useCallback(async () => {
+        const response = await authenticatedFetch("/tickets/me?limit=100&sort=newest");
+        const data = await response.json().catch(() => null);
+
+        if (!response.ok) {
+            throw new Error(data?.message || `Could not load your tickets (HTTP ${response.status}).`);
+        }
+
+        return data?.tickets || [];
+    }, []);
+
+    useEffect(() => {
+        let cancelled = false;
+
+        fetchTickets()
+            .then(rows => {
+                if (!cancelled) setTickets(rows);
+            })
+            .catch(error => {
+                if (!cancelled) setLoadError(error.message);
+            })
+            .finally(() => {
+                if (!cancelled) setIsLoading(false);
+            });
+
+        return () => {
+            cancelled = true;
+        };
+    }, [fetchTickets]);
 
     function openEdit(ticket) {
         setEditingTicket(ticket);
@@ -106,29 +141,41 @@ export default function VendorTicketGrid({ initialTickets }) {
 
     return (
         <div>
-            <p className="mb-3 text-xs text-slate-400">
-                {tickets.length} {tickets.length === 1 ? "ticket" : "tickets"} · updates go live after admin approval
-            </p>
-            {tickets.length === 0 ? (
-                <p className="rounded-xl border border-hairline/10 bg-[var(--surface)] p-6 text-sm text-slate-400">
-                    You haven’t added any tickets yet.
+            {isLoading ? (
+                <p className="rounded-xl border border-hairline/10 bg-[var(--surface)] p-6 text-center text-sm text-slate-400">
+                    Loading your tickets…
+                </p>
+            ) : loadError ? (
+                <p role="alert" className="rounded-xl border border-red-500/30 bg-red-500/10 p-6 text-center text-sm text-red-300">
+                    {loadError}
                 </p>
             ) : (
-                <section aria-label="Added tickets" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                    {tickets.map(ticket => {
-                        const id = String(ticket._id || ticket.id);
-                        return (
-                            <VendorTicketCard
-                                key={id}
-                                ticket={ticket}
-                                onEdit={openEdit}
-                                onDelete={deleteTicket}
-                                isDeleting={deletingId === id}
-                                deleteError={deleteErrors[id]}
-                            />
-                        );
-                    })}
-                </section>
+                <>
+                    <p className="mb-3 text-xs text-slate-400">
+                        {tickets.length} {tickets.length === 1 ? "ticket" : "tickets"} · updates go live after admin approval
+                    </p>
+                    {tickets.length === 0 ? (
+                        <p className="rounded-xl border border-hairline/10 bg-[var(--surface)] p-6 text-sm text-slate-400">
+                            You haven’t added any tickets yet.
+                        </p>
+                    ) : (
+                        <section aria-label="Added tickets" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                            {tickets.map(ticket => {
+                                const id = String(ticket._id || ticket.id);
+                                return (
+                                    <VendorTicketCard
+                                        key={id}
+                                        ticket={ticket}
+                                        onEdit={openEdit}
+                                        onDelete={deleteTicket}
+                                        isDeleting={deletingId === id}
+                                        deleteError={deleteErrors[id]}
+                                    />
+                                );
+                            })}
+                        </section>
+                    )}
+                </>
             )}
 
             {editingTicket && editForm && (

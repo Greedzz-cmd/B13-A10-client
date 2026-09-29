@@ -1,101 +1,58 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Sidebar } from "@/components/Sidebar";
 import { Megaphone, AlertCircle, Check, Sparkles } from "lucide-react";
+import { authenticatedFetch, readJson, setTicketAdvertisement } from "@/lib/api-client";
 
-const INITIAL_APPROVED_TICKETS = [
-    {
-        _id: "tkt-adv-1",
-        title: "Biman Bangladesh Airlines",
-        from: "Dhaka",
-        to: "Chittagong",
-        transportType: "Flight",
-        price: 4800,
-        isAdvertised: true,
-        vendorName: "Biman BD",
-    },
-    {
-        _id: "tkt-adv-2",
-        title: "Parabat Express",
-        from: "Dhaka",
-        to: "Sylhet",
-        transportType: "Train",
-        price: 850,
-        isAdvertised: true,
-        vendorName: "Bangladesh Railway",
-    },
-    {
-        _id: "tkt-adv-3",
-        title: "Greenline Scania Multi-Axle",
-        from: "Dhaka",
-        to: "Cox's Bazar",
-        transportType: "Bus",
-        price: 1800,
-        isAdvertised: true,
-        vendorName: "Greenline",
-    },
-    {
-        _id: "tkt-adv-4",
-        title: "MV Sundarban 10",
-        from: "Dhaka",
-        to: "Barishal",
-        transportType: "Launch",
-        price: 450,
-        isAdvertised: false,
-        vendorName: "Sundarban Shipping",
-    },
-    {
-        _id: "tkt-adv-5",
-        title: "Silk City Express",
-        from: "Dhaka",
-        to: "Rajshahi",
-        transportType: "Train",
-        price: 480,
-        isAdvertised: false,
-        vendorName: "Bangladesh Railway",
-    },
-    {
-        _id: "tkt-adv-6",
-        title: "US-Bangla ATR 72-600",
-        from: "Dhaka",
-        to: "Sylhet",
-        transportType: "Flight",
-        price: 3800,
-        isAdvertised: false,
-        vendorName: "US-Bangla",
-    },
-];
+const ADVERTISEMENT_LIMIT = 6;
 
 export default function AdvertiseTicketsPage() {
-    const [tickets, setTickets] = useState(INITIAL_APPROVED_TICKETS);
+    const [tickets, setTickets] = useState([]);
     const [errorMessage, setErrorMessage] = useState("");
+    const [isLoading, setIsLoading] = useState(true);
+    const [loadError, setLoadError] = useState(null);
+
+    // Only approved tickets can be advertised, which is exactly what the public
+    // catalogue returns, so this one is safe to call without a role.
+    const fetchTickets = useCallback(async () => {
+        const res = await authenticatedFetch("/tickets?limit=100&sort=newest");
+
+        return readJson(res);
+    }, []);
 
     useEffect(() => {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-        if (!apiUrl) return;
+        let cancelled = false;
 
-        fetch(`${apiUrl}/tickets`)
-            .then((res) => (res.ok ? res.json() : null))
+        fetchTickets()
             .then((data) => {
-                if (Array.isArray(data) && data.length > 0) {
-                    // Filter only approved tickets
-                    const approved = data.filter(
+                if (cancelled) return;
+                const rows = Array.isArray(data) ? data : data?.tickets || [];
+                setTickets(
+                    rows.filter(
                         (t) => (t.verificationStatus || "approved").toLowerCase() === "approved"
-                    );
-                    if (approved.length > 0) setTickets(approved);
-                }
+                    )
+                );
             })
-            .catch(() => {});
-    }, []);
+            .catch((err) => {
+                if (!cancelled) setLoadError(err.message);
+            })
+            .finally(() => {
+                if (!cancelled) setIsLoading(false);
+            });
+
+        return () => {
+            cancelled = true;
+        };
+    }, [fetchTickets]);
 
     const advertisedCount = tickets.filter((t) => t.isAdvertised).length;
 
     const handleToggleAdvertise = async (ticketId, currentStatus) => {
         setErrorMessage("");
 
-        if (!currentStatus && advertisedCount >= 6) {
-            setErrorMessage("Cannot advertise more than 6 tickets at a time.");
+        if (!currentStatus && advertisedCount >= ADVERTISEMENT_LIMIT) {
+            setErrorMessage(`Cannot advertise more than ${ADVERTISEMENT_LIMIT} tickets at a time.`);
             return;
         }
 
@@ -110,22 +67,13 @@ export default function AdvertiseTicketsPage() {
             )
         );
 
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-        if (apiUrl) {
-            try {
-                const res = await fetch(`${apiUrl}/tickets/${ticketId}`, {
-                    method: "PATCH",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ isAdvertised: newStatus }),
-                });
-                if (!res.ok) {
-                    const data = await res.json().catch(() => ({}));
-                    throw new Error(data.message || "Failed to update advertisement status.");
-                }
-            } catch (err) {
-                setTickets(previousTickets);
-                setErrorMessage(err.message || "Failed to update on server.");
-            }
+        try {
+            // Advertisement has a dedicated endpoint; PATCH /tickets/:id only
+            // accepts the fields a vendor owns and drops the flag.
+            await setTicketAdvertisement(ticketId, newStatus);
+        } catch (err) {
+            setTickets(previousTickets);
+            setErrorMessage(err.message);
         }
     };
 
@@ -149,8 +97,8 @@ export default function AdvertiseTicketsPage() {
                         <div className="inline-flex items-center gap-2 rounded-xl border border-hairline/10 bg-[var(--surface)] px-4 py-2 text-xs">
                             <Sparkles className="h-4 w-4 text-[var(--accent-ink)]" />
                             <span className="text-slate-400">Slots Used:</span>
-                            <span className={`font-mono font-bold ${advertisedCount >= 6 ? "text-amber-400" : "text-emerald-400"}`}>
-                                {advertisedCount} / 6
+                            <span className={`font-mono font-bold ${advertisedCount >= ADVERTISEMENT_LIMIT ? "text-amber-400" : "text-emerald-400"}`}>
+                                {advertisedCount} / {ADVERTISEMENT_LIMIT}
                             </span>
                         </div>
                     </div>
@@ -162,7 +110,20 @@ export default function AdvertiseTicketsPage() {
                         </div>
                     )}
 
-                    {/* Table */}
+                    {isLoading ? (
+                        <p className="mt-7 rounded-xl border border-hairline/8 bg-[var(--surface)] px-4 py-10 text-center text-xs text-slate-500">
+                            Loading tickets…
+                        </p>
+                    ) : loadError ? (
+                        <p role="alert" className="mt-7 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-10 text-center text-xs text-red-300">
+                            {loadError}
+                        </p>
+                    ) : tickets.length === 0 ? (
+                        <p className="mt-7 rounded-xl border border-hairline/8 bg-[var(--surface)] px-4 py-10 text-center text-xs text-slate-500">
+                            No approved tickets are available to advertise yet.
+                        </p>
+                    ) : (
+                    /* Table */
                     <div className="mt-7 overflow-x-auto rounded-xl border border-hairline/8 bg-[var(--surface)]">
                         <table className="w-full min-w-[760px] border-collapse text-left">
                             <thead>
@@ -225,6 +186,7 @@ export default function AdvertiseTicketsPage() {
                             </tbody>
                         </table>
                     </div>
+                    )}
                 </div>
             </main>
         </div>
