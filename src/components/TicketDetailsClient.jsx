@@ -21,6 +21,7 @@ import {
     CreditCard
 } from "lucide-react";
 import { useSession } from "@/lib/auth-client";
+import { authenticatedFetch } from "@/lib/api-client";
 
 const transportIcons = {
     Flight: Plane,
@@ -124,33 +125,23 @@ export default function TicketDetailsClient({ ticket }) {
 
         const payload = {
             ticketId: ticket._id || ticket.id,
-            ticketTitle: ticket.title,
-            from: ticket.from,
-            to: ticket.to,
-            transportType: ticket.transportType || "Bus",
-            operator: ticket.vendorName || ticket.title,
-            image: ticket.image,
             quantity: qty,
-            pricePerSeat: Number(ticket.price),
-            totalPrice: qty * Number(ticket.price),
-            departureDateTime: ticket.departureDateTime,
-            userName: user?.name || "Passenger",
-            userEmail: user?.email || "passenger@example.com",
-            vendorEmail: ticket.vendorEmail || "vendor@example.com",
         };
 
         try {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-            if (apiUrl) {
-                const res = await fetch(`${apiUrl}/bookings`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(payload),
-                });
-                if (!res.ok) {
-                    const data = await res.json().catch(() => ({}));
-                    throw new Error(data.message || "Failed to submit booking request.");
-                }
+            if (!apiUrl) {
+                throw new Error("Booking service is not configured.");
+            }
+
+            const res = await authenticatedFetch("/bookings", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            });
+            if (!res.ok) {
+                const data = await res.json().catch(() => ({}));
+                throw new Error(data.message || "Failed to submit booking request.");
             }
             setBookingSuccess(true);
         } catch (err) {
