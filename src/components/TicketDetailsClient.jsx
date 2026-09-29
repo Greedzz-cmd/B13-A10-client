@@ -34,6 +34,18 @@ function formatPrice(price) {
     return `৳${Number(price || 0).toLocaleString("en-IN")}`;
 }
 
+/**
+ * Fallback departure for a ticket with no usable timestamp. Resolved once at
+ * module scope: reading the clock during render is impure, and the countdown
+ * below recomputes on its own interval anyway.
+ */
+const PLACEHOLDER_DEPARTURE_MS = Date.now() + 86_400_000;
+
+const toEpochMs = (value, fallback) => {
+    const parsed = new Date(value).getTime();
+    return Number.isFinite(parsed) ? parsed : fallback;
+};
+
 export default function TicketDetailsClient({ ticket }) {
     const router = useRouter();
     const session = useSession();
@@ -52,7 +64,8 @@ export default function TicketDetailsClient({ ticket }) {
         isPassed: false,
     });
 
-    const departureDate = new Date(ticket.departureDateTime || Date.now() + 86400000);
+    const departureMs = toEpochMs(ticket.departureDateTime, PLACEHOLDER_DEPARTURE_MS);
+    const departureDate = new Date(departureMs);
     const arrivalDate = ticket.arrivalDateTime ? new Date(ticket.arrivalDateTime) : null;
     const TransportIcon = transportIcons[ticket.transportType] || BusFront;
     const totalSeats = Number(ticket.totalSeats || ticket.quantity || 40);
@@ -62,8 +75,8 @@ export default function TicketDetailsClient({ ticket }) {
     // Countdown logic
     useEffect(() => {
         const updateCountdown = () => {
-            const now = new Date().getTime();
-            const difference = departureDate.getTime() - now;
+            const now = Date.now();
+            const difference = departureMs - now;
 
             if (difference <= 0) {
                 setCountdown({
@@ -93,7 +106,7 @@ export default function TicketDetailsClient({ ticket }) {
         updateCountdown();
         const timer = setInterval(updateCountdown, 1000);
         return () => clearInterval(timer);
-    }, [ticket.departureDateTime]);
+    }, [departureMs]);
 
     const handleOpenBooking = () => {
         if (!user) {

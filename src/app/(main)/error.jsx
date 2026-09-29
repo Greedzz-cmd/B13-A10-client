@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect } from "react";
 
 /** Error boundary for the marketing and dashboard routes. */
@@ -32,12 +33,12 @@ export default function Error({ error, reset }) {
                     >
                         Try again
                     </button>
-                    <a
+                    <Link
                         href="/"
                         className="text-[9px] text-slate-400 underline decoration-slate-600 underline-offset-4 transition-colors hover:text-white"
                     >
                         Go back home
-                    </a>
+                    </Link>
                 </div>
             </div>
         </main>
