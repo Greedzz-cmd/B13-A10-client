@@ -1,16 +1,91 @@
 @import "tailwindcss";
 @import "@heroui/styles";
 
-/* Shared color tokens consumed by Tailwind theme utilities. */
-:root {
-    --background: #080f1d;
+/*
+ * Theme tokens
+ *
+ * The palette is defined once here and consumed through Tailwind's @theme, so a
+ * component never hard codes a colour. Light mode overrides the same token
+ * names, which is what makes the toggle work without duplicating markup.
+ */
+
+:root,
+[data-theme="dark"] {
+    color-scheme: dark;
+
+    /* Surfaces, darkest to lightest. */
+    --surface-canvas: #080f1d;
+    --surface-inset: #0e172a;
+    --surface: #131d31;
+    --surface-raised: #172d41;
+    --surface-strong: #2b3a50;
+
+    /* Hairlines. `hairline` is white at low alpha on dark surfaces. */
+    --line: #2b3a50;
+    --hairline: #ffffff;
+    --shade: #000000;
+
+    /* Orange used as text; darker than the button fill so copy stays legible. */
+    --accent-ink: #f0915a;
+
+    --background: var(--surface-canvas);
     --foreground: #f1f5f9;
+}
+
+[data-theme="light"] {
+    color-scheme: light;
+
+    --surface-canvas: #eef1f6;
+    --surface-inset: #ffffff;
+    --surface: #ffffff;
+    --surface-raised: #f7f9fc;
+    --surface-strong: #e8edf5;
+
+    --line: #d5dde8;
+    /* Inverted: a border must be dark to stay visible on a light surface. */
+    --hairline: #0f172a;
+    --shade: #94a3b8;
+
+    /*
+     * #dd7845 on white is only 3.1:1, which fails for body text. This is the
+     * same brand hue pushed darker so orange copy clears 4.5:1 in light mode.
+     */
+    --accent-ink: #b4531f;
+
+    --background: var(--surface-canvas);
+    --foreground: #0b1220;
+
+    /*
+     * The dark theme reaches for slate-100 as its primary ink, so light mode
+     * reverses the ramp. Only text and the few slate backgrounds use this
+     * scale, so the inversion is safe and keeps every muted tone readable.
+     */
+    --color-slate-100: #0b1220;
+    --color-slate-200: #16233a;
+    --color-slate-300: #2c3b53;
+    --color-slate-400: #4a5a72;
+    --color-slate-500: #64748b;
+    --color-slate-600: #7c8ba1;
+    --color-slate-700: #94a3b8;
+    --color-slate-800: #cbd5e1;
+    --color-slate-900: #e2e8f0;
 }
 
 @theme inline {
     /* Map app tokens and loaded fonts into Tailwind utilities. */
     --color-background: var(--background);
     --color-foreground: var(--foreground);
+
+    --color-canvas: var(--surface-canvas);
+    --color-inset: var(--surface-inset);
+    --color-surface: var(--surface);
+    --color-raised: var(--surface-raised);
+    --color-strong: var(--surface-strong);
+    --color-line: var(--line);
+    --color-hairline: var(--hairline);
+    --color-shade: var(--shade);
+    --color-accent-ink: var(--accent-ink);
+
     --font-sans: var(--font-geist-sans);
     --font-mono: var(--font-geist-mono);
 }
@@ -20,4 +95,20 @@ body {
     background: var(--background);
     color: var(--foreground);
     font-family: var(--font-geist-sans), sans-serif;
+    transition: background-color 200ms ease, color 200ms ease;
+}
+
+/*
+ * The orange accent keeps its hue in both themes. As a surface (buttons) it
+ * needs no change, but the codemod routes orange text through --accent-ink,
+ * which light mode darkens so body copy keeps a 4.5:1 ratio.
+ */
+::selection {
+    background: var(--surface-strong);
+    color: var(--foreground);
+}
+
+/* Keep the scrollbar from flashing a light bar against the dark shell. */
+[data-theme="dark"] ::-webkit-scrollbar-track {
+    background: var(--surface-canvas);
 }

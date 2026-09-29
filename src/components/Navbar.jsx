@@ -6,6 +6,7 @@ import { Button } from "@heroui/react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
+import ThemeToggle from "./ThemeToggle";
 
 function cn(...classes) {
     // Combine optional Tailwind class groups for configurable navbar regions.
@@ -51,23 +52,6 @@ function DefaultBrand() {
             </span>
             <span>Routely</span>
         </Link>
-    );
-}
-
-function ThemeToggle() {
-    // Theme action placeholder.
-    return (
-        <button className="text-slate-400 transition-colors hover:text-white" type="button" aria-label="Change theme">
-            <svg aria-hidden="true" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="3.5" stroke="currentColor" strokeWidth="1.5" />
-                <path
-                    d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeWidth="1.5"
-                />
-            </svg>
-        </button>
     );
 }
 
@@ -132,7 +116,7 @@ export function Navbar({
     return (
         <nav
             className={cn(
-                "z-40 w-full border-b border-white/5 bg-[#0a1121] text-slate-100",
+                "z-40 w-full border-b border-hairline/5 bg-[var(--surface-canvas)] text-slate-100",
                 position === "sticky" && "sticky top-0",
                 position === "fixed" && "fixed top-0",
                 className,
@@ -174,7 +158,7 @@ export function Navbar({
                         <div className="flex items-center gap-4 md:hidden">
                             <ThemeToggle />
                             <button
-                                className="rounded p-1 text-slate-300 transition-colors hover:bg-white/10"
+                                className="rounded p-1 text-slate-300 transition-colors hover:bg-hairline/10"
                                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                                 aria-label="Toggle menu"
                                 aria-expanded={isMenuOpen}
@@ -205,7 +189,7 @@ export function Navbar({
 
                 {/* Mobile navigation menu. */}
                 {isMenuOpen && (
-                    <div className="border-t border-white/10 bg-[#0a1121] md:hidden">
+                    <div className="border-t border-hairline/10 bg-[var(--surface-canvas)] md:hidden">
                         <ul className="flex flex-col gap-2 p-4">
                             {navigationItems.map(item => {
                                 const isActive = pathname === item.href;
@@ -223,7 +207,7 @@ export function Navbar({
                                     </li>
                                 );
                             })}
-                            <li className="mt-4 flex flex-col gap-2 border-t border-white/10 pt-4">
+                            <li className="mt-4 flex flex-col gap-2 border-t border-hairline/10 pt-4">
                                 {renderedRightContent}
                             </li>
                         </ul>
