@@ -59,9 +59,8 @@ export default function RouteSearchWidget() {
         if (date) params.set("date", date);
         if (seats) params.set("seats", seats);
 
-        // General search query combining route for the tickets filter
-        params.set("q", `${from} ${to}`);
-
+        // No combined `q` term: origin and destination are already separate
+        // filters, and a single "Dhaka Chittagong" string matches no field.
         router.push(`/tickets?${params.toString()}`);
     };
 
