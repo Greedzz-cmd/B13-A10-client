@@ -47,7 +47,7 @@ function DefaultBrand() {
     // Default navbar brand link.
     return (
         <Link className="flex items-center gap-2 text-[14px] font-semibold tracking-[-0.02em] text-slate-100" href="/">
-            <span className="flex h-7 w-7 items-center justify-center rounded-[7px] bg-[#dd7845] text-white">
+            <span className="flex h-7 w-7 items-center justify-center rounded-[7px] bg-brand text-white">
                 <RouteMark />
             </span>
             <span>Routely</span>
@@ -60,7 +60,7 @@ function DefaultRightContent({ user, onLogout }) {
     return user ? (
         <Button
             onClick={onLogout}
-            className="ml-2 rounded-[5px] bg-[#dd7845] px-3 py-1.5 text-[11px] font-medium text-white transition-colors hover:bg-[#ee8954]"
+            className="ml-2 rounded-[5px] bg-brand px-3 py-1.5 text-[11px] font-medium text-white transition-colors hover:bg-brand-hover"
         >
             Log Out
         </Button>
@@ -70,7 +70,7 @@ function DefaultRightContent({ user, onLogout }) {
                 Sign in
             </Link>
             <Link
-                className="rounded-[5px] bg-[#dd7845] px-3 py-1.5 text-[11px] font-medium text-white transition-colors hover:bg-[#ee8954]"
+                className="rounded-[5px] bg-brand px-3 py-1.5 text-[11px] font-medium text-white transition-colors hover:bg-brand-hover"
                 href="/get-started"
             >
                 Get started

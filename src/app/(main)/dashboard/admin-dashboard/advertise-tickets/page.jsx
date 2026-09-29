@@ -212,7 +212,7 @@ export default function AdvertiseTicketsPage() {
                                                     className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
                                                         isAdv
                                                             ? "border border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20"
-                                                            : "border border-[#dd7845]/40 bg-[#dd7845]/15 text-[var(--accent-ink)] hover:bg-[#dd7845]/25"
+                                                            : "border border-brand/40 bg-brand/15 text-[var(--accent-ink)] hover:bg-brand/25"
                                                     }`}
                                                 >
                                                     <Megaphone className="h-3.5 w-3.5" />

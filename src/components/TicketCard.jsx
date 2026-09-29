@@ -60,7 +60,7 @@ export default function TicketCard({ ticket, viewMode = "grid" }) {
     // List view adaptation for desktop screens
     if (viewMode === "list") {
         return (
-            <article className="group relative overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--surface-inset)] shadow-[0_12px_32px_rgba(0,0,0,0.35)] transition-all duration-300 hover:border-[#dd7845]/50 hover:bg-[var(--surface)] md:grid md:grid-cols-[260px_1fr]">
+            <article className="group relative overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--surface-inset)] shadow-[0_12px_32px_rgba(0,0,0,0.35)] transition-all duration-300 hover:border-brand/50 hover:bg-[var(--surface)] md:grid md:grid-cols-[260px_1fr]">
                 {/* Image section */}
                 <div className="relative h-[200px] w-full overflow-hidden bg-slate-900 md:h-full">
                     <TicketImage
@@ -76,7 +76,7 @@ export default function TicketCard({ ticket, viewMode = "grid" }) {
                             <span>{ticket.transportType}</span>
                         </span>
                         {ticket.featured && (
-                            <span className="inline-flex items-center rounded-full bg-[#dd7845] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm">
+                            <span className="inline-flex items-center rounded-full bg-brand px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm">
                                 FEATURED
                             </span>
                         )}
@@ -159,7 +159,7 @@ export default function TicketCard({ ticket, viewMode = "grid" }) {
                             </div>
                             <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-[var(--surface)]">
                                 <div
-                                    className="h-full rounded-full bg-[#dd7845] transition-all duration-500"
+                                    className="h-full rounded-full bg-brand transition-all duration-500"
                                     style={{ width: `${bookedPercent}%` }}
                                 />
                             </div>
@@ -208,7 +208,7 @@ export default function TicketCard({ ticket, viewMode = "grid" }) {
 
     // Default Grid view matching user's design reference exactly
     return (
-        <article className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--surface-inset)] shadow-[0_12px_32px_rgba(0,0,0,0.35)] transition-all duration-300 hover:border-[#dd7845]/50 hover:bg-[var(--surface)]">
+        <article className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--surface-inset)] shadow-[0_12px_32px_rgba(0,0,0,0.35)] transition-all duration-300 hover:border-brand/50 hover:bg-[var(--surface)]">
             {/* Top Image Section with Badges and Price Overlay */}
             <div className="relative h-[190px] w-full overflow-hidden bg-slate-900">
                 <TicketImage
@@ -225,7 +225,7 @@ export default function TicketCard({ ticket, viewMode = "grid" }) {
                         <span>{ticket.transportType}</span>
                     </span>
                     {ticket.featured && (
-                        <span className="inline-flex items-center rounded-full bg-[#dd7845] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm">
+                        <span className="inline-flex items-center rounded-full bg-brand px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm">
                             FEATURED
                         </span>
                     )}
@@ -314,7 +314,7 @@ export default function TicketCard({ ticket, viewMode = "grid" }) {
                         </div>
                         <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-[var(--surface)]">
                             <div
-                                className="h-full rounded-full bg-[#dd7845] transition-all duration-500"
+                                className="h-full rounded-full bg-brand transition-all duration-500"
                                 style={{ width: `${bookedPercent}%` }}
                             />
                         </div>

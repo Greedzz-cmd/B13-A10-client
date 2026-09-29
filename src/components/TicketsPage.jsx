@@ -114,7 +114,7 @@ export default function TicketsPage({
                 <div className="mt-8 flex flex-wrap gap-2">
                     {transportTypes.map(type => (
                         <button
-                            className={`inline-flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-[11px] transition-colors ${transport === type ? "border-[#dd7845] bg-[#dd7845] text-white" : "border-[var(--line)] bg-[var(--surface)] text-slate-400 hover:border-slate-500 hover:text-slate-200"}`}
+                            className={`inline-flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-[11px] transition-colors ${transport === type ? "border-brand bg-brand text-white" : "border-[var(--line)] bg-[var(--surface)] text-slate-400 hover:border-slate-500 hover:text-slate-200"}`}
                             key={type}
                             onClick={() => setTransport(type)}
                             type="button"
@@ -128,7 +128,7 @@ export default function TicketsPage({
                 <div className="mt-8 rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-2.5 shadow-[0_16px_40px_rgba(0,0,0,0.14)]">
                     <div className="flex flex-wrap items-center gap-2">
                         {/* Search input */}
-                        <label className="flex h-9 min-w-[220px] flex-1 items-center gap-2 rounded-xl border border-[var(--line)] bg-[var(--surface)] px-3 text-[12px] text-slate-500 focus-within:border-[#dd7845] transition-colors">
+                        <label className="flex h-9 min-w-[220px] flex-1 items-center gap-2 rounded-xl border border-[var(--line)] bg-[var(--surface)] px-3 text-[12px] text-slate-500 focus-within:border-brand transition-colors">
                             <Search aria-hidden="true" className="h-3.5 w-3.5 text-slate-400" />
                             <input
                                 className="min-w-0 flex-1 bg-transparent text-[12px] text-slate-200 outline-none placeholder:text-slate-500"
@@ -157,7 +157,7 @@ export default function TicketsPage({
                                     .filter(type => transport !== "Bus" || type !== "First")
                                     .map(type => (
                                         <button
-                                            className={`rounded-lg px-3 py-1.5 text-[10px] transition-colors ${fare === type ? "bg-[#dd7845] text-white" : "text-slate-500 hover:text-slate-200"}`}
+                                            className={`rounded-lg px-3 py-1.5 text-[10px] transition-colors ${fare === type ? "bg-brand text-white" : "text-slate-500 hover:text-slate-200"}`}
                                             key={type}
                                             onClick={() => setFare(type)}
                                             type="button"
@@ -169,7 +169,7 @@ export default function TicketsPage({
                         </fieldset>
 
                         {/* Sort select */}
-                        <label className="flex h-9 items-center gap-1.5 rounded-xl border border-[var(--line)] bg-[var(--surface)] px-3 text-[12px] text-slate-400 focus-within:border-[#dd7845] transition-colors cursor-pointer">
+                        <label className="flex h-9 items-center gap-1.5 rounded-xl border border-[var(--line)] bg-[var(--surface)] px-3 text-[12px] text-slate-400 focus-within:border-brand transition-colors cursor-pointer">
                             <Filter aria-hidden="true" className="h-3.5 w-3.5 text-slate-400" />
                             <span className="text-slate-400">Sort:</span>
                             <select
@@ -242,7 +242,7 @@ export default function TicketsPage({
                 {(fromLocation || toLocation) && (
                     <div className="mt-4 flex items-center gap-2 text-xs">
                         <span className="text-slate-400">Route filter:</span>
-                        <span className="inline-flex items-center gap-1.5 rounded-md border border-[#dd7845]/40 bg-[#dd7845]/10 px-2.5 py-1 font-medium text-[var(--accent-ink)]">
+                        <span className="inline-flex items-center gap-1.5 rounded-md border border-brand/40 bg-brand/10 px-2.5 py-1 font-medium text-[var(--accent-ink)]">
                             {fromLocation || "Anywhere"} → {toLocation || "Anywhere"}
                             <button
                                 type="button"
@@ -298,7 +298,7 @@ export default function TicketsPage({
                                             onClick={() => setCurrentPage(page)}
                                             className={`h-8 w-8 rounded-lg font-medium transition ${
                                                 currentPage === page
-                                                    ? "bg-[#dd7845] text-white"
+                                                    ? "bg-brand text-white"
                                                     : "border border-hairline/10 bg-[var(--surface)] text-slate-300 hover:bg-hairline/10"
                                             }`}
                                         >
@@ -333,7 +333,7 @@ export default function TicketsPage({
                                 setToLocation("");
                                 setSearchQuery("");
                             }}
-                            className="mt-4 inline-flex items-center rounded-lg bg-[#dd7845] px-4 py-2 text-xs font-medium text-white transition hover:bg-[#ef8a53]"
+                            className="mt-4 inline-flex items-center rounded-lg bg-brand px-4 py-2 text-xs font-medium text-white transition hover:bg-brand-hover"
                         >
                             Clear all filters
                         </button>

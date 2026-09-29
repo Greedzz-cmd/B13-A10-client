@@ -19,7 +19,7 @@ export function ManageTicketCard({ ticket, onApprove, onReject }) {
     const status = (ticket.verificationStatus || "pending").toLowerCase();
 
     return (
-        <article className="group overflow-hidden rounded-2xl border border-hairline/8 bg-[var(--surface)] shadow-[0_12px_32px_rgba(0,0,0,0.16)] transition hover:border-[#dd7845]/30">
+        <article className="group overflow-hidden rounded-2xl border border-hairline/8 bg-[var(--surface)] shadow-[0_12px_32px_rgba(0,0,0,0.16)] transition hover:border-brand/30">
             <div className="border-b border-hairline/6 bg-linear-to-br from-hairline/4.5 to-transparent px-4 pb-4 pt-4">
                 <div className="flex items-center justify-between gap-3">
                     <span className="inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.16em] text-slate-500">

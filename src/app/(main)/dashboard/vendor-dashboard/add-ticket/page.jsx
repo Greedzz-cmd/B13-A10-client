@@ -188,7 +188,7 @@ export default function AddTicketPage() {
                                         key={perk}
                                         className={`inline-flex cursor-pointer items-center gap-2 rounded-full border px-3 py-1.5 font-sans text-xs normal-case tracking-normal transition ${form.perks.includes(perk) ? "border-primary bg-primary/15 text-primary" : "border-default-200 bg-content1 text-default-500"}`}
                                     >
-                                        <input type="checkbox" checked={form.perks.includes(perk)} onChange={() => togglePerk(perk)} className="h-3.5 w-3.5 accent-[#dd7845]" />
+                                        <input type="checkbox" checked={form.perks.includes(perk)} onChange={() => togglePerk(perk)} className="h-3.5 w-3.5 accent-brand" />
                                         {perk}
                                     </label>
                                 ))}
@@ -202,7 +202,7 @@ export default function AddTicketPage() {
 
                         {status.message && <output className={`mt-5 block rounded-lg border px-3 py-2.5 text-sm ${status.type === "success" ? "border-success/20 bg-success/10 text-success" : "border-danger/20 bg-danger/10 text-danger"}`}>{status.message}</output>}
 
-                        <Button type="submit" isDisabled={isSubmitting} fullWidth className="mt-6 bg-[#dd7845] font-bold text-white shadow-lg shadow-[#dd7845]/25 hover:bg-[#ee8954]">
+                        <Button type="submit" isDisabled={isSubmitting} fullWidth className="mt-6 bg-brand font-bold text-white shadow-lg shadow-brand/25 hover:bg-brand-hover">
                             {isSubmitting ? "Submitting..." : "Add Ticket"}
                         </Button>
                     </form>

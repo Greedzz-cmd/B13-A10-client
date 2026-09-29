@@ -176,10 +176,10 @@ export const DEFAULT_SIDEBAR_CONFIG = {
  */
 const VARIANT_STYLES = {
     orange: {
-        active: "bg-[#dd7845]/15 text-[var(--accent-ink)] border-[#dd7845]/30 shadow-[0_0_15px_rgba(221,120,69,0.08)]",
+        active: "bg-brand/15 text-[var(--accent-ink)] border-brand/30 shadow-[0_0_15px_var(--brand-glow)]",
         activeIcon: "text-[var(--accent-ink)]",
-        indicator: "bg-[#dd7845]",
-        avatarGlow: "group-hover:border-[#dd7845]/40",
+        indicator: "bg-brand",
+        avatarGlow: "group-hover:border-brand/40",
     },
     blue: {
         active: "bg-blue-600/15 text-blue-400 border-blue-500/25 shadow-[0_0_15px_rgba(59,130,246,0.08)]",

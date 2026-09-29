@@ -99,7 +99,7 @@ export default function RouteSearchWidget() {
 
                             {/* Active Tab Accent Line */}
                             {isActive && (
-                                <span className="absolute bottom-0 inset-x-2 sm:inset-x-4 h-0.5 bg-[#dd7845] shadow-[0_0_10px_#dd7845]" />
+                                <span className="absolute bottom-0 inset-x-2 sm:inset-x-4 h-0.5 bg-brand shadow-[0_0_10px_var(--brand-solid)]" />
                             )}
                         </button>
                     );
@@ -119,7 +119,7 @@ export default function RouteSearchWidget() {
                                 aria-label="Departure city"
                                 value={from}
                                 onChange={(e) => setFrom(e.target.value)}
-                                className="h-11 w-full appearance-none rounded-xl border border-hairline/10 bg-[var(--surface-canvas)] px-3.5 pr-8 text-xs sm:text-sm font-medium text-slate-100 transition-all hover:bg-[var(--surface-inset)] focus:border-[#dd7845] focus:outline-none focus:ring-1 focus:ring-[#dd7845]/50 cursor-pointer"
+                                className="h-11 w-full appearance-none rounded-xl border border-hairline/10 bg-[var(--surface-canvas)] px-3.5 pr-8 text-xs sm:text-sm font-medium text-slate-100 transition-all hover:bg-[var(--surface-inset)] focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand/50 cursor-pointer"
                             >
                                 {LOCATIONS.map((loc) => (
                                     <option key={loc} value={loc} className="bg-[var(--surface-canvas)] text-slate-100">
@@ -138,7 +138,7 @@ export default function RouteSearchWidget() {
                             onClick={handleSwap}
                             aria-label="Swap departure and destination"
                             title="Swap departure and destination"
-                            className="flex h-11 w-11 items-center justify-center rounded-xl border border-hairline/10 bg-[var(--surface-canvas)] text-slate-400 transition-all hover:border-[#dd7845] hover:bg-[var(--surface-inset)] hover:text-[var(--accent-ink)] active:scale-90"
+                            className="flex h-11 w-11 items-center justify-center rounded-xl border border-hairline/10 bg-[var(--surface-canvas)] text-slate-400 transition-all hover:border-brand hover:bg-[var(--surface-inset)] hover:text-[var(--accent-ink)] active:scale-90"
                         >
                             <ArrowLeftRight className="h-4 w-4" />
                         </button>
@@ -154,7 +154,7 @@ export default function RouteSearchWidget() {
                                 aria-label="Destination city"
                                 value={to}
                                 onChange={(e) => setTo(e.target.value)}
-                                className="h-11 w-full appearance-none rounded-xl border border-hairline/10 bg-[var(--surface-canvas)] px-3.5 pr-8 text-xs sm:text-sm font-medium text-slate-100 transition-all hover:bg-[var(--surface-inset)] focus:border-[#dd7845] focus:outline-none focus:ring-1 focus:ring-[#dd7845]/50 cursor-pointer"
+                                className="h-11 w-full appearance-none rounded-xl border border-hairline/10 bg-[var(--surface-canvas)] px-3.5 pr-8 text-xs sm:text-sm font-medium text-slate-100 transition-all hover:bg-[var(--surface-inset)] focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand/50 cursor-pointer"
                             >
                                 {LOCATIONS.map((loc) => (
                                     <option key={loc} value={loc} className="bg-[var(--surface-canvas)] text-slate-100">
@@ -177,7 +177,7 @@ export default function RouteSearchWidget() {
                                 type="date"
                                 value={date}
                                 onChange={(e) => setDate(e.target.value)}
-                                className="h-11 w-full rounded-xl border border-hairline/10 bg-[var(--surface-canvas)] px-3.5 text-xs sm:text-sm font-medium text-slate-100 transition-all hover:bg-[var(--surface-inset)] focus:border-[#dd7845] focus:outline-none focus:ring-1 focus:ring-[#dd7845]/50 [color-scheme:dark] cursor-pointer"
+                                className="h-11 w-full rounded-xl border border-hairline/10 bg-[var(--surface-canvas)] px-3.5 text-xs sm:text-sm font-medium text-slate-100 transition-all hover:bg-[var(--surface-inset)] focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand/50 [color-scheme:dark] cursor-pointer"
                             />
                         </div>
                     </div>
@@ -192,7 +192,7 @@ export default function RouteSearchWidget() {
                                 aria-label="Number of seats"
                                 value={seats}
                                 onChange={(e) => setSeats(e.target.value)}
-                                className="h-11 w-full appearance-none rounded-xl border border-hairline/10 bg-[var(--surface-canvas)] px-3.5 pr-7 text-xs sm:text-sm font-medium text-slate-100 transition-all hover:bg-[var(--surface-inset)] focus:border-[#dd7845] focus:outline-none focus:ring-1 focus:ring-[#dd7845]/50 cursor-pointer"
+                                className="h-11 w-full appearance-none rounded-xl border border-hairline/10 bg-[var(--surface-canvas)] px-3.5 pr-7 text-xs sm:text-sm font-medium text-slate-100 transition-all hover:bg-[var(--surface-inset)] focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand/50 cursor-pointer"
                             >
                                 {[1, 2, 3, 4, 5, 6].map((num) => (
                                     <option key={num} value={num} className="bg-[var(--surface-canvas)] text-slate-100">
@@ -207,7 +207,7 @@ export default function RouteSearchWidget() {
                     {/* Search Button */}
                     <button
                         type="submit"
-                        className="flex h-11 items-center justify-center gap-2 rounded-xl bg-[#dd7845] px-6 text-xs sm:text-sm font-semibold text-white shadow-lg shadow-[#dd7845]/25 transition-all hover:bg-[#ee8954] hover:shadow-[#dd7845]/35 active:scale-95 cursor-pointer"
+                        className="flex h-11 items-center justify-center gap-2 rounded-xl bg-brand px-6 text-xs sm:text-sm font-semibold text-white shadow-lg shadow-brand/25 transition-all hover:bg-brand-hover hover:shadow-brand/35 active:scale-95 cursor-pointer"
                     >
                         <Search className="h-4 w-4" strokeWidth={2.2} />
                         <span>Search</span>

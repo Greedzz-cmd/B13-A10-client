@@ -28,6 +28,17 @@
     /* Orange used as text; darker than the button fill so copy stays legible. */
     --accent-ink: #f0915a;
 
+    /*
+     * Orange as a button fill. It is kept as a token rather than a literal in
+     * every component because light mode needs a different value: #dd7845 with
+     * white text is 3.1:1, which fails WCAG AA for the 10px button labels this
+     * project uses. The light block below pushes the same hue down to 5:1.
+     */
+    --brand-solid: #dd7845;
+    --brand-solid-hover: #ee8954;
+    /* Ambient glow behind hero copy and active nav items. */
+    --brand-glow: rgba(221, 120, 69, 0.18);
+
     --background: var(--surface-canvas);
     --foreground: #f1f5f9;
 }
@@ -51,6 +62,11 @@
      * same brand hue pushed darker so orange copy clears 4.5:1 in light mode.
      */
     --accent-ink: #b4531f;
+
+    /* Button fill darkened to 5:1 against white, matching --accent-ink. */
+    --brand-solid: #b4531f;
+    --brand-solid-hover: #c2622c;
+    --brand-glow: rgba(180, 83, 31, 0.14);
 
     --background: var(--surface-canvas);
     --foreground: #0b1220;
@@ -85,6 +101,8 @@
     --color-hairline: var(--hairline);
     --color-shade: var(--shade);
     --color-accent-ink: var(--accent-ink);
+    --color-brand: var(--brand-solid);
+    --color-brand-hover: var(--brand-solid-hover);
 
     --font-sans: var(--font-geist-sans);
     --font-mono: var(--font-geist-mono);

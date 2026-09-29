@@ -17,7 +17,7 @@ export default function JourneyCtaSection() {
                 <div className="mt-6 flex items-center justify-center gap-4">
                     <Link
                         href="tickets"
-                        className="rounded-[5px] bg-[#dd7845] px-4 py-2.5 text-[10px] font-medium text-white transition-colors hover:bg-[#ef8a53]"
+                        className="rounded-[5px] bg-brand px-4 py-2.5 text-[10px] font-medium text-white transition-colors hover:bg-brand-hover"
                     >
                         Explore tickets <span className="ml-1.5">→</span>
                     </Link>

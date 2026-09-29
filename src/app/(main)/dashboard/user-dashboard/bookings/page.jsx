@@ -261,7 +261,7 @@ export default function BookedTicketsPage() {
                 <div className="mt-16 rounded-2xl border border-dashed border-hairline/10 p-12 text-center">
                     <p className="text-base font-medium text-slate-300">No bookings yet</p>
                     <p className="mt-1 text-xs text-slate-500">Browse available tickets and place your first booking request.</p>
-                    <Link href="/tickets" className="mt-4 inline-flex rounded-lg bg-[#dd7845] px-4 py-2 text-xs font-medium text-white hover:bg-[#ef8a53]">
+                    <Link href="/tickets" className="mt-4 inline-flex rounded-lg bg-brand px-4 py-2 text-xs font-medium text-white hover:bg-brand-hover">
                         Browse Tickets
                     </Link>
                 </div>
@@ -277,7 +277,7 @@ export default function BookedTicketsPage() {
                             <X className="h-4 w-4" />
                         </button>
                         <div className="flex items-center gap-3 mb-4">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#dd7845]/15 text-[var(--accent-ink)]">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand/15 text-[var(--accent-ink)]">
                                 <QrCode className="h-5 w-5" />
                             </div>
                             <div>
@@ -308,7 +308,7 @@ export default function BookedTicketsPage() {
                                 Close
                             </button>
                             <button type="button" onClick={() => window.print()}
-                                className="flex-1 rounded-xl bg-[#dd7845] py-2.5 text-xs font-medium text-white hover:bg-[#ee8954] transition-colors">
+                                className="flex-1 rounded-xl bg-brand py-2.5 text-xs font-medium text-white hover:bg-brand-hover transition-colors">
                                 Print Ticket
                             </button>
                         </div>

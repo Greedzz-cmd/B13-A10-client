@@ -162,7 +162,7 @@ export default function VendorTicketGrid({ initialTickets }) {
                                         required={name !== "duration"}
                                         min={type === "number" ? "0" : undefined}
                                         step={name === "price" ? "0.01" : undefined}
-                                        className="h-10 rounded-lg border border-hairline/10 bg-[var(--surface-canvas)] px-3 text-sm text-slate-100 outline-none focus:border-[#dd7845]"
+                                        className="h-10 rounded-lg border border-hairline/10 bg-[var(--surface-canvas)] px-3 text-sm text-slate-100 outline-none focus:border-brand"
                                     />
                                 </label>
                             ))}
@@ -181,7 +181,7 @@ export default function VendorTicketGrid({ initialTickets }) {
                             {editError && <p role="alert" className="text-sm text-red-400 sm:col-span-2">{editError}</p>}
                             <div className="flex justify-end gap-2 sm:col-span-2">
                                 <button type="button" onClick={closeEdit} disabled={isSavingEdit} className="rounded-lg border border-hairline/10 px-4 py-2 text-sm text-slate-300 hover:bg-hairline/5 disabled:opacity-50">Cancel</button>
-                                <button type="submit" disabled={isSavingEdit} className="rounded-lg bg-[#dd7845] px-4 py-2 text-sm font-semibold text-white hover:bg-[#ee8954] disabled:cursor-wait disabled:opacity-50">
+                                <button type="submit" disabled={isSavingEdit} className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-hover disabled:cursor-wait disabled:opacity-50">
                                     {isSavingEdit ? "Saving..." : "Save changes"}
                                 </button>
                             </div>

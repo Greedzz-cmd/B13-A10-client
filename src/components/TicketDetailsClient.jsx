@@ -188,7 +188,7 @@ export default function TicketDetailsClient({ ticket }) {
                                     <TransportIcon className="h-3.5 w-3.5 text-[var(--accent-ink)]" />
                                     {ticket.transportType || "Bus"}
                                 </span>
-                                <span className="rounded-full border border-[#dd7845]/40 bg-[#dd7845]/20 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-[var(--accent-ink)] backdrop-blur-md">
+                                <span className="rounded-full border border-brand/40 bg-brand/20 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-[var(--accent-ink)] backdrop-blur-md">
                                     {ticket.fareClass || "Economy"}
                                 </span>
                             </div>
@@ -332,7 +332,7 @@ export default function TicketDetailsClient({ ticket }) {
                                 </div>
                                 <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-slate-800">
                                     <div
-                                        className="h-full rounded-full bg-[#dd7845]"
+                                        className="h-full rounded-full bg-brand"
                                         style={{
                                             width: `${Math.min(100, Math.max(0, ((totalSeats - availableSeats) / totalSeats) * 100))}%`,
                                         }}
@@ -345,7 +345,7 @@ export default function TicketDetailsClient({ ticket }) {
                                 type="button"
                                 onClick={handleOpenBooking}
                                 disabled={countdown.isPassed || isSoldOut}
-                                className="mt-6 flex h-12 w-full items-center justify-center rounded-xl bg-[#dd7845] text-sm font-semibold text-white shadow-lg shadow-[#dd7845]/20 transition hover:bg-[#ee8954] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-[#dd7845]"
+                                className="mt-6 flex h-12 w-full items-center justify-center rounded-xl bg-brand text-sm font-semibold text-white shadow-lg shadow-brand/20 transition hover:bg-brand-hover active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-brand"
                             >
                                 {countdown.isPassed ? "Departure Passed" : isSoldOut ? "Sold Out" : "Book Now"}
                             </button>
@@ -399,7 +399,7 @@ export default function TicketDetailsClient({ ticket }) {
                                 <div className="mt-6 flex flex-col gap-2">
                                     <Link
                                         href="/dashboard/user-dashboard/bookings"
-                                        className="inline-flex h-10 w-full items-center justify-center rounded-xl bg-[#dd7845] text-xs font-semibold text-white transition hover:bg-[#ee8954]"
+                                        className="inline-flex h-10 w-full items-center justify-center rounded-xl bg-brand text-xs font-semibold text-white transition hover:bg-brand-hover"
                                     >
                                         Go to My Booked Tickets
                                     </Link>
@@ -445,7 +445,7 @@ export default function TicketDetailsClient({ ticket }) {
                                             value={bookingQty}
                                             onChange={(e) => setBookingQty(Number(e.target.value))}
                                             required
-                                            className="h-10 w-full rounded-lg border border-hairline/10 bg-[var(--surface)] px-3 text-sm text-white outline-none focus:border-[#dd7845]"
+                                            className="h-10 w-full rounded-lg border border-hairline/10 bg-[var(--surface)] px-3 text-sm text-white outline-none focus:border-brand"
                                         />
                                     </div>
 
@@ -483,7 +483,7 @@ export default function TicketDetailsClient({ ticket }) {
                                     <button
                                         type="submit"
                                         disabled={isSubmitting}
-                                        className="flex-1 rounded-xl bg-[#dd7845] py-2.5 text-xs font-semibold text-white hover:bg-[#ee8954] disabled:opacity-50"
+                                        className="flex-1 rounded-xl bg-brand py-2.5 text-xs font-semibold text-white hover:bg-brand-hover disabled:opacity-50"
                                     >
                                         {isSubmitting ? "Submitting..." : "Submit Booking"}
                                     </button>

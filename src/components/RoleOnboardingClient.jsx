@@ -42,7 +42,7 @@ export default function RoleOnboardingClient() {
                 <p className="mt-3 text-sm text-slate-400">Choose the dashboard that fits you. You can contact support if this needs to change later.</p>
                 <div className="mt-8 grid gap-4 sm:grid-cols-2">
                     {roles.map(({ id, title, description, Icon }) => (
-                        <button key={id} type="button" disabled={isSaving} onClick={() => chooseRole(id)} className="rounded-xl border border-hairline/10 bg-hairline/[0.03] p-6 text-left transition hover:border-[#dd7845]/60 hover:bg-hairline/[0.06] disabled:cursor-not-allowed disabled:opacity-60">
+                        <button key={id} type="button" disabled={isSaving} onClick={() => chooseRole(id)} className="rounded-xl border border-hairline/10 bg-hairline/[0.03] p-6 text-left transition hover:border-brand/60 hover:bg-hairline/[0.06] disabled:cursor-not-allowed disabled:opacity-60">
                             <Icon className="h-7 w-7 text-[var(--accent-ink)]" />
                             <h2 className="mt-5 text-lg font-semibold">{title}</h2>
                             <p className="mt-1 text-sm leading-6 text-slate-400">{description}</p>

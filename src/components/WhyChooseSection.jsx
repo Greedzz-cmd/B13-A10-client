@@ -42,9 +42,9 @@ export default function WhyChooseSection() {
                     {reasons.map(({ title, description, icon: Icon }) => (
                         <article
                             key={title}
-                            className="min-h-[145px] rounded-[5px] border border-hairline/[0.06] bg-[var(--surface)] p-4 transition-colors hover:border-[#dd7845]/30 hover:bg-[var(--surface-raised)]"
+                            className="min-h-[145px] rounded-[5px] border border-hairline/[0.06] bg-[var(--surface)] p-4 transition-colors hover:border-brand/30 hover:bg-[var(--surface-raised)]"
                         >
-                            <span className="flex h-6 w-6 items-center justify-center rounded-[4px] border border-[#dd7845]/20 bg-[var(--surface-raised)] text-[var(--accent-ink)]">
+                            <span className="flex h-6 w-6 items-center justify-center rounded-[4px] border border-brand/20 bg-[var(--surface-raised)] text-[var(--accent-ink)]">
                                 <Icon aria-hidden="true" className="h-3 w-3" strokeWidth={1.6} />
                             </span>
                             <h3 className="mt-3 font-serif text-[13px] text-slate-200">{title}</h3>

@@ -48,7 +48,7 @@ export default function Footer() {
                             className="inline-flex items-center gap-1.5 text-[11px] font-medium text-slate-200"
                             href="/"
                         >
-                            <span className="flex h-4 w-4 items-center justify-center rounded-[2px] bg-[#dd7845] text-[8px] text-white">
+                            <span className="flex h-4 w-4 items-center justify-center rounded-[2px] bg-brand text-[8px] text-white">
                                 R
                             </span>
                             Routely
@@ -61,7 +61,7 @@ export default function Footer() {
                                 <a
                                     key={label}
                                     aria-label={label}
-                                    className="flex h-6 w-6 items-center justify-center rounded-[3px] border border-hairline/[0.08] text-slate-500 transition-colors hover:border-[#dd7845]/50 hover:text-[var(--accent-ink)]"
+                                    className="flex h-6 w-6 items-center justify-center rounded-[3px] border border-hairline/[0.08] text-slate-500 transition-colors hover:border-brand/50 hover:text-[var(--accent-ink)]"
                                     href={href}
                                 >
                                     <span aria-hidden="true" className="text-[9px] font-semibold leading-none">
@@ -121,7 +121,7 @@ export default function Footer() {
                                 <Link
                                     key={label}
                                     href={href}
-                                    className="rounded-[2px] border border-hairline/[0.08] px-2 py-1 text-[8px] text-slate-400 transition-colors hover:border-[#dd7845]/50 hover:text-[var(--accent-ink)]"
+                                    className="rounded-[2px] border border-hairline/[0.08] px-2 py-1 text-[8px] text-slate-400 transition-colors hover:border-brand/50 hover:text-[var(--accent-ink)]"
                                 >
                                     {label}
                                 </Link>

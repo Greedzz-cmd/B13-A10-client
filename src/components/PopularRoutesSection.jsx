@@ -82,10 +82,10 @@ function RouteCard({ route }) {
     return (
         <Link
             href={route.href}
-            className="group relative flex flex-col gap-4 overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--surface-inset)] p-5 transition-all duration-200 hover:border-[#dd7845]/50 hover:bg-[var(--surface)]"
+            className="group relative flex flex-col gap-4 overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--surface-inset)] p-5 transition-all duration-200 hover:border-brand/50 hover:bg-[var(--surface)]"
         >
             {/* Arrow link indicator */}
-            <span className="absolute right-4 top-4 grid h-6 w-6 place-items-center rounded-full border border-[var(--line)] text-slate-500 transition-colors group-hover:border-[#dd7845]/60 group-hover:text-[var(--accent-ink)]">
+            <span className="absolute right-4 top-4 grid h-6 w-6 place-items-center rounded-full border border-[var(--line)] text-slate-500 transition-colors group-hover:border-brand/60 group-hover:text-[var(--accent-ink)]">
                 <svg aria-hidden="true" className="h-3 w-3" viewBox="0 0 24 24" fill="none">
                     <path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
@@ -105,7 +105,7 @@ function RouteCard({ route }) {
 
             {/* Transport mode icon dots */}
             <div className="flex items-center gap-2.5">
-                <span className="h-2 w-2 shrink-0 rounded-full bg-[#dd7845]" aria-hidden="true" />
+                <span className="h-2 w-2 shrink-0 rounded-full bg-brand" aria-hidden="true" />
                 {route.transport.map(mode => {
                     const Icon = transportIcons[mode];
                     return (

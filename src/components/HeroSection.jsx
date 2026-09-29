@@ -14,7 +14,7 @@ export function RouteMap() {
                     <path d="M304 228C372 260 454 324 542 377" />
                     <path d="M304 228C278 155 259 99 232 52" />
                 </g>
-                <g fill="#dd7845" fillOpacity="0.9" stroke="#f3a06f" strokeOpacity="0.35">
+                <g fill="var(--brand-solid)" fillOpacity="0.9" stroke="#f3a06f" strokeOpacity="0.35">
                     <circle cx="304" cy="228" r="8" />
                     <circle cx="104" cy="165" r="5" />
                     <circle cx="131" cy="332" r="5" />
@@ -54,8 +54,8 @@ export default function HeroSection() {
                     {/* Introductory product messaging and primary calls to action. */}
                     <div className="relative z-10 max-w-[510px]">
                         <p className="mb-7 inline-flex items-center gap-2 text-[9px] uppercase tracking-[0.2em] text-[var(--accent-ink)]">
-                            <span className="h-px w-2 bg-[#dd7845]" /> Bangladesh&apos;s premium travel platform{" "}
-                            <span className="h-px w-2 bg-[#dd7845]" />
+                            <span className="h-px w-2 bg-brand" /> Bangladesh&apos;s premium travel platform{" "}
+                            <span className="h-px w-2 bg-brand" />
                         </p>
                         <h1 className="font-serif text-[46px] leading-[1.02] tracking-normal text-slate-100 sm:text-[54px]">
                             Your route.
@@ -70,7 +70,7 @@ export default function HeroSection() {
                         </p>
                         <div className="mt-7 flex items-center gap-3">
                             <Link
-                                className="rounded-[5px] bg-[#dd7845] px-5 py-2.5 text-[11px] font-medium text-white transition-colors hover:bg-[#ef8a53]"
+                                className="rounded-[5px] bg-brand px-5 py-2.5 text-[11px] font-medium text-white transition-colors hover:bg-brand-hover"
                                 href="/tickets"
                             >
                                 Explore routes <span className="ml-2">→</span>

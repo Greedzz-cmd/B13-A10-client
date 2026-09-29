@@ -39,7 +39,7 @@ export default function RevenueOverviewPage() {
     ];
 
     const transportBreakdown = [
-        { type: "Bus", count: 48, percentage: 57, color: "bg-[#dd7845]" },
+        { type: "Bus", count: 48, percentage: 57, color: "bg-brand" },
         { type: "Train", count: 22, percentage: 26, color: "bg-blue-500" },
         { type: "Flight", count: 10, percentage: 12, color: "bg-purple-500" },
         { type: "Launch", count: 4, percentage: 5, color: "bg-teal-500" },
@@ -103,7 +103,7 @@ export default function RevenueOverviewPage() {
                                 <span className="font-mono text-[10px] uppercase tracking-widest text-slate-400">
                                     Total Revenue Earned
                                 </span>
-                                <div className="grid h-8 w-8 place-items-center rounded-lg bg-[#dd7845]/15 text-[var(--accent-ink)]">
+                                <div className="grid h-8 w-8 place-items-center rounded-lg bg-brand/15 text-[var(--accent-ink)]">
                                     <DollarSign className="h-4 w-4" />
                                 </div>
                             </div>
@@ -134,7 +134,7 @@ export default function RevenueOverviewPage() {
                             <div className="mt-8 flex h-52 items-end justify-between gap-4 border-b border-hairline/10 pb-4">
                                 {monthlyRevenue.map((item) => (
                                     <div key={item.month} className="group relative flex flex-1 flex-col items-center gap-2">
-                                        <div className="w-full max-w-[50px] rounded-t-lg bg-gradient-to-t from-blue-600 to-[#dd7845] transition-all duration-300 group-hover:brightness-125"
+                                        <div className="w-full max-w-[50px] rounded-t-lg bg-gradient-to-t from-blue-600 to-brand transition-all duration-300 group-hover:brightness-125"
                                             style={{ height: item.height }}
                                         />
                                         <span className="font-mono text-xs text-slate-400">{item.month}</span>
