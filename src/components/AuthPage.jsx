@@ -260,9 +260,17 @@ export default function AuthPage({ mode }) {
                         </div>
 
                         {/* Google */}
+                        {/*
+                          This button is a fixed light chip in BOTH themes (Google's
+                          own white-button look), so its ink must not come from the
+                          slate scale: light mode reverses that ramp, which turned
+                          text-slate-900 into #e2e8f0 and left the label at 1.10:1
+                          against this fill. Hence a literal ink colour, and a
+                          --shade border so the chip keeps an edge on a white card.
+                        */}
                         <button
                             type="button" onClick={handleGoogleSignIn}
-                            className="group flex h-[50px] w-full items-center justify-center gap-3 rounded-xl border border-hairline/[0.08] bg-[#eef3f7] px-4 text-[12px] font-medium text-slate-900 transition-all duration-200 hover:bg-white hover:shadow-[0_8px_30px_rgba(255,255,255,0.08)]"
+                            className="group flex h-[50px] w-full items-center justify-center gap-3 rounded-xl border border-[var(--shade)] bg-[#eef3f7] px-4 text-[12px] font-medium text-[#0f172a] transition-all duration-200 hover:bg-white hover:shadow-[0_8px_30px_rgba(255,255,255,0.08)]"
                         >
                             <span className="grid h-6 w-6 place-items-center rounded-full bg-white text-[10px] font-bold shadow-sm">
                                 G

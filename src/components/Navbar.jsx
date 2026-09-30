@@ -181,8 +181,14 @@ export function Navbar({
                                     <Link
                                         href={item.href}
                                         className={cn(
-                                            "text-sm text-slate-400 transition-colors hover:text-white",
-                                            isActive && "text-slate-100",
+                                            "text-sm transition-colors hover:text-white",
+                                            // Colour is chosen per state rather than
+                                            // layered on: text-slate-400 and
+                                            // text-brand are both colour utilities,
+                                            // so leaving the inactive one in the base
+                                            // classes would let stylesheet order pick
+                                            // the winner and the active link stayed grey.
+                                            isActive ? "text-brand" : "text-slate-400",
                                         )}
                                         aria-current={isActive ? "page" : undefined}
                                     >
@@ -240,8 +246,10 @@ export function Navbar({
                                         <Link
                                             href={item.href}
                                             className={cn(
-                                                "block py-2 text-sm text-slate-400 transition-colors hover:text-white",
-                                                isActive && "font-medium text-slate-100",
+                                                "block py-2 text-sm transition-colors hover:text-white",
+                                                isActive
+                                                    ? "font-medium text-brand"
+                                                    : "text-slate-400",
                                             )}
                                         >
                                             {item.label}
