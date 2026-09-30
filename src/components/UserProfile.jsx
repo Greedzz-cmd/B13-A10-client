@@ -34,15 +34,15 @@ const fetchTickets = async () => {
 };
 
 export const DEFAULT_PROFILES = {
-    user: {
-        title: "User Profile",
+    traveller: {
+        title: "Traveller Profile",
         subtitle: "Manage your personal information.",
         statsPosition: "bottom",
         avatarStyle: "border-hairline/10 bg-[var(--surface-inset)] text-slate-200",
         user: {
             name: "Nusrat Jahan",
             email: "Nusrat@Example.Com",
-            role: "User",
+            role: "Traveller",
             phone: "+880 1700 000 000",
             location: "Dhaka, Bangladesh",
             memberSince: "2024",
@@ -167,7 +167,7 @@ export const DEFAULT_PROFILES = {
  * and custom account pages.
  *
  * @param {Object} props
- * @param {'user' | 'vendor' | 'admin' | 'custom'} [props.role='user'] - Preconfigured profile role.
+ * @param {'traveller' | 'vendor' | 'admin' | 'custom'} [props.role='traveller'] - Preconfigured profile role.
  * @param {string} [props.title] - Override title text.
  * @param {string} [props.subtitle] - Override subtitle text.
  * @param {Object} [props.user] - User object to merge or override default values.
@@ -179,7 +179,7 @@ export const DEFAULT_PROFILES = {
  * @param {string} [props.className] - Additional class names.
  */
 export function UserProfile({
-    role = "user",
+    role = "traveller",
     title,
     subtitle,
     user: customUser,
@@ -210,7 +210,7 @@ export function UserProfile({
     const pending = tickets.filter(t => t.verificationStatus == "pending");
     const approved = tickets.filter(t => t.verificationStatus == "approved");
 
-    const defaultConfig = DEFAULT_PROFILES[role] || DEFAULT_PROFILES.user;
+    const defaultConfig = DEFAULT_PROFILES[role] || DEFAULT_PROFILES.traveller;
     const sessionProfile = sessionUser
         ? {
               name: sessionUser.name,

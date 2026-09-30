@@ -145,6 +145,7 @@ export function Navbar({
 
     const logoutUser = async () => {
         await authClient.signOut();
+        // Signing out is deliberate, so there is no page to return to.
         router.push("/sign-in");
     };
 

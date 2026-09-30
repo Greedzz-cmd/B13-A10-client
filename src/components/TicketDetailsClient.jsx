@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
     Plane,
     TrainFront,
@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { useSession } from "@/lib/auth-client";
 import { authenticatedFetch } from "@/lib/api-client";
+import { signInHref } from "@/lib/auth-redirect";
 
 const transportIcons = {
     Flight: Plane,
@@ -48,6 +49,7 @@ const toEpochMs = (value, fallback) => {
 
 export default function TicketDetailsClient({ ticket }) {
     const router = useRouter();
+    const pathname = usePathname();
     const session = useSession();
     const user = session?.data?.user;
 
@@ -110,7 +112,8 @@ export default function TicketDetailsClient({ ticket }) {
 
     const handleOpenBooking = () => {
         if (!user) {
-            router.push("/sign-in");
+            // Send them back to this ticket after signing in, not to the homepage.
+            router.push(signInHref(pathname));
             return;
         }
         setIsBookingOpen(true);

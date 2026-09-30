@@ -80,8 +80,8 @@ function renderIcon(icon, className = "h-4 w-4") {
  * Default preset navigation items by role
  */
 export const DEFAULT_SIDEBAR_CONFIG = {
-    user: {
-        roleLabel: "user",
+    traveller: {
+        roleLabel: "traveller",
         variant: "orange",
         items: [
             {
@@ -209,7 +209,7 @@ const VARIANT_STYLES = {
  * and arbitrary application pages.
  *
  * @param {Object} props
- * @param {'user' | 'vendor' | 'admin' | 'custom'} [props.role='user'] - Target role preset.
+ * @param {'traveller' | 'vendor' | 'admin' | 'custom'} [props.role='traveller'] - Target role preset.
  * @param {Array} [props.items] - Custom menu items [{ id, label, href, icon, badge, onClick, isActive }].
  * @param {Object} [props.user] - User details { name, email, role, avatar, image }.
  * @param {string} [props.activeId] - Explicit active item ID or href (overrides pathname matching).
@@ -230,7 +230,7 @@ const VARIANT_STYLES = {
  * @param {Function} [props.onMobileClose] - Handler to close mobile drawer.
  */
 export function Sidebar({
-    role = "user",
+    role = "traveller",
     items,
     user,
     activeId,
@@ -307,7 +307,7 @@ export function Sidebar({
     }, [isMobileOpen, handleCloseMobile]);
 
     // Determine config and fallback items
-    const roleConfig = DEFAULT_SIDEBAR_CONFIG[role] || DEFAULT_SIDEBAR_CONFIG.user;
+    const roleConfig = DEFAULT_SIDEBAR_CONFIG[role] || DEFAULT_SIDEBAR_CONFIG.traveller;
     const resolvedVariant = variant || roleConfig.variant || "orange";
     const variantTheme = VARIANT_STYLES[resolvedVariant] || VARIANT_STYLES.orange;
 
@@ -351,6 +351,7 @@ export function Sidebar({
         if (onSignOut) {
             onSignOut(e);
         } else {
+            // Signing out is deliberate, so there is no page to return to.
             router.push("/sign-in");
         }
     };

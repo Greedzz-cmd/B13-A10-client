@@ -1,8 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Button, Input } from "@heroui/react";
-import { ImagePlus, ShieldAlert, Loader2 } from "lucide-react";
+import { Button, Input, toast } from "@heroui/react";
+import { ImagePlus, ShieldAlert, Loader2, Check } from "lucide-react";
 import { Sidebar } from "@/components/Sidebar";
 import { authenticatedFetch, readJson, uploadImage } from "@/lib/api-client";
 
@@ -71,7 +71,6 @@ function Field({ label, name, value, onChange, type = "text", placeholder, requi
 
 export default function AddTicketPage() {
     const [form, setForm] = useState(initialForm);
-    const [status, setStatus] = useState({ type: "", message: "" });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
     const [uploadEnabled, setUploadEnabled] = useState(false);
@@ -138,16 +137,22 @@ export default function AddTicketPage() {
         if (!file) return;
 
         setIsUploading(true);
-        setStatus({ type: "", message: "" });
-
         try {
             const { url } = await uploadImage(file);
             setForm(current => ({ ...current, image: url }));
-            setStatus({ type: "success", message: "Image uploaded." });
+            const toastId = toast.success("Image uploaded", {
+                description: "It is attached to this ticket and will appear in the listing.",
+                indicator: <ImagePlus className="size-4" />,
+                actionProps: {
+                    children: "Dismiss",
+                    variant: "tertiary",
+                    onPress: () => toast.close(toastId),
+                },
+            });
         } catch (error) {
-            setStatus({
-                type: "error",
-                message: error instanceof Error ? error.message : "The image could not be uploaded.",
+            toast.danger(error instanceof Error ? error.message : "The image could not be uploaded.", {
+                description: "Choose the file again, or submit the ticket without an image.",
+                indicator: <ShieldAlert className="size-4" />,
             });
         } finally {
             setIsUploading(false);
@@ -159,7 +164,6 @@ export default function AddTicketPage() {
     async function handleSubmit(event) {
         event.preventDefault();
         setIsSubmitting(true);
-        setStatus({ type: "", message: "" });
 
         const departureDateTime = `${form.departureDate}T${form.departureTime}`;
         const arrivalDateTime = `${form.departureDate}T${form.arrivalTime}`;
@@ -190,9 +194,20 @@ export default function AddTicketPage() {
             await readJson(res);
 
             setForm(initialForm);
-            setStatus({ type: "success", message: "Ticket submitted for admin approval." });
+            const toastId = toast.success("Ticket submitted for approval", {
+                description: "An admin will review it shortly. You will be able to edit it once approved.",
+                indicator: <Check className="size-4" />,
+                actionProps: {
+                    children: "Dismiss",
+                    variant: "tertiary",
+                    onPress: () => toast.close(toastId),
+                },
+            });
         } catch (error) {
-            setStatus({ type: "error", message: error instanceof Error ? error.message : "Something went wrong. Please try again." });
+            toast.danger(error instanceof Error ? error.message : "Something went wrong. Please try again.", {
+                description: "Your details were kept, so you can submit the ticket again.",
+                indicator: <ShieldAlert className="size-4" />,
+            });
         } finally {
             setIsSubmitting(false);
         }
@@ -223,7 +238,7 @@ export default function AddTicketPage() {
                         </div>
 
                         {isFraud && (
-                            <p className="mb-5 flex items-start gap-2 rounded-xl border border-rose-500/30 bg-rose-500/10 px-3 py-2.5 text-xs text-rose-300">
+                            <p className="mt-5 flex items-start gap-2 rounded-xl border border-rose-500/30 bg-rose-500/10 px-3 py-2.5 text-xs text-rose-300">
                                 <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0" />
                                 <span>
                                     Your account is flagged as fraudulent, so your tickets stay hidden from
@@ -261,7 +276,7 @@ export default function AddTicketPage() {
                                             disabled={isUploading}
                                             className="sr-only"
                                         />
-                                        <span className="text-xs text-default-500">PNG, JPEG, WebP or GIF, up to 5 MB.</span>
+                                        <span className="text-xs text-default-500">PNG, JPEG, WebP, GIF or AVIF, up to 5 MB.</span>
                                     </div>
                                 </div>
                             )}
@@ -318,7 +333,6 @@ export default function AddTicketPage() {
                             <Field label="Vendor email (readonly)" name="vendorEmail" value={account.email} onChange={() => {}} type="email" readOnly />
                         </div>
 
-                        {status.message && <output className={`mt-5 block rounded-lg border px-3 py-2.5 text-sm ${status.type === "success" ? "border-success/20 bg-success/10 text-success" : "border-danger/20 bg-danger/10 text-danger"}`}>{status.message}</output>}
 
                         <Button type="submit" isDisabled={isSubmitting} fullWidth className="mt-6 bg-brand font-bold text-white shadow-lg shadow-brand/25 hover:bg-brand-hover">
                             {isSubmitting ? "Submitting..." : "Add Ticket"}

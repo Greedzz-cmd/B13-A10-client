@@ -1,6 +1,17 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { ToastProvider } from "@heroui/react";
+
+/*
+ * One toast region for the whole app, mounted here so every route can call
+ * `toast()` from "@heroui/react" without each page wiring up a provider.
+ *
+ * HeroUI placements are CSS-grid edges ("top end", not "top-right"). "top end"
+ * keeps notices out of the way of the sidebar on wide screens and lands above
+ * the fold on mobile, where the bottom is usually covered by browser chrome.
+ */
+const TOAST_PLACEMENT = "top end";
 
 const STORAGE_KEY = "routely-theme";
 const ThemeContext = createContext(null);
@@ -70,7 +81,22 @@ export function ThemeProvider({ children }) {
 
     const value = useMemo(() => ({ theme, setTheme, toggleTheme }), [theme, toggleTheme]);
 
-    return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
+    return (
+        <ThemeContext.Provider value={value}>
+            {/*
+              Mounted as a SIBLING, never around {children}.
+
+              ToastProvider renders its children inside the toast region, and
+              react-aria only mounts that region once a toast is visible
+              ("visibleToasts.length > 0 ? portal(region) : null"). Wrapping
+              the app in it therefore unmounts the whole UI until a toast
+              fires, leaving a blank page. Keeping it beside the tree lets any
+              page call toast() against the shared queue instead.
+            */}
+            <ToastProvider placement={TOAST_PLACEMENT} />
+            {children}
+        </ThemeContext.Provider>
+    );
 }
 
 export function useTheme() {

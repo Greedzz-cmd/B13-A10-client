@@ -1,6 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { toast } from "@heroui/react";
+import { Pencil, ShieldAlert, Trash2 } from "lucide-react";
 import { authenticatedFetch, patchTicket } from "@/lib/api-client";
 import VendorTicketCard from "@/components/VendorTicketCard";
 
@@ -16,10 +18,8 @@ export default function VendorTicketGrid() {
     const [isLoading, setIsLoading] = useState(true);
     const [loadError, setLoadError] = useState("");
     const [deletingId, setDeletingId] = useState(null);
-    const [deleteErrors, setDeleteErrors] = useState({});
     const [editingTicket, setEditingTicket] = useState(null);
     const [editForm, setEditForm] = useState(null);
-    const [editError, setEditError] = useState("");
     const [isSavingEdit, setIsSavingEdit] = useState(false);
 
     // This page is scoped to the signed-in vendor, so it must read /tickets/me.
@@ -57,7 +57,6 @@ export default function VendorTicketGrid() {
 
     function openEdit(ticket) {
         setEditingTicket(ticket);
-        setEditError("");
         setEditForm({
             title: ticket.title || "",
             from: ticket.from || "",
@@ -76,7 +75,6 @@ export default function VendorTicketGrid() {
         if (isSavingEdit) return;
         setEditingTicket(null);
         setEditForm(null);
-        setEditError("");
     }
 
     async function updateTicket(event) {
@@ -90,7 +88,6 @@ export default function VendorTicketGrid() {
             quantity: Number(editForm.quantity),
         };
         setIsSavingEdit(true);
-        setEditError("");
 
         try {
             const response = await patchTicket(id, payload);
@@ -105,8 +102,20 @@ export default function VendorTicketGrid() {
             ));
             setEditingTicket(null);
             setEditForm(null);
+            const toastId = toast.success("Ticket updated", {
+                description: "Travellers now see the new price, seats and schedule.",
+                indicator: <Pencil className="size-4" />,
+                actionProps: {
+                    children: "Dismiss",
+                    variant: "tertiary",
+                    onPress: () => toast.close(toastId),
+                },
+            });
         } catch (error) {
-            setEditError(error instanceof Error ? error.message : "The ticket could not be updated.");
+            toast.danger(error instanceof Error ? error.message : "The ticket could not be updated.", {
+                description: "Your edits were not saved. Reopen the ticket to try again.",
+                indicator: <ShieldAlert className="size-4" />,
+            });
         } finally {
             setIsSavingEdit(false);
         }
@@ -120,7 +129,6 @@ export default function VendorTicketGrid() {
 
         const key = String(id);
         setDeletingId(key);
-        setDeleteErrors(current => ({ ...current, [key]: "" }));
 
         try {
             const response = await authenticatedFetch(`/tickets/${encodeURIComponent(key)}`, { method: "DELETE" });
@@ -129,11 +137,20 @@ export default function VendorTicketGrid() {
                 throw new Error(data.message || data.error || `Ticket deletion failed (HTTP ${response.status}).`);
             }
             setTickets(current => current.filter(item => String(item._id || item.id) !== key));
+            const toastId = toast.success("Ticket deleted", {
+                description: `${route} was removed from your listings and can no longer be booked.`,
+                indicator: <Trash2 className="size-4" />,
+                actionProps: {
+                    children: "Dismiss",
+                    variant: "tertiary",
+                    onPress: () => toast.close(toastId),
+                },
+            });
         } catch (error) {
-            setDeleteErrors(current => ({
-                ...current,
-                [key]: error instanceof Error ? error.message : "The ticket could not be deleted.",
-            }));
+            toast.danger(error instanceof Error ? error.message : "The ticket could not be deleted.", {
+                description: "The ticket is still listed. Please try again.",
+                indicator: <ShieldAlert className="size-4" />,
+            });
         } finally {
             setDeletingId(null);
         }
@@ -169,7 +186,6 @@ export default function VendorTicketGrid() {
                                         onEdit={openEdit}
                                         onDelete={deleteTicket}
                                         isDeleting={deletingId === id}
-                                        deleteError={deleteErrors[id]}
                                     />
                                 );
                             })}
@@ -225,7 +241,6 @@ export default function VendorTicketGrid() {
                                     {["Economy", "Business", "First"].map(value => <option key={value}>{value}</option>)}
                                 </select>
                             </label>
-                            {editError && <p role="alert" className="text-sm text-red-400 sm:col-span-2">{editError}</p>}
                             <div className="flex justify-end gap-2 sm:col-span-2">
                                 <button type="button" onClick={closeEdit} disabled={isSavingEdit} className="rounded-lg border border-hairline/10 px-4 py-2 text-sm text-slate-300 hover:bg-hairline/5 disabled:opacity-50">Cancel</button>
                                 <button type="submit" disabled={isSavingEdit} className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-hover disabled:cursor-wait disabled:opacity-50">

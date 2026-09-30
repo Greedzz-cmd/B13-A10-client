@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { BusFront, Check, Plane, Ship, TrainFront, X } from "lucide-react";
+import { toast } from "@heroui/react";
+import { BusFront, Check, Plane, Ship, TrainFront, X, ShieldAlert } from "lucide-react";
 import { Sidebar } from "@/components/Sidebar";
 import { ManageTicketList } from "./ManageTicketList";
 import { authenticatedFetch, moderateTicket, readJson } from "@/lib/api-client";
@@ -29,29 +30,11 @@ function MetricCard({ label, value, valueClass }) {
     );
 }
 
-function Banner({ tone = "error", children }) {
-    if (!children) return null;
-    return (
-        <p
-            role={tone === "error" ? "alert" : "status"}
-            className={`rounded-lg border px-3 py-2 text-xs ${
-                tone === "error"
-                    ? "border-red-500/30 bg-red-500/10 text-red-300"
-                    : "border-emerald-500/30 bg-emerald-500/10 text-emerald-300"
-            }`}
-        >
-            {children}
-        </p>
-    );
-}
-
 export default function ManageTicketsClient() {
     const [tickets, setTickets] = useState([]);
     const [userCount, setUserCount] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [loadError, setLoadError] = useState(null);
-    const [errorId, setErrorId] = useState(null);
-    const [notice, setNotice] = useState(null);
 
     // The admin table needs pending and rejected rows too, which the public
     // /tickets endpoint never returns, so this has to be the authenticated
@@ -117,20 +100,31 @@ export default function ManageTicketsClient() {
         const previous = tickets;
         // Optimistic update so the UI feels instant
         setTickets((prev) => prev.map((t) => (t.id === id ? { ...t, verificationStatus: status } : t)));
-        setErrorId(null);
-        setNotice(null);
 
         try {
             // Moderation is its own endpoint: PATCH /tickets/:id only accepts
             // the fields a vendor owns and quietly drops verificationStatus.
             const { ticket } = await moderateTicket(id, status === "approved" ? "approve" : "reject");
             setTickets((prev) => prev.map((t) => (t.id === id ? { ...t, ...ticket, id: t.id } : t)));
-            setNotice(`Ticket ${status}.`);
+            const toastId = toast.success(`Ticket ${status}`, {
+                description:
+                    status === "approved"
+                        ? "The vendor can now see the listing and travellers can book it."
+                        : "The vendor has been notified and the listing stays hidden.",
+                indicator: status === "approved" ? <Check className="size-4" /> : <X className="size-4" />,
+                actionProps: {
+                    children: "Dismiss",
+                    variant: "tertiary",
+                    onPress: () => toast.close(toastId),
+                },
+            });
         } catch (err) {
             // Roll back on failure
             setTickets(previous);
-            setErrorId(id);
-            setNotice(err.message);
+            toast.danger(err.message || "Ticket status could not be updated.", {
+                description: "The moderation was not saved. Please try again.",
+                indicator: <ShieldAlert className="size-4" />,
+            });
         }
     }
 
@@ -169,10 +163,7 @@ export default function ManageTicketsClient() {
                                     Retry
                                 </button>
                             </div>
-                        ) : errorId ? (
-                            <Banner tone="error">That action could not be saved. No change was made.</Banner>
                         ) : null}
-                        <Banner tone="success">{notice}</Banner>
                     </div>
 
                     {isLoading ? (

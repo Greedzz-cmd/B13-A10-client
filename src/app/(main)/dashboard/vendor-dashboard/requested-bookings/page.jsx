@@ -1,9 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { toast } from "@heroui/react";
 import { Sidebar } from "@/components/Sidebar";
-import { Check, X, Clock, CheckCircle2, XCircle } from "lucide-react";
+import { Check, X, Clock, CheckCircle2, XCircle, ShieldAlert } from "lucide-react";
 import { authenticatedFetch, readJson } from "@/lib/api-client";
+import { useSession } from "@/lib/auth-client";
 
 const statusStyles = {
     accepted: "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30",
@@ -15,23 +17,37 @@ const statusStyles = {
 
 export default function RequestedBookingsPage() {
     const [bookings, setBookings] = useState([]);
-    const [actionMessage, setActionMessage] = useState("");
-    const [actionTone, setActionTone] = useState("success");
     const [isLoading, setIsLoading] = useState(true);
     const [loadError, setLoadError] = useState(null);
     const [statusFilter, setStatusFilter] = useState("");
+    const { data: session } = useSession();
+    const accountEmail = session?.user?.email || "";
 
-    // /bookings infers the owner from the token, so this call must carry one:
-    // an anonymous request would 401 and leave the placeholder rows on screen.
+    // /bookings carries two different owners: userEmail is the traveller, and
+    // vendorEmail selects the "requests waiting for my answer" list. Without
+    // the vendorEmail the API falls back to the traveller side and a vendor
+    // sees nothing, because they hold no bookings of their own.
     const fetchBookings = useCallback(async () => {
-        const query = statusFilter ? `?status=${encodeURIComponent(statusFilter)}` : "";
+        const params = new URLSearchParams();
+
+        if (accountEmail) params.set("vendorEmail", accountEmail);
+        if (statusFilter) params.set("status", statusFilter);
+
+        const query = params.toString() ? `?${params.toString()}` : "";
         const res = await authenticatedFetch(`/bookings${query}`);
 
         return readJson(res);
-    }, [statusFilter]);
+    }, [accountEmail, statusFilter]);
 
     useEffect(() => {
         let cancelled = false;
+
+        // Wait for the session. Fetching before it resolves would omit
+        // vendorEmail, and the API would answer with the traveller-side list,
+        // which for a vendor is always empty.
+        if (!accountEmail) {
+            return undefined;
+        }
 
         fetchBookings()
             .then((data) => {
@@ -47,13 +63,7 @@ export default function RequestedBookingsPage() {
         return () => {
             cancelled = true;
         };
-    }, [fetchBookings]);
-
-    const announce = (message, tone = "success") => {
-        setActionTone(tone);
-        setActionMessage(message);
-        setTimeout(() => setActionMessage(""), 4000);
-    };
+    }, [fetchBookings, accountEmail]);
 
     const handleUpdateStatus = async (id, newStatus) => {
         const previous = bookings;
@@ -68,10 +78,24 @@ export default function RequestedBookingsPage() {
                 body: JSON.stringify({ status: newStatus }),
             });
             await readJson(res);
-            announce(`Booking request marked as ${newStatus}.`);
+            const toastId = toast.success(`Booking request marked as ${newStatus}`, {
+                description:
+                    newStatus === "accepted"
+                        ? "The traveller has been notified and can now pay for the seats."
+                        : "The traveller has been notified and the seats were released.",
+                indicator: newStatus === "accepted" ? <CheckCircle2 className="size-4" /> : <XCircle className="size-4" />,
+                actionProps: {
+                    children: "Dismiss",
+                    variant: "tertiary",
+                    onPress: () => toast.close(toastId),
+                },
+            });
         } catch (err) {
             setBookings(previous);
-            announce(err.message, "error");
+            toast.danger(err.message || "The booking request could not be updated.", {
+                description: "The booking is unchanged. Please try again.",
+                indicator: <ShieldAlert className="size-4" />,
+            });
         }
     };
 
@@ -94,15 +118,6 @@ export default function RequestedBookingsPage() {
                                 Manage customer reservation requests · {pendingCount} pending review
                             </p>
                         </div>
-                        {actionMessage && (
-                            <span className={`rounded-lg border px-3 py-1.5 text-xs ${
-                                actionTone === "error"
-                                    ? "border-red-500/30 bg-red-500/10 text-red-300"
-                                    : "border-emerald-500/20 bg-emerald-500/10 text-emerald-300"
-                            }`}>
-                                {actionMessage}
-                            </span>
-                        )}
                     </header>
 
                     <div className="mb-4">

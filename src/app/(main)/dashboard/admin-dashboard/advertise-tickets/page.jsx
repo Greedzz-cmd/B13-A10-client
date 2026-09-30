@@ -1,15 +1,15 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { toast } from "@heroui/react";
 import { Sidebar } from "@/components/Sidebar";
-import { Megaphone, AlertCircle, Check, Sparkles } from "lucide-react";
+import { Megaphone, Check, Sparkles, ShieldAlert } from "lucide-react";
 import { authenticatedFetch, readJson, setTicketAdvertisement } from "@/lib/api-client";
 
 const ADVERTISEMENT_LIMIT = 6;
 
 export default function AdvertiseTicketsPage() {
     const [tickets, setTickets] = useState([]);
-    const [errorMessage, setErrorMessage] = useState("");
     const [isLoading, setIsLoading] = useState(true);
     const [loadError, setLoadError] = useState(null);
 
@@ -49,10 +49,11 @@ export default function AdvertiseTicketsPage() {
     const advertisedCount = tickets.filter((t) => t.isAdvertised).length;
 
     const handleToggleAdvertise = async (ticketId, currentStatus) => {
-        setErrorMessage("");
-
         if (!currentStatus && advertisedCount >= ADVERTISEMENT_LIMIT) {
-            setErrorMessage(`Cannot advertise more than ${ADVERTISEMENT_LIMIT} tickets at a time.`);
+            toast.warning(`Cannot advertise more than ${ADVERTISEMENT_LIMIT} tickets at a time.`, {
+                description: "Remove a ticket from the featured list before promoting another.",
+                indicator: <Sparkles className="size-4" />,
+            });
             return;
         }
 
@@ -71,9 +72,26 @@ export default function AdvertiseTicketsPage() {
             // Advertisement has a dedicated endpoint; PATCH /tickets/:id only
             // accepts the fields a vendor owns and drops the flag.
             await setTicketAdvertisement(ticketId, newStatus);
+            const toastId = toast.success(
+                newStatus ? "Ticket advertised" : "Removed from advertisements",
+                {
+                    description: newStatus
+                        ? "It now appears in the featured listings for every traveller."
+                        : "It is no longer shown in the featured listings.",
+                    indicator: <Megaphone className="size-4" />,
+                    actionProps: {
+                        children: "Dismiss",
+                        variant: "tertiary",
+                        onPress: () => toast.close(toastId),
+                    },
+                }
+            );
         } catch (err) {
             setTickets(previousTickets);
-            setErrorMessage(err.message);
+            toast.danger(err.message || "Advertisement status could not be updated.", {
+                description: "Your changes were reverted. Please try again.",
+                indicator: <ShieldAlert className="size-4" />,
+            });
         }
     };
 
@@ -102,13 +120,6 @@ export default function AdvertiseTicketsPage() {
                             </span>
                         </div>
                     </div>
-
-                    {errorMessage && (
-                        <div className="mt-5 flex items-center gap-2 rounded-xl border border-amber-500/30 bg-amber-950/20 p-3 text-xs text-amber-300">
-                            <AlertCircle className="h-4 w-4 shrink-0" />
-                            <span>{errorMessage}</span>
-                        </div>
-                    )}
 
                     {isLoading ? (
                         <p className="mt-7 rounded-xl border border-hairline/8 bg-[var(--surface)] px-4 py-10 text-center text-xs text-slate-500">

@@ -8,17 +8,51 @@ import {
     Check,
     AlertCircle,
     Camera,
+    CheckCircle2,
     X,
     User,
 } from "lucide-react";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useRef, useState } from "react";
+import { toast } from "@heroui/react";
 
 import { RouteMap } from "./HeroSection";
 import { authClient } from "../lib/auth-client";
+import { callbackFromSearch, signInHref, signUpHref } from "../lib/auth-redirect";
 
+/*
+ * The form reads `?callbackUrl=` through useSearchParams, which opts the route
+ * into client-side rendering. Prerendering that without a boundary fails the
+ * build ("useSearchParams() should be wrapped in a suspense boundary"), so the
+ * boundary lives here rather than in each page.
+ *
+ * The fallback is intentionally the real form rather than a spinner: a flash of
+ * "Redirecting..." on every auth page load would be worse than the bailout.
+ */
 export default function AuthPage({ mode }) {
+    return (
+        <Suspense fallback={<AuthPageFallback />}>
+            <AuthForm mode={mode} />
+        </Suspense>
+    );
+}
+
+function AuthPageFallback() {
+    return (
+        <main className="grid min-h-screen place-items-center bg-[var(--surface-inset)] text-[11px] text-slate-500">
+            <span aria-busy="true">Redirecting…</span>
+        </main>
+    );
+}
+
+function AuthForm({ mode }) {
     const isSignup = mode === "signup";
+
+    const router = useRouter();
+    // Read at submit time only, so a navigation cannot invalidate the value
+    // mid-form.
+    const searchParams = useSearchParams();
 
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -56,10 +90,43 @@ export default function AuthPage({ mode }) {
         setProfilePicturePreview(URL.createObjectURL(file));
     };
 
+    /*
+     * Where to land once authenticated.
+     *
+     * A `?callbackUrl=` means the visitor was bounced here from a page they
+     * wanted, so it wins. Otherwise the homepage is the default. The helper
+     * rejects anything that is not a path on this site, so a hand-edited query
+     * string cannot turn this into an open redirect.
+     */
+    const resolveDestination = () => {
+        const callback = callbackFromSearch(searchParams.toString());
+
+        return callback || "/";
+    };
+
+    /*
+     * Toast, then navigate.
+     *
+     * `router.push` is client-side, so the ToastProvider mounted in the root
+     * layout stays alive and the notice survives the change of route. Pushing
+     * first would unmount this page and drop the toast with it.
+     */
+    const announceAndGo = (destination) => {
+        toast.success(isSignup ? "Account created" : "Signed in", {
+            description: isSignup
+                ? "Welcome to Routely. Your account is ready."
+                : "Welcome back. Taking you where you left off.",
+            indicator: <CheckCircle2 className="size-4" />,
+        });
+
+        router.push(destination);
+        router.refresh();
+    };
+
     const handleGoogleSignIn = async() => {
         await authClient.signIn.social({
             provider: "google",
-            callbackURL: "/onboarding/role"
+            callbackURL: resolveDestination(),
         });
     };
 
@@ -113,15 +180,16 @@ export default function AuthPage({ mode }) {
                       password: formData.get("password"),
                   });
 
-            console.log("Auth data:", result.data);
-
             if (result.error) {
                 console.error("Auth error:", result.error);
                 setFormError(
                     result.error.message ||
                         "Something went wrong. Please try again."
                 );
+                return;
             }
+
+            announceAndGo(resolveDestination());
         } catch (error) {
             console.error("Auth error:", error);
             setFormError("Something went wrong. Please try again.");
@@ -372,7 +440,7 @@ export default function AuthPage({ mode }) {
                                     </label>
 
                                     <input
-                                        className="h-[47px] w-full rounded-xl border border-[var(--line)] bg-[var(--surface-raised)]/90 px-3.5 text-[12px] text-white placeholder:text-slate-600 outline-none transition-all duration-200 focus:border-[#dd8747]/70 focus:bg-[var(--surface-raised)] focus:ring-2 focus:ring-[#dd8747]/10"
+                                        className="h-[47px] w-full rounded-xl border border-[var(--line)] bg-[var(--surface-raised)]/90 px-3.5 text-[12px] text-foreground placeholder:text-slate-600 outline-none transition-all duration-200 focus:border-[#dd8747]/70 focus:bg-[var(--surface-raised)] focus:ring-2 focus:ring-[#dd8747]/10"
                                         type="text"
                                         name="name"
                                         placeholder="Enter your name"
@@ -437,7 +505,7 @@ export default function AuthPage({ mode }) {
                                             </div>
 
                                             <div className="mt-3">
-                                                <div className="text-[12px] font-medium text-white">
+                                                <div className="text-[12px] font-medium text-foreground">
                                                     Traveller
                                                 </div>
 
@@ -487,7 +555,7 @@ export default function AuthPage({ mode }) {
                                             </div>
 
                                             <div className="mt-3">
-                                                <div className="text-[12px] font-medium text-white">
+                                                <div className="text-[12px] font-medium text-foreground">
                                                     Vendor
                                                 </div>
 
@@ -514,7 +582,7 @@ export default function AuthPage({ mode }) {
                                 </label>
 
                                 <input
-                                    className="h-[47px] w-full rounded-xl border border-[var(--line)] bg-[var(--surface-raised)]/90 px-3.5 text-[12px] text-white placeholder:text-slate-600 outline-none transition-all duration-200 focus:border-[#dd8747]/70 focus:bg-[var(--surface-raised)] focus:ring-2 focus:ring-[#dd8747]/10"
+                                    className="h-[47px] w-full rounded-xl border border-[var(--line)] bg-[var(--surface-raised)]/90 px-3.5 text-[12px] text-foreground placeholder:text-slate-600 outline-none transition-all duration-200 focus:border-[#dd8747]/70 focus:bg-[var(--surface-raised)] focus:ring-2 focus:ring-[#dd8747]/10"
                                     type="email"
                                     name="email"
                                     placeholder="Enter an email address"
@@ -531,7 +599,7 @@ export default function AuthPage({ mode }) {
 
                                 <div className="relative">
                                     <input
-                                        className={`h-[47px] w-full rounded-xl border bg-[var(--surface-raised)]/90 px-3.5 pr-11 text-[12px] text-white placeholder:text-slate-600 outline-none transition-all duration-200 focus:bg-[var(--surface-raised)] focus:ring-2 ${
+                                        className={`h-[47px] w-full rounded-xl border bg-[var(--surface-raised)]/90 px-3.5 pr-11 text-[12px] text-foreground placeholder:text-slate-600 outline-none transition-all duration-200 focus:bg-[var(--surface-raised)] focus:ring-2 ${
                                             passwordError
                                                 ? "border-red-500/60 focus:border-red-500/70 focus:ring-red-500/10"
                                                 : "border-[var(--line)] focus:border-[#dd8747]/70 focus:ring-[#dd8747]/10"
@@ -587,7 +655,7 @@ export default function AuthPage({ mode }) {
 
                                     <div className="relative">
                                         <input
-                                            className={`h-[47px] w-full rounded-xl border bg-[var(--surface-raised)]/90 px-3.5 pr-11 text-[12px] text-white placeholder:text-slate-600 outline-none transition-all duration-200 focus:bg-[var(--surface-raised)] focus:ring-2 ${
+                                            className={`h-[47px] w-full rounded-xl border bg-[var(--surface-raised)]/90 px-3.5 pr-11 text-[12px] text-foreground placeholder:text-slate-600 outline-none transition-all duration-200 focus:bg-[var(--surface-raised)] focus:ring-2 ${
                                                 passwordError
                                                     ? "border-red-500/60 focus:border-red-500/70 focus:ring-red-500/10"
                                                     : "border-[var(--line)] focus:border-[#dd8747]/70 focus:ring-[#dd8747]/10"
@@ -658,7 +726,17 @@ export default function AuthPage({ mode }) {
                                 ? "Already have an account?"
                                 : "Don’t have an account?"}{" "}
                             <Link
-                                href={isSignup ? "/sign-in" : "/get-started"}
+                                /* Carries any callbackUrl across, so switching
+                                   forms does not lose the intended page. */
+                                href={
+                                    isSignup
+                                        ? signInHref(
+                                              searchParams.get("callbackUrl")
+                                          )
+                                        : signUpHref(
+                                              searchParams.get("callbackUrl")
+                                          )
+                                }
                                 className="font-medium text-[var(--accent-ink)] transition-colors hover:text-[var(--accent-ink)]"
                             >
                                 {isSignup ? "Sign in" : "Register"}

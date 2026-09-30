@@ -18,7 +18,8 @@ import {
     RefreshCw,
     Loader2,
 } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { toast } from "@heroui/react";
 import { useSession } from "@/lib/auth-client";
 import { authenticatedFetch } from "@/lib/api-client";
 
@@ -242,6 +243,9 @@ export default function BookedTicketsPage() {
     const [selectedTicket, setSelectedTicket] = useState(null);
     const [payingId, setPayingId] = useState(null);
     const [payError, setPayError] = useState(null);
+    // Lets the toast's Retry action restart the payment without handlePay
+    // having to reference itself from inside its own closure.
+    const retryRef = useRef(null);
 
     /**
      * Fetches and normalises the signed-in user's bookings. Returns the data
@@ -326,6 +330,15 @@ export default function BookedTicketsPage() {
                 }
 
                 setBookings(await fetchBookings());
+                const toastId = toast.success("Payment recorded", {
+                    description: "Your ticket is confirmed. The receipt is available in your transactions.",
+                    indicator: <CheckCircle2 className="size-4" />,
+                    actionProps: {
+                        children: "View ticket",
+                        variant: "tertiary",
+                        onPress: () => toast.close(toastId),
+                    },
+                });
                 return;
             }
 
@@ -337,10 +350,30 @@ export default function BookedTicketsPage() {
             throw new Error("The payment provider did not return a checkout URL.");
         } catch (payFlowError) {
             setPayError({ bookingId: ticket.id, message: payFlowError.message });
+            // Retry re-enters the same flow through a stable callback. Calling
+            // handlePay from inside its own body makes the closure reference
+            // itself, which trips react-hooks/immutability.
+            const toastId = toast.danger(payFlowError.message, {
+                description: "You were not charged. You can try the payment again.",
+                indicator: <CreditCard className="size-4" />,
+                actionProps: {
+                    children: "Retry",
+                    variant: "danger",
+                    onPress: () => {
+                        toast.close(toastId);
+                        retryRef.current?.(ticket);
+                    },
+                },
+            });
         } finally {
             setPayingId(null);
         }
     };
+
+    // Register the retry entry point after render; refs must not be written during it.
+    useEffect(() => {
+        retryRef.current = handlePay;
+    });
 
     const isLoading = bookings === null;
     return (

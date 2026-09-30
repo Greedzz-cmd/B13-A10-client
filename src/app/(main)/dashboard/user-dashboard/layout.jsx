@@ -8,12 +8,12 @@ export const metadata = {
 };
 
 export default async function UserDashboardLayout({ children }) {
-    await requireDashboardRole("user");
+    await requireDashboardRole("traveller", "/dashboard/user-dashboard");
 
     return (
         <div className="relative flex flex-col md:flex-row min-h-[calc(100vh-60px)] bg-[var(--surface-canvas)]">
             {/* Sidebar navigation */}
-            <Sidebar role="user" />
+            <Sidebar role="traveller" />
 
             {/* Main content viewport */}
             <main className="flex-1 p-6 md:p-10 text-slate-100 min-w-0">

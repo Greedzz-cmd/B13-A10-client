@@ -34,7 +34,7 @@ function formatTime(dateTime) {
     return date.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false });
 }
 
-export default function VendorTicketCard({ ticket, onDelete, onEdit, isDeleting = false, deleteError = "" }) {
+export default function VendorTicketCard({ ticket, onDelete, onEdit, isDeleting = false }) {
     const TransportIcon = transportIcons[ticket.transportType] || BusFront;
     const status = (ticket.verificationStatus || "pending").toLowerCase();
     const totalSeats = Number(ticket.totalSeats || ticket.quantity || 0);
@@ -108,7 +108,6 @@ export default function VendorTicketCard({ ticket, onDelete, onEdit, isDeleting 
                         <X className="h-2.5 w-2.5" /> {isDeleting ? "Deleting..." : "Delete"}
                     </button>
                 </div>
-                {deleteError && <p role="alert" className="mt-2 text-[10px] text-red-400">{deleteError}</p>}
             </div>
         </article>
     );

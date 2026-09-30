@@ -1,6 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider, themeInitScript } from "@/components/ThemeProvider";
+import { InlineScript } from "@/components/InlineScript";
 
 // Load the application sans and monospace font variables.
 const geistSans = Geist({
@@ -33,7 +34,7 @@ export default function RootLayout({ children }) {
                   Applies the stored theme before the first paint so a light
                   mode visitor never sees a flash of the dark palette.
                 */}
-                <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+                <InlineScript html={themeInitScript} />
             </head>
             <body className="antialiased">
                 <ThemeProvider>{children}</ThemeProvider>

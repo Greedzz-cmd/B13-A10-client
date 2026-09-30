@@ -1,7 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { toast } from "@heroui/react";
 import { Sidebar } from "@/components/Sidebar";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { Shield, UserCheck, AlertTriangle, Check, ShieldAlert, UserCheck2 } from "lucide-react";
 import { authenticatedFetch, readJson, setUserFraud, setUserRole } from "@/lib/api-client";
 
@@ -13,12 +15,12 @@ const roleStyles = {
 
 export default function ManageUsersPage() {
     const [users, setUsers] = useState([]);
-    const [statusMessage, setStatusMessage] = useState("");
-    const [statusTone, setStatusTone] = useState("success");
     const [isLoading, setIsLoading] = useState(true);
     const [loadError, setLoadError] = useState(null);
     const [search, setSearch] = useState("");
     const [roleFilter, setRoleFilter] = useState("");
+    const [fraudTarget, setFraudTarget] = useState(null);
+    const [isFraudPending, setIsFraudPending] = useState(false);
 
     // /users is admin-only, so an unauthenticated request would come back 401
     // and leave the table looking populated when it is not.
@@ -51,12 +53,6 @@ export default function ManageUsersPage() {
         };
     }, [fetchUsers]);
 
-    const announce = (message, tone = "success") => {
-        setStatusTone(tone);
-        setStatusMessage(message);
-        setTimeout(() => setStatusMessage(""), 4000);
-    };
-
     const handleRoleChange = async (userId, newRole) => {
         const previousUsers = users;
         setUsers((prev) =>
@@ -65,22 +61,36 @@ export default function ManageUsersPage() {
 
         try {
             await setUserRole(userId, newRole);
-            announce(`User promoted to ${newRole}.`);
+            const toastId = toast.success(`User promoted to ${newRole}`, {
+                description: "Their dashboard and permissions update the next time they sign in.",
+                indicator: <UserCheck className="size-4" />,
+                actionProps: {
+                    children: "Dismiss",
+                    variant: "tertiary",
+                    onPress: () => toast.close(toastId),
+                },
+            });
         } catch (err) {
             setUsers(previousUsers);
-            announce(err.message, "error");
+            toast.danger(err.message || "User role could not be updated.", {
+                description: "The previous role was restored. Please try again.",
+                indicator: <ShieldAlert className="size-4" />,
+            });
         }
     };
 
-    const handleFraudToggle = async (user) => {
-        const flag = !user.isFraud;
-        const action = flag ? "mark as fraud" : "reinstate";
+    // Stages the fraud change so the themed dialog can confirm it first.
+    const requestFraudToggle = (user) => {
+        setFraudTarget({ user, flag: !user.isFraud });
+    };
 
-        if (!window.confirm(`Are you sure you want to ${action} ${user.email}?${
-            flag ? " All of this vendor's tickets will be hidden immediately." : ""
-        }`)) {
-            return;
-        }
+    // Runs only after the themed dialog confirms; dismissing never mutates.
+    const confirmFraudToggle = async () => {
+        if (!fraudTarget) return;
+
+        const { user, flag } = fraudTarget;
+        setIsFraudPending(true);
+        setFraudTarget(null);
 
         const previousUsers = users;
         setUsers((prev) =>
@@ -89,10 +99,25 @@ export default function ManageUsersPage() {
 
         try {
             const { message } = await setUserFraud(user._id, flag);
-            announce(message);
+            const toastId = toast.success(message || (flag ? "Vendor flagged as fraudulent" : "Vendor reinstated"), {
+                description: flag
+                    ? "Their listings are hidden from travellers until you reinstate them."
+                    : "Their listings are visible to travellers again.",
+                indicator: flag ? <ShieldAlert className="size-4" /> : <Check className="size-4" />,
+                actionProps: {
+                    children: "Dismiss",
+                    variant: "tertiary",
+                    onPress: () => toast.close(toastId),
+                },
+            });
         } catch (err) {
             setUsers(previousUsers);
-            announce(err.message, "error");
+            toast.danger(err.message || "Vendor fraud status could not be updated.", {
+                description: "The previous status was restored. Please try again.",
+                indicator: <AlertTriangle className="size-4" />,
+            });
+        } finally {
+            setIsFraudPending(false);
         }
     };
 
@@ -135,15 +160,6 @@ export default function ManageUsersPage() {
                                 Control user roles and take administrative fraud prevention action.
                             </p>
                         </div>
-                        {statusMessage && (
-                            <span className={`rounded-lg border px-3 py-1.5 text-xs animate-fade-in ${
-                                    statusTone === "error"
-                                        ? "border-red-500/30 bg-red-500/10 text-red-300"
-                                        : "border-emerald-500/20 bg-emerald-500/10 text-emerald-300"
-                                }`}>
-                                {statusMessage}
-                            </span>
-                        )}
                     </header>
 
                     {/* Filters */}
@@ -248,7 +264,7 @@ export default function ManageUsersPage() {
                                                     {isVendor && (
                                                         <button
                                                             type="button"
-                                                            onClick={() => handleFraudToggle(u)}
+                                                                onClick={() => requestFraudToggle(u)}
                                                             className={`inline-flex items-center gap-1 rounded-md border px-2.5 py-1 text-[10px] font-medium transition ${
                                                                 u.isFraud
                                                                     ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20"
@@ -273,6 +289,22 @@ export default function ManageUsersPage() {
                     )}
                 </div>
             </main>
+
+            <ConfirmDialog
+                isOpen={fraudTarget !== null}
+                onOpenChange={(open) => {
+                    if (!open) setFraudTarget(null);
+                }}
+                onConfirm={confirmFraudToggle}
+                title={fraudTarget?.flag ? "Mark as fraudulent?" : "Reinstate this vendor?"}
+                description={
+                    fraudTarget?.flag
+                        ? `${fraudTarget.user.email} will be flagged and all of their tickets will be hidden from travellers immediately.`
+                        : `${fraudTarget?.user.email} will be reinstated and their tickets will be visible to travellers again.`
+                }
+                confirmLabel={fraudTarget?.flag ? "Mark as Fraud" : "Reinstate"}
+                isPending={isFraudPending}
+            />
         </div>
     );
 }
