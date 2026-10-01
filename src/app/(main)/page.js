@@ -4,6 +4,7 @@ import JourneyCtaSection from "@/components/JourneyCtaSection";
 import PopularRoutesSection from "@/components/PopularRoutesSection";
 import TransportCategories from "@/components/TransportCategories";
 import WhyChooseSection from "@/components/WhyChooseSection";
+import { apiBaseUrl, apiUrl } from "@/lib/api-url";
 
 // The homepage advertises live tickets and routes, so it renders per request
 // rather than being frozen at build time.
@@ -14,14 +15,12 @@ export const dynamic = "force-dynamic";
  * section renders its own defaults, if the API is unreachable.
  */
 async function getPopularRoutes() {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-
-    if (!apiUrl) {
+    if (!apiBaseUrl()) {
         return [];
     }
 
     try {
-        const response = await fetch(`${apiUrl}/tickets/routes/popular?limit=6`, {
+        const response = await fetch(apiUrl("/tickets/routes/popular?limit=6"), {
             cache: "no-store",
         });
 

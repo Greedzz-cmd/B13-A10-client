@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import TicketDetailsClient from "@/components/TicketDetailsClient";
+import { apiBaseUrl, apiUrl } from "@/lib/api-url";
 
 export async function generateMetadata({ params }) {
     const { id } = await params;
@@ -24,13 +25,11 @@ export async function generateMetadata({ params }) {
  * could not actually be booked.
  */
 async function getTicketById(id) {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-
-    if (!apiUrl) {
+    if (!apiBaseUrl()) {
         throw new Error("NEXT_PUBLIC_API_URL is not set.");
     }
 
-    const res = await fetch(`${apiUrl}/tickets/${encodeURIComponent(id)}`, {
+    const res = await fetch(apiUrl(`/tickets/${encodeURIComponent(id)}`), {
         cache: "no-store",
     });
 

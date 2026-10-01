@@ -1,4 +1,5 @@
 import TicketsPage from "@/components/TicketsPage";
+import { apiBaseUrl, apiUrl } from "@/lib/api-url";
 
 export const metadata = {
     title: "All tickets | Routely",
@@ -60,8 +61,8 @@ const readPage = (value) => {
  * Builds the upstream catalogue URL from the browser query string, dropping
  * defaults so shared links stay short.
  */
-const buildCatalogueUrl = (apiUrl, filters) => {
-    const url = new URL("/tickets", apiUrl);
+const buildCatalogueUrl = (base, filters) => {
+    const url = new URL("/tickets", base);
 
     if (filters.from) url.searchParams.set("from", filters.from);
     if (filters.to) url.searchParams.set("to", filters.to);
@@ -109,18 +110,18 @@ export default async function TicketsRoute({ searchParams }) {
         page: readPage(params.page),
     };
 
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    const base = apiBaseUrl();
     let tickets = [];
     let pagination = EMPTY_PAGINATION;
     let locations = { from: [], to: [] };
 
-    if (apiUrl) {
+    if (base) {
         try {
             // Settled rather than all: one flaky upstream should not throw away
             // the other's result, so a catalogue hiccup still fills the dropdowns.
             const [catalogueResult, locationResult] = await Promise.allSettled([
-                fetchWithRetry(buildCatalogueUrl(apiUrl, filters)),
-                fetchWithRetry(`${apiUrl}/tickets/locations`),
+                fetchWithRetry(buildCatalogueUrl(base, filters)),
+                fetchWithRetry(apiUrl("/tickets/locations")),
             ]);
 
             const catalogue = catalogueResult.status === "fulfilled" ? catalogueResult.value : null;

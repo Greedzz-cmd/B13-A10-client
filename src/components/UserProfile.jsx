@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { useSession } from "@/lib/auth-client";
 import { getAvatarSrc, getInitials } from "@/lib/user";
+import { apiUrl } from "@/lib/api-url";
 
 
 /**
@@ -18,7 +19,7 @@ import { getAvatarSrc, getInitials } from "@/lib/user";
 
 const fetchTickets = async () => {
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tickets`, {
+        const response = await fetch(apiUrl("/tickets"), {
             cache: "no-store",
         });
         if (response.ok) {

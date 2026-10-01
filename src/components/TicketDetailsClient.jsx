@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { useSession } from "@/lib/auth-client";
 import { authenticatedFetch } from "@/lib/api-client";
+import { apiBaseUrl } from "@/lib/api-url";
 import { signInHref } from "@/lib/auth-redirect";
 
 const transportIcons = {
@@ -145,8 +146,7 @@ export default function TicketDetailsClient({ ticket }) {
         };
 
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-            if (!apiUrl) {
+            if (!apiBaseUrl()) {
                 throw new Error("Booking service is not configured.");
             }
 

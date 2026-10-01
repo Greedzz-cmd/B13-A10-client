@@ -1,17 +1,17 @@
 import { Plane } from "lucide-react";
 import Link from "next/link";
 import TicketCard from "./TicketCard";
+import { apiBaseUrl, apiUrl } from "@/lib/api-url";
 
 
 export default async function FeaturedTicketsSection() {
     let featuredTickets = [];
 
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-    if (apiUrl) {
+    if (apiBaseUrl()) {
         try {
             // /tickets no longer accepts isAdvertised; the dedicated route
             // returns exactly the six approved tickets admins may feature.
-            const res = await fetch(`${apiUrl}/tickets/advertised`, { cache: "no-store" });
+            const res = await fetch(apiUrl("/tickets/advertised"), { cache: "no-store" });
             if (res.ok) {
                 const data = await res.json();
                 if (Array.isArray(data)) {
