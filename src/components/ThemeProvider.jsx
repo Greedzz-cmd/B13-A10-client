@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useSyncExternalStore } from "react";
 import { ToastProvider } from "@heroui/react";
 
 /*
@@ -47,17 +47,49 @@ const resolveInitialTheme = () => {
     return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
 };
 
+/*
+ * The theme lives in localStorage, which makes it an external store.
+ *
+ * Reading it during render is what caused the hydration mismatch: the server
+ * could only render "dark", so a light-mode visitor received server markup with
+ * a Sun icon and client markup with a Moon one. useSyncExternalStore fixes that
+ * by letting React compare a server snapshot with the client store and re-render
+ * once it knows the difference, instead of guessing during the first paint.
+ */
+const subscribeToTheme = (onStoreChange) => {
+    window.addEventListener("storage", onStoreChange);
+    window.addEventListener("routely-theme-change", onStoreChange);
+
+    return () => {
+        window.removeEventListener("storage", onStoreChange);
+        window.removeEventListener("routely-theme-change", onStoreChange);
+    };
+};
+
+const getThemeSnapshot = () => resolveInitialTheme();
+
+// What the server rendered. React uses it for the hydration pass and then
+// re-renders with the real client value.
+const getServerThemeSnapshot = () => "dark";
+
+const persistTheme = (next) => {
+    try {
+        window.localStorage.setItem(STORAGE_KEY, next);
+    } catch {
+        // A blocked storage API should not stop the toggle from working.
+    }
+
+    // Same-tab listeners do not receive the "storage" event.
+    window.dispatchEvent(new Event("routely-theme-change"));
+};
+
 export function ThemeProvider({ children }) {
-    const [theme, setTheme] = useState(resolveInitialTheme);
+    const theme = useSyncExternalStore(subscribeToTheme, getThemeSnapshot, getServerThemeSnapshot);
 
     useEffect(() => {
+        // The pre-paint script in the root layout has already set the right
+        // attribute; this keeps it in step with the resolved store value.
         document.documentElement.setAttribute("data-theme", theme);
-
-        try {
-            window.localStorage.setItem(STORAGE_KEY, theme);
-        } catch {
-            // A blocked storage API should not stop the toggle from working.
-        }
     }, [theme]);
 
     // Follow the OS only while the visitor has not made an explicit choice.
@@ -66,7 +98,12 @@ export function ThemeProvider({ children }) {
 
         const handleChange = (event) => {
             if (!window.localStorage.getItem(STORAGE_KEY)) {
-                setTheme(event.matches ? "light" : "dark");
+                const next = event.matches ? "light" : "dark";
+
+                document.documentElement.setAttribute("data-theme", next);
+                // Not persisted: an OS flip is not a choice, so keep following
+                // the OS until the visitor uses the toggle themselves.
+                window.dispatchEvent(new Event("routely-theme-change"));
             }
         };
 
@@ -76,10 +113,16 @@ export function ThemeProvider({ children }) {
     }, []);
 
     const toggleTheme = useCallback(() => {
-        setTheme((current) => (current === "dark" ? "light" : "dark"));
-    }, []);
+        const next = theme === "dark" ? "light" : "dark";
 
-    const value = useMemo(() => ({ theme, setTheme, toggleTheme }), [theme, toggleTheme]);
+        document.documentElement.setAttribute("data-theme", next);
+        persistTheme(next);
+    }, [theme]);
+
+    // The theme now comes from an external store, so there is no setTheme to
+    // hand out: writing is done by toggleTheme (and by the OS-follow effect),
+    // which persist the choice and notify subscribers.
+    const value = useMemo(() => ({ theme, toggleTheme }), [theme, toggleTheme]);
 
     return (
         <ThemeContext.Provider value={value}>
